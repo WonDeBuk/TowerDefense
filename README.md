@@ -1,15 +1,24 @@
 # Tower Defense Game
 
-A tower defense game implemented in C++ using Raylib for graphics and the Builder pattern for the menu system.
+A tower defense game implemented in C++ using Raylib for graphics and the State pattern for the menu system.
 
 ## Project Structure
 ```
 TowerDefense/
 ├── src/
 │   ├── GUI/
-│   │   ├── MenuBuilder.hpp
-│   │   ├── MainMenuBuilder.hpp
-│   │   └── Menu.hpp
+│   │   ├── MenuDirector.hpp
+│   │   ├── MenuDirector.cpp
+│   │   ├── MenuState.hpp
+│   │   ├── MainMenu.hpp
+│   │   ├── DictionaryMenuState.hpp
+│   │   ├── PlayMenuState.hpp
+│   │   ├── SettingsMenuState.hpp
+│   │   ├── TowerInfo.hpp
+│   │   ├── TowerListContainer.hpp
+│   │   ├── PagedContainer.hpp
+│   │   ├── MenuType.hpp
+│   │   └── MenuItem.hpp
 │   └── main.cpp
 ├── raylib/
 │   ├── include/
@@ -18,6 +27,11 @@ TowerDefense/
 │   │   └── raylib.lib
 │   └── bin/
 │       └── raylib.dll
+├── assets/
+│   ├── textures/
+│   ├── sounds/
+│   ├── music/
+│   └── fonts/
 ├── CMakeLists.txt
 └── README.md
 ```
@@ -48,16 +62,3 @@ cmake --build .
 ```bash
 ./TowerDefense
 ```
-
-## Controls
-- Use the mouse to interact with menu items
-- Click on buttons to navigate through different screens
-- Press ESC to return to the main menu from game or settings screens
-
-## Implementation Details
-The menu system is implemented using the Builder design pattern, which allows for flexible construction of different types of menus. The main components are:
-
-- `MenuBuilder`: Abstract interface for menu construction
-- `MainMenuBuilder`: Concrete implementation of the menu builder
-- `Menu`: The product class that represents a complete menu
-- `MenuItem`: Class representing individual menu items (buttons) 
