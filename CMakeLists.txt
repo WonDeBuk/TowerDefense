@@ -13,25 +13,15 @@ set(ASSETS_OUTPUT_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets")
 
 # Add header files
 set(HEADERS
-    src/GUI/MenuState.hpp
-    src/GUI/MainMenuState.hpp
-    src/GUI/DictionaryMenuState.hpp
-    src/GUI/PlayMenuState.hpp
-    src/GUI/LoadGameMenuState.hpp
-    src/GUI/SettingsMenuState.hpp
-    src/GUI/MenuDirector.hpp
-    src/GUI/PagedContainer.hpp
-    src/GUI/TowerListContainer.hpp
-    src/GUI/TowerInfo.hpp
-    src/GUI/MenuItem.hpp
-    src/Utils/AssetManager.hpp
+    src/Game/Enemy.h
+    src/Game/GameManager.h
 )
 
 # Add source files
 set(SOURCES
     src/main.cpp
-    src/GUI/MenuDirector.cpp
-    ${HEADERS}
+    src/Game/Enemy.cpp
+    src/game/GameManager.cpp
 )
 
 # Create executable
