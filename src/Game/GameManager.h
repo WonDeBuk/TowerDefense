@@ -11,37 +11,37 @@
 
 class GameManager
 {
-    private:
-        Enemy** EnemyList;
-        Vector2* WayPointList;
-        size_t Clock;
-    
-        GameManager()
-        {
-            Clock = 0;
-            EnemyList = new Enemy*[MAX_ENEMY];
-            for (size_t i = 0; i < MAX_ENEMY; i++)
-            {
-                EnemyList[i] = new Enemy;
-            }
-            
-            WayPointList = new Vector2[MAX_WAYPOINT];
-            WayPointSize = 6;
+private:
+    Enemy** EnemyList;
+    Vector2* WayPointList;
+    size_t Clock;
 
-            WayPointList[0] = {100.0f, 100.0f};
-            WayPointList[1] = {500.0f, 100.0f};
-            WayPointList[2] = {500.0f, 500.0f};
-            WayPointList[3] = {1000.0f, 500.0f};
-            WayPointList[4] = {1000.0f, 100.0f};
-            WayPointList[5] = {1500.0f, 100.0f};
+    GameManager()
+    {
+        Clock = 0;
+        EnemyList = new Enemy * [MAX_ENEMY];
+        for (size_t i = 0; i < MAX_ENEMY; i++)
+        {
+            EnemyList[i] = new Enemy;
         }
-    public:
-        size_t WayPointSize;
-        static GameManager& GetInstance();
-        const size_t& GetTime() const;
-        const Vector2* GetWayPointList() const;
-        void Draw() const;
-        bool AddEnemy(const EnemyType&);
-        void Update();
-        ~GameManager();
+
+        WayPointList = new Vector2[MAX_WAYPOINT];
+        WayPointSize = 6;
+
+        WayPointList[0] = { 100.0f, 100.0f };
+        WayPointList[1] = { 500.0f, 100.0f };
+        WayPointList[2] = { 500.0f, 500.0f };
+        WayPointList[3] = { 1000.0f, 500.0f };
+        WayPointList[4] = { 1000.0f, 100.0f };
+        WayPointList[5] = { 1500.0f, 100.0f };
+    }
+public:
+    size_t WayPointSize;
+    static GameManager& GetInstance();
+    const size_t& GetTime() const;
+    const Vector2* GetWayPointList() const;
+    void Draw() const;
+    bool AddEnemy(const EnemyType&);
+    void Update();
+    ~GameManager();
 };

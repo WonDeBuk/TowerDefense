@@ -5,7 +5,9 @@
 #include <Game/GameManager.h>
 
 std::string texturePath = std::string(ASSETS_PATH) + "/textures/ui/Slime.png";
+std::string healthBarPath = std::string(ASSETS_PATH) + "/textures/ui/HealthBar.png";
 Texture2D* ZombieTexture = nullptr;
+Texture2D* HealthBar = nullptr;
 
 int main() {
     // Initialize window
@@ -14,6 +16,7 @@ int main() {
     InitWindow(screenWidth, screenHeight, "Tower Defense Game");
     SetTargetFPS(60);
     ZombieTexture = &LoadTexture(texturePath.c_str());
+    HealthBar = &LoadTexture(healthBarPath.c_str());
     GameManager::GetInstance().AddEnemy(ZOMBIE);
 
     // Main game loop

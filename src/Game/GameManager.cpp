@@ -38,6 +38,7 @@ bool GameManager::AddEnemy(const EnemyType& __Type)
             EnemyList[i]->SetEndWayPoint(WayPointList[1]);
             EnemyList[i]->SetEnemyPosition(WayPointList[0]);
             EnemyList[i]->SetCurrentWayPoint(0);
+            EnemyList[i]->SetHealth(800);
             EnemyList[i]->SetType(ZOMBIE);
             return true;
         }
@@ -63,6 +64,13 @@ void GameManager::Update()
         if (EnemyList[i]->GetEnemyType() != NONE)
         {
             EnemyList[i]->Update();
+            if (CheckCollisionPointRec(GetMousePosition(), { EnemyList[i]->GetEnemyPosition().x - 16.0f, EnemyList[i]->GetEnemyPosition().y - 16.0f, 32.0f, 32.0f }))
+            {
+                if (IsMouseButtonPressed(0))
+                {
+                    EnemyList[i]->AddDamage(15);
+                }
+            }
         }
     }
 
