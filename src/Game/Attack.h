@@ -1,32 +1,14 @@
 #pragma once
 
+#include "Game/Enemy.h"
 #include <raylib.h>
 #include <math.h>
 #include <string>
 
-enum AttackType
+enum ATTACK_TYPE
 {
-    Projectile_ARROW,
-    Projectile_BULLET,
-    NONE
-};
-
-typedef struct AttackMacro
-{
-    Texture2D* AttackMacroTexture;
-    float Speed;
-
-    AttackMacro(std::string TextureString, float SpeedValue)
-    {
-        AttackMacroTexture = &LoadTexture(TextureString.c_str());
-        Speed = SpeedValue;
-    }
-};
-
-const AttackMacro Macro[2] =
-{
-    AttackMacro(ASSETS_PATH + "textures/ui/Arrow.png", 2.0f),
-    AttackMacro(ASSETS_PATH + "textures/ui/Bullet.png", 2.0f)
+    ATTACK_NONE,
+    ZOLTRAAK
 };
 
 class Attack
@@ -34,18 +16,23 @@ class Attack
     private:
         Vector2 AttackStartPosition;
         Vector2 AttackArrivePosition;
-        Vector2 Position;
+        ATTACK_TYPE AttackType;
+        size_t TowerID;
+        size_t ShootTime;
         size_t TargetEnemy;
-        AttackType Attack_Type;
-        size_t AngleState;
     public:
-        void Draw() const;
+        Attack();
 
-        void SetAttackType(const AttackType&);
+        const ATTACK_TYPE& GetAttackType() const;
+        const size_t& GetTowerID() const;
+
+        void SetAttackStartPosition(const Vector2&);
+        void SetAttackArrivePostion(const Vector2&);
+        void SetAttackType(const ATTACK_TYPE&);
+        void SetShootTime(const size_t&);
         void SetTargetEnemy(const size_t&);
-        void SetAttackPosition(const Vector2&);
+        void SetTowerID(const size_t&);
 
         void Update();
-
-        const AttackType& GetAttackType() const;
+        void Draw() const;
 };
