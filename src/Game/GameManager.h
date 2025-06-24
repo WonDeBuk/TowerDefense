@@ -78,6 +78,9 @@ public:
     void Draw() const;
     bool AddEnemy(const ENEMY_TYPE&);
     bool AddAttack(const Vector2&, const Vector2&, const ATTACK_TYPE&, const size_t&, const size_t&);
+    void UpdateEnemies(size_t start, size_t end, Enemy** enemies);
+    void UpdateTowers(size_t start, size_t end, Tower** towers);
+    void UpdateAttacks(size_t start, size_t end, Attack** attacks);
     void Update();
     ~GameManager();
 };

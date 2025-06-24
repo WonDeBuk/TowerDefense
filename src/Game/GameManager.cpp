@@ -1,4 +1,7 @@
 #include <iostream>
+#include <thread>
+#include <vector>
+using namespace std;
 #include "GameManager.h"
 
 GameManager& GameManager::GetInstance()
@@ -102,6 +105,36 @@ bool GameManager::AddAttack(const Vector2 &__StartPosition, const Vector2 &__Arr
     return false;
 }
 
+void GameManager::UpdateEnemies(size_t start, size_t end, Enemy** enemies) {
+    for (size_t i = 0; i < end; i++)
+    {
+        if (EnemyList[i]->GetEnemyType() != ENEMY_TYPE::ENEMY_NONE)
+        {
+            EnemyList[i]->Update();
+        }
+    }
+}
+
+void GameManager::UpdateTowers(size_t start, size_t end, Tower** towers) {
+    for (size_t i = 0; i < end; i++)
+    {
+        if (TowerList[i]->GetTowerType() != TOWER_TYPE::TOWER_NONE)
+        {
+            TowerList[i]->Update();
+        }
+    }
+}
+
+void GameManager::UpdateAttacks(size_t start, size_t end, Attack** attacks) {
+    for (size_t i = 0; i < end; i++)
+    {
+        if (AttackList[i]->GetAttackType() != ATTACK_TYPE::ATTACK_NONE)
+        {
+            AttackList[i]->Update();
+        }
+    }
+}
+
 void GameManager::Update()
 {
     if (Clock > static_cast<size_t>(10e10))
@@ -114,28 +147,33 @@ void GameManager::Update()
         GameManager::GetInstance().AddEnemy(ZOMBIE);
     }
 
-    for (int i = 0; i < MAX_ENEMY; i++)
-    {
-        if (EnemyList[i]->GetEnemyType() != ENEMY_TYPE::ENEMY_NONE)
-        {
-            EnemyList[i]->Update();
-        }
+    const int all_threads = 4;
+    vector<thread> threads;
+
+    size_t chunkSize = MAX_ENEMY / all_threads;
+    for (size_t i = 0; i < all_threads; i++) {
+        size_t start = i * chunkSize;
+        size_t end = (i == all_threads - 1) ? MAX_ENEMY : start + chunkSize;
+        threads.emplace_back(&GameManager::UpdateEnemies, this, start, end, EnemyList);
     }
 
-    for (size_t i = 0; i < MAX_TOWER; i++)
-    {
-        if (TowerList[i]->GetTowerType() != TOWER_TYPE::TOWER_NONE)
-        {
-            TowerList[i]->Update();
-        }
+    chunkSize = MAX_TOWER / all_threads;
+    for (size_t i = 0; i < all_threads; i++) {
+        size_t start = i * chunkSize;
+        size_t end = (i == all_threads - 1) ? MAX_TOWER : start + chunkSize;
+        threads.emplace_back(&GameManager::UpdateTowers, this, start, end, TowerList);
     }
 
-    for (int i = 0; i < MAX_ATTACK; i++)
-    {
-        if (AttackList[i]->GetAttackType() != ATTACK_TYPE::ATTACK_NONE)
-        {
-            AttackList[i]->Update();
-        }
+    chunkSize = MAX_ATTACK / all_threads;
+    for (size_t i = 0; i < all_threads; i++) {
+        size_t start = i * chunkSize;
+        size_t end = (i == all_threads - 1) ? MAX_ATTACK : start + chunkSize;
+        threads.emplace_back(&GameManager::UpdateAttacks, this, start, end, AttackList);
+    }
+
+    // Join all threads
+    for (auto& thread : threads) {
+        thread.join();
     }
 
     Clock++;
