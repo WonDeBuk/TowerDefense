@@ -80,7 +80,7 @@ void Enemy::Draw() const
     if (Type == ENEMY_TYPE::ZOMBIE)
     {
         // DrawRectangleLinesEx({(int) EnemyPosition.x - 24.0f, (int) EnemyPosition.y - 24.0f, 48.0f, 48.0f}, 1.0f, WHITE);
-        DrawTexturePro(*ZombieTexture, {AnimationState * 32.0f, AnimationState / 3 * 32.0f, 32.0f, 32.0f}, {(int) EnemyPosition.x - 24.0f, (int) EnemyPosition.y - 24.0f, 48.0f, 48.0f}, {0.0f, 0.0f}, 0.0f, WHITE);
+        DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/Slime.png"), {AnimationState * 32.0f, AnimationState / 3 * 32.0f, 32.0f, 32.0f}, {(int) EnemyPosition.x - 24.0f, (int) EnemyPosition.y - 24.0f, 48.0f, 48.0f}, {0.0f, 0.0f}, 0.0f, WHITE);
         DrawHealth();
     }
 }
@@ -92,7 +92,7 @@ void Enemy::DrawHealth() const
         return;
     }
 
-    DrawTexturePro(*HealthBar, {(5 - static_cast<size_t>((float) Health / ((float) 800 / 5))) * 48.0f, 0.0f, 48.0f, 16.0f}, { (int) EnemyPosition.x - 32.0f,(int) EnemyPosition.y - 36.0f, 64.0f, 16.0f }, {0.0f, 0.0f}, 0.0f, WHITE);
+    DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/HealthBar.png"), {(5 - static_cast<size_t>((float) Health / ((float) 800 / 5))) * 48.0f, 0.0f, 48.0f, 16.0f}, { (int) EnemyPosition.x - 32.0f,(int) EnemyPosition.y - 36.0f, 64.0f, 16.0f }, {0.0f, 0.0f}, 0.0f, WHITE);
 }
 
 void Enemy::Update()

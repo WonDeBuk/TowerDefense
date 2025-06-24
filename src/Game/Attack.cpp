@@ -67,10 +67,10 @@ void Attack::Draw() const
             //DrawRectangleLinesEx({0.0f, -16.0f, 32.0f, 32.0f}, 1.0f, WHITE);
             //DrawRectangleLinesEx({32.0f, -16.0f, (Distance - 64.0f) * ((float) ShootTime / 100), 32.0f}, 1.0f, WHITE);
             //DrawRectangleLinesEx({(Distance - 64.0f) * ((float) ShootTime / 100) + 32.0f, -16.0f, 32.0f, 32.0f}, 1.0f, WHITE);
-            DrawTexturePro(*Aura, {0.0f, 0.0f, 64.0f, 160.0f}, {0.0f, -24.0f, 24.0f, 60.0f}, {0.0f, 8.0f}, 0.0f, WHITE);
-            DrawTexturePro(*Laser, {0.0f, (Time / 5 % 8) * 512.0f, 192.0f, 512.0f}, {0.0f, 0.0f, 32.0f, 32.0f}, {0.0f, 16.0f}, 0.0f, WHITE);
-            DrawTexturePro(*Laser, {192.0f, (Time / 5 % 8) * 512.0f, 224.0f, 512.0f}, {32.0f, 0.0f, (Distance - 64.0f) * ((float) ShootTime / 40), 32.0f}, {0.0f, 16.0f}, 0.0f, WHITE);
-            DrawTexturePro(*Laser, {416.0f, (Time / 5 % 8) * 512.0f, 184.0f, 512.0f}, {(Distance - 64.0f) * ((float) ShootTime / 40) + 32.0f, 0.0f, 32.0f, 32.0f}, {0.0f, 16.0f}, 0.0f, WHITE);
+            DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/Aura.png"), {0.0f, 0.0f, 64.0f, 160.0f}, {0.0f, -24.0f, 24.0f, 60.0f}, {0.0f, 8.0f}, 0.0f, WHITE);
+            DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/Laser.png"), {0.0f, (Time / 5 % 8) * 512.0f, 192.0f, 512.0f}, {0.0f, 0.0f, 32.0f, 32.0f}, {0.0f, 16.0f}, 0.0f, WHITE);
+            DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/Laser.png"), {192.0f, (Time / 5 % 8) * 512.0f, 224.0f, 512.0f}, {32.0f, 0.0f, (Distance - 64.0f) * ((float) ShootTime / 40), 32.0f}, {0.0f, 16.0f}, 0.0f, WHITE);
+            DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/Laser.png"), {416.0f, (Time / 5 % 8) * 512.0f, 184.0f, 512.0f}, {(Distance - 64.0f) * ((float) ShootTime / 40) + 32.0f, 0.0f, 32.0f, 32.0f}, {0.0f, 16.0f}, 0.0f, WHITE);
             rlPopMatrix();
         }
         break;

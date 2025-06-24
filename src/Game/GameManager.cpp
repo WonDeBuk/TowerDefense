@@ -1,14 +1,6 @@
 #include <iostream>
 #include "GameManager.h"
 
-extern Texture2D* Map;
-extern Texture2D* Frieren;
-extern Texture2D* Fern;
-extern Texture2D* Leaves;
-int State1 = 0;
-int State2 = 0;
-int State3 = 0;
-
 GameManager& GameManager::GetInstance()
 {
     static GameManager Instance;
@@ -42,9 +34,9 @@ Tower ** GameManager::GetTowerList() const
 void GameManager::Draw() const
 {
     Vector2 mousePos = GetMousePosition();
-    DrawTexturePro(*Map, { 0.0f, 0.0f, 800.0f, 480.0f }, { 0.0f, 0.0f, 1600.0f, 960.0f }, { 0.0f, 0.0f }, 0.0f, WHITE);
+    DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/Map.png"), { 0.0f, 0.0f, 800.0f, 480.0f }, { 0.0f, 0.0f, 1600.0f, 960.0f }, { 0.0f, 0.0f }, 0.0f, WHITE);
     // DrawTexturePro(*Frieren, { State1 * 64.0f, 0.0f, 64.0f, 64.0f }, { 560.0f, 435.0f, 128.0f, 128.0f }, {0.0f, 0.0f}, 0.0f, WHITE);
-    DrawTexturePro(*Fern, { State2 * 64.0f, 0.0f, 64.0f, 64.0f }, { 297.0f, 591.0f, 128.0f, 128.0f }, {0.0f, 0.0f}, 0.0f, WHITE);
+    DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/Fern.png"), { 0.0f, 0.0f, 64.0f, 64.0f }, { 297.0f, 591.0f, 128.0f, 128.0f }, {0.0f, 0.0f}, 0.0f, WHITE);
     for (int i = 0; i < MAX_ENEMY; i++)
     {
         if (EnemyList[i]->GetEnemyType() != ENEMY_TYPE::ENEMY_NONE)

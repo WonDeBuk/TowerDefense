@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Utils/AssetManager.h"
+
 #include "Enemy.h"
 #include "Attack.h"
 #include "Tower.h"

@@ -123,10 +123,10 @@ void Tower::Draw() const
         switch (SpriteState)
         {
         case IDLE:
-            DrawTexturePro(*Frieren, {((GameManager::GetInstance().GetTime() / 5) % 9) * 64.0f, 0.0f, 64.0f, 80.0f}, {TowerPosition.x - 64.0f, TowerPosition.y - 100.0f, 128.0f, 160.0f}, {0.0f, 0.0f}, 0.0f, WHITE);
+            DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/Frieren.png"), {((GameManager::GetInstance().GetTime() / 5) % 9) * 64.0f, 0.0f, 64.0f, 80.0f}, {TowerPosition.x - 64.0f, TowerPosition.y - 100.0f, 128.0f, 160.0f}, {0.0f, 0.0f}, 0.0f, WHITE);
             break;
         case STAFF_CAST:
-            DrawTexturePro(*Frieren, {((GameManager::GetInstance().GetTime() / 5) % 9) * 64.0f, 80.0f, 64.0f, 80.0f}, {TowerPosition.x - 64.0f, TowerPosition.y - 100.0f, 128.0f, 160.0f}, {0.0f, 0.0f}, 0.0f, WHITE);
+            DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/Frieren.png"), {((GameManager::GetInstance().GetTime() / 5) % 9) * 64.0f, 80.0f, 64.0f, 80.0f}, {TowerPosition.x - 64.0f, TowerPosition.y - 100.0f, 128.0f, 160.0f}, {0.0f, 0.0f}, 0.0f, WHITE);
             break;
         default:
             break;
