@@ -11,12 +11,13 @@ class AssetManager
 private:
     AssetManager() = default;
 
-    static std::string GetAssetPath(const std::string& __RelativePath);
+    
 
     std::unordered_map<std::string, Texture2D> TextureCache;
     std::unordered_map<std::string, Font> FontCache;
     std::unordered_map<std::string, Sound> SoundCache;
 public:
+    static std::string GetAssetPath(const std::string& __RelativePath);
     static AssetManager& GetInstance();
 
     const Texture2D& LoadTexture(const std::string&);

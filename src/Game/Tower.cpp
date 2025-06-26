@@ -95,7 +95,7 @@ void Tower::GunUpdate()
         }
 
         Enemy** EnemyList = GameManager::GetInstance().GetEnemyList();
-        GameManager::GetInstance().AddAttack({TowerPosition.x + 50.0f, TowerPosition.y - 75.0f}, EnemyList[TargetEnemy]->GetEnemyPosition(), ATTACK_TYPE::ZOLTRAAK, TargetEnemy, TowerID);
+        GameManager::GetInstance().AddAttack({TowerPosition.x + 50.0f, TowerPosition.y - 75.0f}, EnemyList[TargetEnemy]->GetEnemyPosition(), ATTACK_TYPE::MISSILE, TargetEnemy, TowerID);
         SpriteState = STAFF_CAST;
         TowerCooldown = 100;
     }

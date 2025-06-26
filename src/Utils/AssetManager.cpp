@@ -69,8 +69,7 @@ const Sound& AssetManager::LoadSound(const std::string& __Path)
 
 void AssetManager::UnloadTexture(const std::string& __Path)
 {
-    std::string FullPath = GetAssetPath("textures/" + __Path);
-    auto TempTexture = TextureCache.find(FullPath);
+    auto TempTexture = TextureCache.find(__Path);
 
     if (TempTexture != TextureCache.end())
     {
@@ -85,8 +84,7 @@ void AssetManager::UnloadTexture(const std::string& __Path)
 
 void AssetManager::UnloadFont(const std::string& __Path)
 {
-    std::string FullPath = GetAssetPath("fonts/" + __Path);
-    auto TempFont = FontCache.find(FullPath);
+    auto TempFont = FontCache.find(__Path);
 
     if (TempFont != FontCache.end())
     {
@@ -101,8 +99,7 @@ void AssetManager::UnloadFont(const std::string& __Path)
 
 void AssetManager::UnloadSound(const std::string& __Path)
 {
-    std::string FullPath = GetAssetPath("sounds/" + __Path);
-    auto TempSound = SoundCache.find(FullPath);
+    auto TempSound = SoundCache.find(__Path);
 
     if (TempSound != SoundCache.end())
     {

@@ -1,25 +1,34 @@
-#include "raylib.h"
-// #include "GUI/MenuDirector.hpp"
-// #include <memory>
-#include <string>
-#include <Game/GameManager.h>
+﻿#include "raylib.h"
 #include "rlgl.h"
 
-int main() {
-    const int screenWidth = 1600;
-    const int screenHeight = 960;
-    InitWindow(screenWidth, screenHeight, "Tower Defense Game");
+#include "GUI/Director.h"
+#include "Utils/AssetManager.h"
+#include "Game/GameManager.h"
+
+#include <string>
+#include <iostream>
+#include <thread>
+
+#define SCREEN_WIDTH 1600
+#define SCREEN_HEIGHT 960
+
+int main()
+{
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Tower Defense");
     SetTargetFPS(60);
 
-    while (!WindowShouldClose()) {
+    Director::GetInstance().TransitionTo(RENDER_STATE::MAIN);
+    while (!WindowShouldClose())
+    {
         BeginDrawing();
         ClearBackground(RAYWHITE);
-        GameManager::GetInstance().Draw();
-
-        GameManager::GetInstance().Update();
+        Director::GetInstance().Draw();
         EndDrawing();
+        Director::GetInstance().Update();
     }
+    Director::GetInstance().TransitionTo(RENDER_STATE::WAITING);
 
-    CloseWindow();
     return 0;
+    
 }
+

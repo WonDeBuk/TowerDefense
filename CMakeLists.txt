@@ -14,20 +14,46 @@ set(ASSETS_OUTPUT_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets")
 # Add header files
 set(HEADERS
     src/Utils/AssetManager.h
+    src/Utils/MathUtils.hpp
     src/Game/GameManager.h
     src/Game/Enemy.h
     src/Game/Attack.h
     src/Game/Tower.h
+    src/Utils/UnicodeText.hpp
+    src/GUI/Element/PagedContainer.h
+    src/GUI/Element/ChampionListContainer.h
+    src/GUI/Director.h
+    src/GUI/RenderState.h
+    src/GUI/State/DictionaryState.h
+    src/GUI/State/LoadGameState.h
+    src/GUI/State/MainState.h
+    src/GUI/State/PlayState.h
+    src/GUI/State/SettingState.h
+    src/GUI/State/WaitingState.h
+    src/GUI/State/GameState.h
 )
 
 # Add source files
 set(SOURCES
     src/main.cpp
     src/Utils/AssetManager.cpp
+    src/Utils/MathUtils.hpp
     src/game/GameManager.cpp
-    src/Game/Attack.cpp
     src/Game/Enemy.cpp
+    src/Game/Attack.cpp
     src/Game/Tower.cpp
+    src/Utils/UnicodeText.hpp
+    src/GUI/Element/PagedContainer.h
+    src/GUI/Element/ChampionListContainer.cpp
+    src/GUI/Director.cpp
+    src/GUI/RenderState.cpp
+    src/GUI/State/DictionaryState.cpp
+    src/GUI/State/LoadGameState.cpp
+    src/GUI/State/MainState.cpp
+    src/GUI/State/PlayState.cpp
+    src/GUI/State/SettingState.cpp
+    src/GUI/State/WaitingState.cpp
+    src/GUI/State/GameState.cpp
 )
 
 # Create executable

@@ -1,7 +1,9 @@
 #include "Game/Attack.h"
 #include "rlgl.h"
+#include "././Utils/MathUtils.hpp"
 #include "Game/GameManager.h"
 #include "Attack.h"
+#include <vector>
 
 #include <iostream>
 
@@ -64,6 +66,7 @@ void Attack::Draw() const
             rlPushMatrix();
             rlTranslatef(AttackStartPosition.x, AttackStartPosition.y, 0.0f);
             rlRotatef(Angle * 180.0f / PI, 0.0f, 0.0f, 1.0f);
+            
             //DrawRectangleLinesEx({0.0f, -16.0f, 32.0f, 32.0f}, 1.0f, WHITE);
             //DrawRectangleLinesEx({32.0f, -16.0f, (Distance - 64.0f) * ((float) ShootTime / 100), 32.0f}, 1.0f, WHITE);
             //DrawRectangleLinesEx({(Distance - 64.0f) * ((float) ShootTime / 100) + 32.0f, -16.0f, 32.0f, 32.0f}, 1.0f, WHITE);
@@ -73,6 +76,10 @@ void Attack::Draw() const
             DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/Laser.png"), {416.0f, (Time / 5 % 8) * 512.0f, 184.0f, 512.0f}, {(Distance - 64.0f) * ((float) ShootTime / 40) + 32.0f, 0.0f, 32.0f, 32.0f}, {0.0f, 16.0f}, 0.0f, WHITE);
             rlPopMatrix();
         }
+        break;
+    case ATTACK_TYPE::PROJECTILE:
+        break;
+    case ATTACK_TYPE::MISSILE:
         break;
     default:
         break;
@@ -99,6 +106,10 @@ void Attack::Update()
                 (GameManager::GetInstance().GetTowerList())[TowerID]->SetTowerSpriteState(TOWER_SPRITE_STATE::IDLE);
             }
         }
+        break;
+    case ATTACK_TYPE::PROJECTILE:
+        break;
+    case ATTACK_TYPE::MISSILE:
         break;
     default:
         break;

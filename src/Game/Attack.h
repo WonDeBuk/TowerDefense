@@ -4,16 +4,20 @@
 #include <raylib.h>
 #include <math.h>
 #include <string>
+#include <vector>
 
 enum ATTACK_TYPE
 {
     ATTACK_NONE,
-    ZOLTRAAK
+    ZOLTRAAK,
+    PROJECTILE,
+    MISSILE
 };
 
 class Attack
 {
     private:
+        std::vector<Vector2> AttackPath;
         Vector2 AttackStartPosition;
         Vector2 AttackArrivePosition;
         ATTACK_TYPE AttackType;

@@ -14,7 +14,6 @@
 #define ENEMY_SPAWN_TIME 100
 #define MAP_WIDTH 50
 #define MAP_HEIGHT 30
-
 class Attack;
 
 class GameManager
@@ -75,12 +74,12 @@ public:
     const size_t& GetWayPointSize() const;
     Enemy** GetEnemyList() const;
     Tower** GetTowerList() const;
+    Attack** GetAttackList() const;
     void Draw() const;
     bool AddEnemy(const ENEMY_TYPE&);
     bool AddAttack(const Vector2&, const Vector2&, const ATTACK_TYPE&, const size_t&, const size_t&);
-    void UpdateEnemies(size_t start, size_t end, Enemy** enemies);
-    void UpdateTowers(size_t start, size_t end, Tower** towers);
-    void UpdateAttacks(size_t start, size_t end, Attack** attacks);
+    void UpdateEnemy();
+    void UpdateTower();
+    void UpdateAttack();
     void Update();
-    ~GameManager();
 };
