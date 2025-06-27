@@ -5,11 +5,11 @@
 #include <iostream>
 #include <unordered_map>
 #include <fstream>
-#include <sstream>
 #include "AssetManager.h"
 
 enum Language
 {
+	NONE,
 	ENGLISH,
 	VIETNAMESE,
 	CHINESE,

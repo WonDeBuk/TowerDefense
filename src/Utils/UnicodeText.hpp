@@ -9,10 +9,9 @@ static void DrawTextJustified(Font font, const char* text, Vector2 position, flo
 {
     if (lineSpacing < 0.0f) lineSpacing = 0.2f * fontSize;
 
-    //if (font.texture.id == 0) font = GetFontDefault();  // Security check in case of not valid font
+    if (font.texture.id == 0) font = GetFontDefault();  // Security check in case of not valid font
 
     int size = TextLength(text);    // Total size in bytes of the text, scanned by codepoints in loop
-    std::cout << size << std::endl;
 
     float textOffsetY = 0;          // Offset between lines (on linebreak '\n')
     float textOffsetX = 0.0f;       // Offset X to next character to draw
@@ -37,20 +36,19 @@ static void DrawTextJustified(Font font, const char* text, Vector2 position, flo
         int codepointByteCount = 0;
         int codepoint = GetCodepointNext(&text[i], &codepointByteCount);
         int index = GetGlyphIndex(font, codepoint);
-        //std::cout << codepoint << ' ';
         
         if (codepoint != '\n' && codepoint != ' ')
         {
             glyphWidth = ((font.glyphs[index].advanceX == 0) ? font.recs[index].width : font.glyphs[index].advanceX) * scaleFactor;
 
-            if (glyphWidth > width) return;
+            if (glyphWidth > width)
+            {
+                return;
+            }
 
-            //std::cout << textOffsetX + totalWidth + glyphWidth << '&' << width << "\n";
             if (textOffsetX + totalWidth + glyphWidth > width && lineBuffer.size() == 0) //word splitting should only be considered when it is the only word on that line
             {
                 totalWidth = 0.0f;
-                std::cout << "one word ";
-                //std::cout << "in\n";
                 lineBuffer.push_back(wordBuffer);
                 wordBuffer.clear();
                 draw = true;
@@ -58,7 +56,6 @@ static void DrawTextJustified(Font font, const char* text, Vector2 position, flo
 
             else if (textOffsetX + totalWidth + glyphWidth > width && lineBuffer.size() > 0) //end line if there is at least 2 words with one exceeding the width
             {
-                std::cout << "two words ";
                 float remainingSpace = width - textOffsetX;
                 spaceMargin = spacing + ((lineBuffer.size() == 1) ? 0.0f : remainingSpace / (lineBuffer.size() - 1));
                 draw = true;
@@ -66,7 +63,6 @@ static void DrawTextJustified(Font font, const char* text, Vector2 position, flo
 
             else
             {
-                std::cout << "none ";
                 i += codepointByteCount;
                 totalWidth += glyphWidth + spacing;
                 wordBuffer.push_back(codepoint);
@@ -75,7 +71,6 @@ static void DrawTextJustified(Font font, const char* text, Vector2 position, flo
 
         else if (codepoint == ' ')
         {
-            std::cout << "space ";
             i += codepointByteCount;
             textOffsetX += totalWidth;
             totalWidth = 0.0f;
@@ -87,10 +82,8 @@ static void DrawTextJustified(Font font, const char* text, Vector2 position, flo
 
         else if (codepoint == '\n')
         {
-            //std::cout << "in\n";
             //NOTE!: if \n is used in the string, make sure that it is not follow by a space
             //otherwise, this will break
-            std::cout << "endline ";
             i += codepointByteCount;
             textOffsetX += totalWidth;
             totalWidth = 0.0f;
@@ -134,8 +127,6 @@ static void DrawTextJustified(Font font, const char* text, Vector2 position, flo
 
     float remainingSpace = width - textOffsetX;
     spaceMargin = spacing + ((lineBuffer.size() == 1) ? 0.0f : remainingSpace / (lineBuffer.size() - 1));
-    std::cout << width << ' ';
-    //std::cout << remainingSpace << '|' << textOffsetX << '|' << spaceMargin * (lineBuffer.size() - 1) << std::endl;
 
     textOffsetX = 0.0f;
     int lineSize = lineBuffer.size();
@@ -151,7 +142,6 @@ static void DrawTextJustified(Font font, const char* text, Vector2 position, flo
         }
         textOffsetX += spaceMargin;
     }
-    std::cout << "\n-----------------\n";
 }
 
 

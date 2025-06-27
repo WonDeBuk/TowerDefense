@@ -4,7 +4,7 @@ Next "Next"
 
 MAIN
 Play "Play"
-Settings "Settings"
+Setting "Settings"
 Dictionary "Dictionary"
 Load "Load"
 

@@ -40,8 +40,6 @@ std::string LanguageManager::LanguageToFile(const Language & lang)
 
 void LanguageManager::LoadLanguage()
 {
-	currentLanguage = ENGLISH; //this will be user data - later tho
-
 	std::ifstream fin((std::string)ASSETS_PATH + "/languages/" + LanguageToFile(currentLanguage));
 	std::cout << (std::string)"Language Load Status: " + ((fin.is_open()) ? "Successful" : "Failed") << "\n";
 	if (!fin.is_open()) return;
@@ -54,12 +52,15 @@ void LanguageManager::LoadLanguage()
 		std::string fieldName = toGet;
 		while (getline(fin, toGet) && !toGet.empty())
 		{
-			std::stringstream str(toGet);
 			std::string memberName;
-			str >> memberName;
+			int index = 0;
+			while (toGet[index] != ' ') memberName += toGet[index++];
+			
+			index += 2;
 			std::string memberValue;
-			str >> memberValue;
-			translator[fieldName][memberName] = memberValue.substr(1, memberValue.length() - 2);	
+			while (toGet[index] != '"') memberValue += toGet[index++];
+			
+			translator[fieldName][memberName] = memberValue;
 		}
 	}
 	fin.close();
@@ -75,6 +76,12 @@ void LanguageManager::ChangeLanguage(const Language& lang)
 LanguageManager& LanguageManager::GetInstance()
 {
 	static LanguageManager Instance;
+	if (Instance.currentLanguage == NONE)
+	{
+		Instance.currentLanguage = ENGLISH;
+		Instance.LoadLanguage();
+		std::cout << "instance ";
+	}
 	return Instance;
 }
 
