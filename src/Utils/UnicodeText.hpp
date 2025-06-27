@@ -2,15 +2,17 @@
 
 #include "raylib.h"
 #include <vector>
+#include <iostream>
 #include <string>
 
 static void DrawTextJustified(Font font, const char* text, Vector2 position, float width, float fontSize, float spacing, Color tint, float lineSpacing = -1.0f)
 {
     if (lineSpacing < 0.0f) lineSpacing = 0.2f * fontSize;
 
-    if (font.texture.id == 0) font = GetFontDefault();  // Security check in case of not valid font
+    //if (font.texture.id == 0) font = GetFontDefault();  // Security check in case of not valid font
 
     int size = TextLength(text);    // Total size in bytes of the text, scanned by codepoints in loop
+    std::cout << size << std::endl;
 
     float textOffsetY = 0;          // Offset between lines (on linebreak '\n')
     float textOffsetX = 0.0f;       // Offset X to next character to draw
@@ -24,24 +26,30 @@ static void DrawTextJustified(Font font, const char* text, Vector2 position, flo
 
     float glyphWidth = 0.0f;
     float spaceMargin = 0.0f;
+    int incre = 0;
 
     float totalWidth = 0.0f; //total width of a whole word
 
     for (int i = 0; i < size;)
     {
+
         // Get next codepoint from byte string and glyph index in font
         int codepointByteCount = 0;
-        int codepoint = GetCodepoint(&text[i], &codepointByteCount);
+        int codepoint = GetCodepointNext(&text[i], &codepointByteCount);
         int index = GetGlyphIndex(font, codepoint);
-
         //std::cout << codepoint << ' ';
+        
         if (codepoint != '\n' && codepoint != ' ')
         {
             glyphWidth = ((font.glyphs[index].advanceX == 0) ? font.recs[index].width : font.glyphs[index].advanceX) * scaleFactor;
 
+            if (glyphWidth > width) return;
+
             //std::cout << textOffsetX + totalWidth + glyphWidth << '&' << width << "\n";
             if (textOffsetX + totalWidth + glyphWidth > width && lineBuffer.size() == 0) //word splitting should only be considered when it is the only word on that line
             {
+                totalWidth = 0.0f;
+                std::cout << "one word ";
                 //std::cout << "in\n";
                 lineBuffer.push_back(wordBuffer);
                 wordBuffer.clear();
@@ -50,6 +58,7 @@ static void DrawTextJustified(Font font, const char* text, Vector2 position, flo
 
             else if (textOffsetX + totalWidth + glyphWidth > width && lineBuffer.size() > 0) //end line if there is at least 2 words with one exceeding the width
             {
+                std::cout << "two words ";
                 float remainingSpace = width - textOffsetX;
                 spaceMargin = spacing + ((lineBuffer.size() == 1) ? 0.0f : remainingSpace / (lineBuffer.size() - 1));
                 draw = true;
@@ -57,6 +66,7 @@ static void DrawTextJustified(Font font, const char* text, Vector2 position, flo
 
             else
             {
+                std::cout << "none ";
                 i += codepointByteCount;
                 totalWidth += glyphWidth + spacing;
                 wordBuffer.push_back(codepoint);
@@ -65,6 +75,7 @@ static void DrawTextJustified(Font font, const char* text, Vector2 position, flo
 
         else if (codepoint == ' ')
         {
+            std::cout << "space ";
             i += codepointByteCount;
             textOffsetX += totalWidth;
             totalWidth = 0.0f;
@@ -79,7 +90,7 @@ static void DrawTextJustified(Font font, const char* text, Vector2 position, flo
             //std::cout << "in\n";
             //NOTE!: if \n is used in the string, make sure that it is not follow by a space
             //otherwise, this will break
-
+            std::cout << "endline ";
             i += codepointByteCount;
             textOffsetX += totalWidth;
             totalWidth = 0.0f;
@@ -117,14 +128,13 @@ static void DrawTextJustified(Font font, const char* text, Vector2 position, flo
             textOffsetX = 0.0f;
         }
     }
-
     textOffsetX += totalWidth;
     lineBuffer.push_back(wordBuffer);
     wordBuffer.clear();
 
     float remainingSpace = width - textOffsetX;
     spaceMargin = spacing + ((lineBuffer.size() == 1) ? 0.0f : remainingSpace / (lineBuffer.size() - 1));
-    //std::cout << width << ' ';
+    std::cout << width << ' ';
     //std::cout << remainingSpace << '|' << textOffsetX << '|' << spaceMargin * (lineBuffer.size() - 1) << std::endl;
 
     textOffsetX = 0.0f;
@@ -141,7 +151,9 @@ static void DrawTextJustified(Font font, const char* text, Vector2 position, flo
         }
         textOffsetX += spaceMargin;
     }
+    std::cout << "\n-----------------\n";
 }
+
 
 static void DrawTextBoxed(Font font, const char* text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint);   // Draw text using font inside rectangle limits
 static void DrawTextBoxedSelectable(Font font, const char* text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint, int selectStart, int selectLength, Color selectTint, Color selectBackTint);    // Draw text using font inside rectangle limits with support for text selection
