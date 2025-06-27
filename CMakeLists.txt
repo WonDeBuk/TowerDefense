@@ -13,6 +13,7 @@ set(ASSETS_OUTPUT_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets")
 
 # Add header files
 set(HEADERS
+    src/Utils/LanguageManager.h
     src/Utils/AssetManager.h
     src/Utils/MathUtils.hpp
     src/Game/GameManager.h
@@ -35,6 +36,7 @@ set(HEADERS
 
 # Add source files
 set(SOURCES
+    src/Utils/LanguageManager.cpp
     src/main.cpp
     src/Utils/AssetManager.cpp
     src/Utils/MathUtils.hpp
