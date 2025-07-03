@@ -8,7 +8,7 @@ private:
 	Rectangle SkipButton;
 	unsigned short CurrentWave;
 	unsigned short CurrentEnemy;
-	size_t IntermissionTime;
+	bool IntermissionTime;
 	size_t WaveTime;
 	WaveLayout* CurrentLayout;
 
@@ -16,7 +16,7 @@ private:
 		SkipButton = { 10, 300, 100, 40 };
 		CurrentWave = 0;
 		CurrentEnemy = 0;
-		IntermissionTime = 15 * 60;
+		IntermissionTime = true;
 		WaveTime = 0;
 		CurrentLayout = nullptr;
 	}

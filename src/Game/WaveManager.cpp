@@ -21,15 +21,14 @@ bool WaveManager::Invoke() {
 	if (CurrentWave >= CurrentLayout->GetMaxWave()) return false;
 	CurrentEnemy = 0;
 	WaveTime = 0;
-	IntermissionTime = 15 * GetFPS();
+	IntermissionTime = true;
 	return true;
 }
 
 void WaveManager::Update() {
-	if (IntermissionTime > 0) {
-		IntermissionTime--;
+	if (IntermissionTime) {
 		if (CheckCollisionPointRec(GetMousePosition(), SkipButton) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-			IntermissionTime = 0;
+			IntermissionTime = false;
 		}
 		return;
 	} 
@@ -40,7 +39,7 @@ void WaveManager::Update() {
 
 	if (CurrentWave >= CurrentLayout->GetMaxWave()) return;
 	std::cout << WaveTime << ' ';
-	if (CurrentLayout->GetIndexLayout(CurrentWave)[CurrentEnemy].Time == WaveTime) {
+	while (CurrentLayout->GetIndexLayout(CurrentWave)[CurrentEnemy].Time <= WaveTime && CurrentEnemy < CurrentLayout->GetMaxEnemyInWave(CurrentWave)) {
 		GameManager::GetInstance().AddEnemy(CurrentLayout->GetIndexLayout(CurrentWave)[CurrentEnemy].Type);
 		CurrentEnemy++;
 	}
