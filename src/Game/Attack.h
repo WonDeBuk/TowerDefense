@@ -6,17 +6,43 @@
 #include <string>
 #include <vector>
 
-enum ATTACK_TYPE
-{
+enum AttackType {
+    ATTACK_BULLET,
     ATTACK_NONE,
     ZOLTRAAK,
     PROJECTILE,
     MISSILE
 };
 
+class Attack {
+protected:
+    AttackType Type;
+
+    size_t Damage;
+    size_t Speed;
+    
+    Vector2 Origin;
+    Vector2 Destination;
+    double Lifespan;
+
+    size_t ID;
+public:
+    Attack();
+    virtual ~Attack();
+
+    virtual void SetID(const size_t&);
+    virtual void SetOrigin(const Vector2&);
+    virtual void SetDestination(const Vector2&);
+    virtual void Update() = 0;
+    virtual void Draw() = 0;
+    virtual void OnExpired() = 0;
+    virtual void Die();
+};
+
+/*
 class Attack
 {
-    private:
+    protected:
         std::vector<Vector2> AttackPath;
         Vector2 AttackStartPosition;
         Vector2 AttackArrivePosition;
@@ -24,6 +50,8 @@ class Attack
         size_t TowerID;
         size_t ShootTime;
         size_t TargetEnemy;
+
+        size_t ID;
     public:
         Attack();
 
@@ -40,3 +68,4 @@ class Attack
         void Update();
         void Draw() const;
 };
+*/

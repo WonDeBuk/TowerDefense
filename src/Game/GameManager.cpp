@@ -1,16 +1,20 @@
-#include <iostream>
 #include "GameManager.h"
+#include "WaveManager.h"
 #include <thread>
+#include <string>
+#include <iostream>
+
+GameManager::~GameManager() {
+    for (size_t i = 0; i < MAX_ENEMY; i++) {
+        if (EnemyUsed[i] == true)
+            DeallocateEnemy(i);
+    }
+}
 
 GameManager& GameManager::GetInstance()
 {
     static GameManager Instance;
     return Instance;
-}
-
-const size_t &GameManager::GetTime() const
-{
-    return Clock;
 }
 
 const Vector2* GameManager::GetWayPointList() const
@@ -23,135 +27,82 @@ const size_t& GameManager::GetWayPointSize() const
     return WayPointSize;
 }
 
-Enemy ** GameManager::GetEnemyList() const
-{
+const char(&GameManager::GetEnemyList() const)[MAX_ENEMY][sizeof(Enemy)] {
     return EnemyList;
 }
 
-Tower ** GameManager::GetTowerList() const
-{
-    return TowerList;
+const bool(&GameManager::GetEnemyUsed() const)[MAX_ENEMY] {
+    return EnemyUsed;
 }
-Attack** GameManager::GetAttackList() const
-{
-    return AttackList;
-}
-void GameManager::Draw() const
+
+void GameManager::Draw()
 {
     Vector2 mousePos = GetMousePosition();
     DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/Map.png"), { 0.0f, 0.0f, 800.0f, 480.0f }, { 0.0f, 0.0f, 1600.0f, 960.0f }, { 0.0f, 0.0f }, 0.0f, WHITE);
-    // DrawTexturePro(*Frieren, { State1 * 64.0f, 0.0f, 64.0f, 64.0f }, { 560.0f, 435.0f, 128.0f, 128.0f }, {0.0f, 0.0f}, 0.0f, WHITE);
-    DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/Fern.png"), { 0.0f, 0.0f, 64.0f, 64.0f }, { 297.0f, 591.0f, 128.0f, 128.0f }, {0.0f, 0.0f}, 0.0f, WHITE);
-    for (int i = 0; i < MAX_ENEMY; i++)
-    {
-        if (EnemyList[i]->GetEnemyType() != ENEMY_TYPE::ENEMY_NONE)
-        {
-            EnemyList[i]->Draw();
-        }
-    }
-    
-    for (size_t i = 0; i < MAX_TOWER; i++)
-    {
-        if (TowerList[i]->GetTowerType() != TOWER_TYPE::TOWER_NONE)
-        {
-            TowerList[i]->Draw();
-        }
-    }
-    
 
-    for (int i = 0; i < MAX_ATTACK; i++)
-    {
-        if (AttackList[i]->GetAttackType() != ATTACK_TYPE::ATTACK_NONE)
-        {
-            AttackList[i]->Draw();
+    for (size_t i = 0; i < MAX_ENEMY; i++) {
+        if (EnemyUsed[i] == true) {
+            reinterpret_cast<Enemy*>(EnemyList[i])->Draw();
         }
     }
+    WaveManager::GetInstance().Draw();
     DrawText(TextFormat("Mouse Position: [%.0f, %.0f]", mousePos.x, mousePos.y), 10, 10, 20, WHITE);
 }
 
-bool GameManager::AddEnemy(const ENEMY_TYPE& __Type)
+void GameManager::AddEnemy(const EnemyType& __Type)
 {
-    for (size_t i = 0; i < MAX_ENEMY; i++)
-    {
-        if (EnemyList[i]->GetEnemyType() == ENEMY_TYPE::ENEMY_NONE)
-        {
-            EnemyList[i]->SetStartWayPoint(WayPointList[0]);
-            EnemyList[i]->SetEndWayPoint(WayPointList[1]);
-            EnemyList[i]->SetEnemyPosition(WayPointList[0]);
-            EnemyList[i]->SetCurrentWayPoint(0);
-            EnemyList[i]->SetHealth(800);
-            EnemyList[i]->SetType(ENEMY_TYPE::ZOMBIE);
-            return true;
-        }
+    Enemy* obj = AllocateEnemy(__Type);
+    if (obj != nullptr) {
+        TotalEnemy++;
+        obj->SetPosition({ WayPointList[0] });
     }
-    return false;
-}
-
-bool GameManager::AddAttack(const Vector2 &__StartPosition, const Vector2 &__ArrivePosition, const ATTACK_TYPE& __Type, const size_t& __EnemyID, const size_t& __TowerID)
-{
-    for (size_t i = 0; i < MAX_ATTACK; i++)
-    {
-        if (AttackList[i]->GetAttackType() == ATTACK_TYPE::ATTACK_NONE)
-        {
-            std::cout << "Add an attack to EnemyID : " << __EnemyID << std::endl;
-            AttackList[i]->SetTowerID(__TowerID);
-            AttackList[i]->SetTargetEnemy(__EnemyID);
-            AttackList[i]->SetShootTime(0);
-            AttackList[i]->SetAttackType(__Type);
-            AttackList[i]->SetAttackStartPosition(__StartPosition);
-            AttackList[i]->SetAttackArrivePostion(__ArrivePosition);
-            return true;
-        }
-    }
-    
-    return false;
 }
 
 void GameManager::UpdateEnemy() {
-    for (size_t i = 0; i < MAX_ENEMY; i++)
-    {
-        if (EnemyList[i]->GetEnemyType() != ENEMY_TYPE::ENEMY_NONE)
-        {
-            EnemyList[i]->Update();
-        }
-    }
-}
-
-void GameManager::UpdateTower() {
-    for (size_t i = 0; i < MAX_TOWER; i++)
-    {
-        if (TowerList[i]->GetTowerType() != TOWER_TYPE::TOWER_NONE)
-        {
-            TowerList[i]->Update();
-        }
-    }
-}
-
-void GameManager::UpdateAttack() {
-    for (size_t i = 0; i < MAX_ATTACK; i++)
-    {
-        if (AttackList[i]->GetAttackType() != ATTACK_TYPE::ATTACK_NONE)
-        {
-            AttackList[i]->Update();
+    for (size_t i = 0; i < MAX_ENEMY; i++) {
+        if (EnemyUsed[i] == true) {
+            reinterpret_cast<Enemy*>(EnemyList[i])->Update();
         }
     }
 }
 
 void GameManager::Update()
-{
-    if (Clock > static_cast<size_t>(10e10))
-    {
-        Clock = 0;
-    }
-
-    if (Clock % 300 == 0)
-    {
-        GameManager::GetInstance().AddEnemy(ZOMBIE);
-    }
+{   
+    //if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) AddEnemy(ENEMY_SLIME);
 
     UpdateEnemy();
-    UpdateAttack();
-    UpdateTower();
+    WaveManager::GetInstance().Update();
+}
 
-    Clock++;
+void GameManager::AddCash(const size_t& _cash)
+{
+    Cash += _cash;
+}
+
+Enemy* GameManager::AllocateEnemy(const EnemyType& _type) {
+    for (size_t i = 0; i < MAX_ENEMY; i++) {
+        if (EnemyUsed[i] == false) {
+            EnemyUsed[i] = true;
+            Enemy* obj = nullptr;
+            switch (_type) {
+            case ENEMY_SLIME:
+                obj = new (EnemyList[i]) SlimeEnemy;
+                obj->SetID(i);
+                break;
+            }
+            return obj;
+        }
+    }
+    return nullptr;
+}
+
+void GameManager::DeallocateEnemy(const size_t& _id) {
+    if (EnemyUsed[_id] == false) return;
+    TotalEnemy--;
+    EnemyUsed[_id] = false;
+    reinterpret_cast<Enemy*>(EnemyList[_id])->~Enemy();
+}
+
+const size_t& GameManager::GetTotalEnemy() const {
+    return TotalEnemy;
 }

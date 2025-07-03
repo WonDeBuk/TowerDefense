@@ -1,12 +1,36 @@
-#include "Game/Attack.h"
-#include "rlgl.h"
-#include "././Utils/MathUtils.hpp"
-#include "Game/GameManager.h"
 #include "Attack.h"
-#include <vector>
+#include "Game/GameManager.h"
+#include <raymath.h>
+#include <rlgl.h>
 
-#include <iostream>
+Attack::Attack() {
+    Lifespan = 0;
+}
 
+Attack::~Attack() {
+    Lifespan = 0;
+
+}
+
+void Attack::SetID(const size_t& _id) {
+    ID = _id;
+}
+
+void Attack::SetOrigin(const Vector2& _og) {
+    Origin = _og;
+}
+
+void Attack::SetDestination(const Vector2& _dest) {
+    Destination = _dest;
+}
+
+void Attack::Die() {
+    OnExpired();
+    
+}
+
+
+/*
 extern Texture2D* Laser;
 extern Texture2D* Aura;
 
@@ -117,3 +141,4 @@ void Attack::Update()
 
     ShootTime++;
 }
+*/

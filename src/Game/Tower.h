@@ -32,7 +32,7 @@ private:
     size_t TowerID;
 public:
     Tower();
-    void GetLowestEnemy();
+    //void GetLowestEnemy();
     const Vector2& GetTowerPosition() const;
     const float&  GetTowerRange() const;
     const size_t& GetTowerCooldown() const;
@@ -43,7 +43,7 @@ public:
     void SetTowerPosition(const Vector2&);
     void SetTowerType(const TOWER_TYPE&);
     void SetTowerRange(const float&);
-    void GunUpdate();
+    //void GunUpdate();
     void Update();
     void Draw() const;
 };

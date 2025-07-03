@@ -1,14 +1,54 @@
 #pragma once
 
-#include <math.h>
 #include <raylib.h>
 
-enum ENEMY_TYPE
-{
-    ZOMBIE,
-    ENEMY_NONE
+class GameManager;
+
+enum EnemyType {
+    ENEMY_NONE,
+    ENEMY_SLIME,
 };
 
+class Enemy {
+public:
+    const float SpawnOffsetX;
+    const float SpawnOffsetY;
+private:
+    friend class GameManager;
+protected:
+    EnemyType Type; //the type of the enemy
+
+    size_t Health; //current health
+    float Speed; //current speed
+    size_t CashDrop; //money dropped upon death
+    
+    size_t WaypointIndex; //the waypoint it is heading to
+    Vector2 CurrentPosition; //the position on the path
+    Vector2 NextPosition; //the next position along the path
+    Vector2 Direction; //the direction of movement
+
+    size_t FrameTime;
+    size_t AnimationState; //the kind direction
+    size_t FrameState; //the animation frame
+
+    size_t LifeSpan; //the total time of which the enemy exists
+    float PathTravel; //the total distance the enemy travels
+
+    size_t ID; //index number when the enemy is spawned
+public:
+    Enemy();
+    virtual ~Enemy() {};
+
+    virtual void SetID(const size_t&);
+    virtual void SetPosition(const Vector2&);
+    virtual void Update();
+    virtual void Draw() = 0;
+    virtual void OnDamaged(const size_t&);
+    virtual void OnDeath();
+    virtual void Die();
+};
+
+/*
 class Enemy
 {
     private:
@@ -39,3 +79,4 @@ class Enemy
         void DrawHealth() const;
         void Update();
 };
+*/

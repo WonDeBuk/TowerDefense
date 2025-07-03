@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Utils/AssetManager.h"
-
 #include "Enemy.h"
 #include "Attack.h"
 #include "Tower.h"
+#include "Enemy/SlimeEnemy.h"
+#include <new>
 #include <raylib.h>
 
 #define MAX_ENEMY 100
@@ -19,40 +20,22 @@ class Attack;
 class GameManager
 {
 private:
-    Enemy** EnemyList;
-    Attack** AttackList;
-    Tower** TowerList;
+    char EnemyList[MAX_ENEMY][sizeof(Enemy)];
+    bool EnemyUsed[MAX_ENEMY] = { false };
+    size_t TotalEnemy;
+
+    char AttackList[MAX_ATTACK][sizeof(Attack)];
+    bool AttackUsed[MAX_ATTACK] = { false };
+    
     Vector2* WayPointList;
     size_t WayPointSize;
-    size_t Clock;
+    size_t Cash;
+    size_t Timer;
 
     GameManager()
-    {
-        Clock = 0;
-        EnemyList = new Enemy * [MAX_ENEMY];
-        AttackList = new Attack * [MAX_ATTACK];
-        TowerList = new Tower * [MAX_TOWER];
-
-        for (size_t i = 0; i < MAX_TOWER; i++)
-        {
-            TowerList[i] = new Tower;
-            TowerList[i]->SetTowerTowerID(i);
-        }
-        
-        for (size_t i = 0; i < MAX_ENEMY; i++)
-        {
-            EnemyList[i] = new Enemy;
-        }
-
-        for (size_t i = 0; i < MAX_ATTACK; i++)
-        {
-            AttackList[i] = new Attack;
-        }
-        
-        TowerList[0]->SetTowerPosition({625.0f, 520.0f});
-        TowerList[0]->SetTowerType(TOWER_TYPE::FRIEREN);
-        TowerList[0]->SetTowerRange(200.0f);
-
+    {        
+        TotalEnemy = 0;
+        Timer = 120;
         WayPointList = new Vector2[MAX_WAYPOINT];
         WayPointSize = 10;
 
@@ -68,18 +51,20 @@ private:
         WayPointList[9] = { 1570.0f, 535.0f };
     }
 public:
+    ~GameManager();
+
     static GameManager& GetInstance();
-    const size_t& GetTime() const;
     const Vector2* GetWayPointList() const;
     const size_t& GetWayPointSize() const;
-    Enemy** GetEnemyList() const;
-    Tower** GetTowerList() const;
-    Attack** GetAttackList() const;
-    void Draw() const;
-    bool AddEnemy(const ENEMY_TYPE&);
-    bool AddAttack(const Vector2&, const Vector2&, const ATTACK_TYPE&, const size_t&, const size_t&);
+    const char(&GetEnemyList() const)[MAX_ENEMY][sizeof(Enemy)];
+    const bool(&GetEnemyUsed() const)[MAX_ENEMY];
+    const size_t& GetTotalEnemy() const;
+
+    void Draw();
+    void AddEnemy(const EnemyType&);
     void UpdateEnemy();
-    void UpdateTower();
-    void UpdateAttack();
     void Update();
+    void AddCash(const size_t&);
+    Enemy* AllocateEnemy(const EnemyType&);
+    void DeallocateEnemy(const size_t&);
 };
