@@ -1,0 +1,24 @@
+COMMON_USE
+Back "Back"
+Next "Next"
+
+MAIN
+Play "Play"
+Setting "Settings"
+Dictionary "Dictionary"
+Load "Load"
+
+DICTIONARY
+Selection "Selected champion"
+NoSelection "No champion selected"
+
+PLAY
+ForestMap "Forest Map"
+
+LOAD_GAME
+
+SETTING
+
+GAME
+
+WAITING
