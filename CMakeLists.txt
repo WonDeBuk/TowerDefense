@@ -12,17 +12,29 @@ set(ASSETS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/assets")
 set(ASSETS_OUTPUT_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets")
 
 # Add header files
-set(HEADERS
+set(HEADERS    
     src/Utils/LanguageManager.h
     src/Utils/AssetManager.h
     src/Utils/MathUtils.hpp
-    src/Game/GameManager.h
-    src/Game/Enemy.h
-    src/Game/Attack.h
-    src/Game/Tower.h
     src/Utils/UnicodeText.hpp
+
+    src/Game/GameManager.h
+    src/Game/WaveManager.h
+
+    src/Game/WaveLayout.h
+    src/Game/WaveLayout/ForestWaveLayout.h
+
+    src/Game/Enemy.h
+    src/Game/Enemy/SlimeEnemy.h
+    
+    src/Game/Attack.h
+    src/Game/Attack/BulletAttack.h
+
+    src/Game/Tower.h
+    
     src/GUI/Element/PagedContainer.h
     src/GUI/Element/ChampionListContainer.h
+    
     src/GUI/Director.h
     src/GUI/RenderState.h
     src/GUI/State/DictionaryState.h
@@ -36,17 +48,30 @@ set(HEADERS
 
 # Add source files
 set(SOURCES
-    src/Utils/LanguageManager.cpp
     src/main.cpp
+
+    src/Utils/LanguageManager.cpp 
     src/Utils/AssetManager.cpp
     src/Utils/MathUtils.hpp
-    src/game/GameManager.cpp
-    src/Game/Enemy.cpp
-    src/Game/Attack.cpp
-    src/Game/Tower.cpp
     src/Utils/UnicodeText.hpp
+    
+    src/Game/GameManager.cpp
+    src/Game/WaveManager.cpp
+
+    src/Game/WaveLayout.cpp
+    src/Game/WaveLayout/ForestWaveLayout.cpp
+
+    src/Game/Enemy.cpp
+    src/Game/Enemy/SlimeEnemy.cpp
+    
+    src/Game/Attack.cpp
+    src/Game/Attack/BulletAttack.cpp
+
+    src/Game/Tower.cpp
+    
     src/GUI/Element/PagedContainer.h
     src/GUI/Element/ChampionListContainer.cpp
+    
     src/GUI/Director.cpp
     src/GUI/RenderState.cpp
     src/GUI/State/DictionaryState.cpp
@@ -59,7 +84,7 @@ set(SOURCES
 )
 
 # Create executable
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCES} )
 
 # Specify the path to Raylib library and include directories
 # You'll need to modify these paths according to your Raylib installation
