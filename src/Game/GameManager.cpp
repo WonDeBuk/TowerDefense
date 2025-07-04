@@ -11,23 +11,20 @@ GameManager::~GameManager() {
     }
 }
 
-GameManager& GameManager::GetInstance()
-{
+GameManager& GameManager::GetInstance() {
     static GameManager Instance;
     return Instance;
 }
 
-const Vector2* GameManager::GetWayPointList() const
-{
+const Vector2* GameManager::GetWayPointList() const {
     return WayPointList;
 }
 
-const size_t& GameManager::GetWayPointSize() const
-{
+const size_t& GameManager::GetWayPointSize() const {
     return WayPointSize;
 }
 
-const char(&GameManager::GetEnemyList() const)[MAX_ENEMY][sizeof(Enemy)] {
+const char(&GameManager::GetEnemyList() const)[MAX_ENEMY][136] {
     return EnemyList;
 }
 
@@ -43,14 +40,14 @@ void GameManager::Draw()
     for (size_t i = 0; i < MAX_ENEMY; i++) {
         if (EnemyUsed[i] == true) {
             reinterpret_cast<Enemy*>(EnemyList[i])->Draw();
+            reinterpret_cast<Enemy*>(EnemyList[i])->DrawHealthBar();
         }
     }
     WaveManager::GetInstance().Draw();
     DrawText(TextFormat("Mouse Position: [%.0f, %.0f]", mousePos.x, mousePos.y), 10, 10, 20, WHITE);
 }
 
-void GameManager::AddEnemy(const EnemyType& __Type)
-{
+void GameManager::AddEnemy(const EnemyType& __Type) {
     Enemy* obj = AllocateEnemy(__Type);
     if (obj != nullptr) {
         TotalEnemy++;
@@ -66,9 +63,16 @@ void GameManager::UpdateEnemy() {
     }
 }
 
-void GameManager::Update()
-{   
-    //if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) AddEnemy(ENEMY_SLIME);
+void GameManager::Update() {   
+    for (size_t i = 0; i < MAX_ENEMY; i++) {
+        if (EnemyUsed[i] == true) {
+            Enemy* obj = reinterpret_cast<Enemy*>(EnemyList[i]);
+            if (CheckCollisionPointCircle(GetMousePosition(), obj->GetPosition(), 64) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                obj->OnDamaged(25);
+                break;
+            }
+        }
+    }
 
     UpdateEnemy();
     WaveManager::GetInstance().Update();
@@ -87,6 +91,10 @@ Enemy* GameManager::AllocateEnemy(const EnemyType& _type) {
             switch (_type) {
             case ENEMY_SLIME:
                 obj = new (EnemyList[i]) SlimeEnemy;
+                obj->SetID(i);
+                break;
+            case ENEMY_WRATH_SLIME:
+                obj = new (EnemyList[i]) WrathSlimeEnemy;
                 obj->SetID(i);
                 break;
             }

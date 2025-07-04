@@ -7,17 +7,14 @@ class GameManager;
 enum EnemyType {
     ENEMY_NONE,
     ENEMY_SLIME,
+    ENEMY_WRATH_SLIME
 };
 
 class Enemy {
 public:
     const float SpawnOffsetX;
     const float SpawnOffsetY;
-private:
-    friend class GameManager;
 protected:
-    EnemyType Type; //the type of the enemy
-
     size_t Health; //current health
     float Speed; //current speed
     size_t CashDrop; //money dropped upon death
@@ -32,17 +29,21 @@ protected:
     size_t FrameState; //the animation frame
 
     size_t LifeSpan; //the total time of which the enemy exists
+    size_t Timer; //something for ability
     float PathTravel; //the total distance the enemy travels
 
     size_t ID; //index number when the enemy is spawned
 public:
     Enemy();
-    virtual ~Enemy() {};
+    virtual ~Enemy();
+
+    virtual Vector2 GetPosition();
 
     virtual void SetID(const size_t&);
     virtual void SetPosition(const Vector2&);
     virtual void Update();
     virtual void Draw() = 0;
+    virtual void DrawHealthBar() = 0;
     virtual void OnDamaged(const size_t&);
     virtual void OnDeath();
     virtual void Die();

@@ -25,6 +25,7 @@ set(HEADERS
 
     src/Game/Enemy.h
     src/Game/Enemy/SlimeEnemy.h
+    src/Game/Enemy/WrathSlimeEnemy.h
     
     src/Game/Attack.h
     src/Game/Attack/BulletAttack.h
@@ -61,6 +62,7 @@ set(SOURCES
 
     src/Game/Enemy.cpp
     src/Game/Enemy/SlimeEnemy.cpp
+    src/Game/Enemy/WrathSlimeEnemy.cpp
     
     src/Game/Attack.cpp
     src/Game/Attack/BulletAttack.cpp

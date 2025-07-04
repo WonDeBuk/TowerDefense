@@ -3,22 +3,9 @@
 #include <iostream>
 
 SlimeEnemy::SlimeEnemy() {
-	WaypointIndex = 0;
 	Health = BASE_HEALTH;
 	Speed = BASE_SPEED;
 	CashDrop = BASE_CASH_DROP;
-	Direction = { 0, 0 };
-	FrameTime = 0;
-	AnimationState = 0;
-	FrameState = 0;
-}
-
-SlimeEnemy::~SlimeEnemy() {
-	Enemy::~Enemy();
-}
-
-void SlimeEnemy::SetPosition(const Vector2& _pos) {
-	Enemy::SetPosition(_pos);
 }
 
 void SlimeEnemy::Update() {
@@ -34,14 +21,8 @@ void SlimeEnemy::Draw() {
 	DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/Slime.png"), {32.0f * FrameState, 32.0f * AnimationState, 32.0f, 32.0f}, {CurrentPosition.x - 32.0f, CurrentPosition.y - 32.0f, 64.0f, 64.0f}, {0.0f, 0.0f}, 0.0f, WHITE);
 }
 
-void SlimeEnemy::OnDamaged(const size_t& _damage) {
-	Enemy::OnDamaged(_damage);
-}
-
-void SlimeEnemy::OnDeath() {
-	Enemy::OnDeath();
-}
-
-void SlimeEnemy::Die() {
-	Enemy::Die();
+void SlimeEnemy::DrawHealthBar() {
+	if (Health == BASE_HEALTH) return;
+	DrawRectangle(CurrentPosition.x - 50.0f, CurrentPosition.y - 100.0f, 100.0f, 5.0f, (Health > BASE_HEALTH) ? YELLOW : BLACK);
+	if (Health < BASE_HEALTH) DrawRectangle(CurrentPosition.x - 50.0f, CurrentPosition.y - 100.0f, 100.0f * Health / BASE_HEALTH, 5.0f, RED);
 }

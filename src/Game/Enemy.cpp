@@ -8,9 +8,22 @@ float GetRandomFloat(float min, float max) {
     return min + ((float)GetRandomValue(0, 100) / 100.0f) * (max - min);
 }
 
-Enemy::Enemy() : SpawnOffsetX(GetRandomFloat(-20.0f, 20.0f)), SpawnOffsetY(GetRandomFloat(-20.0f, 20.0f)) {
+Enemy::Enemy() : SpawnOffsetX(0), SpawnOffsetY(0) {
+    WaypointIndex = 0;
+    Direction = { 0, 0 };
+    AnimationState = 0;
+    FrameState = 0;
     FrameTime = 0;
+    Timer = 0;
     ID = -1;
+}
+
+Enemy::~Enemy() {
+    std::cout << Health << ' ';
+}
+
+Vector2 Enemy::GetPosition() {
+    return CurrentPosition;
 }
 
 void Enemy::SetID(const size_t& _id) {

@@ -9,7 +9,6 @@ GameState::GameState()
 
 void GameState::Update()
 {
-    std::cout << "GameState Draw" << std::endl;
     GameManager::GetInstance().Update();
     Vector2 MousePosition = GetMousePosition();
     if (CheckCollisionPointRec(MousePosition, BackButton)) {

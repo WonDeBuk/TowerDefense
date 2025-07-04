@@ -14,6 +14,7 @@ std::string TypeToString(EnemyType _type) {
 	case ENEMY_SLIME:
 		return "ENEMY_SLIME";
 	}
+	return "balls .-.";
 }
 
 void WaveManager::SetLayout(WaveLayout& _layout) {
@@ -42,7 +43,6 @@ void WaveManager::Update() {
 	}
 
 	if (CurrentWave >= CurrentLayout->GetMaxWave()) return;
-	std::cout << WaveTime << ' ';
 	while (CurrentLayout->GetIndexLayout(CurrentWave)[CurrentEnemy].Time <= WaveTime && CurrentEnemy < CurrentLayout->GetMaxEnemyInWave(CurrentWave)) {
 		GameManager::GetInstance().AddEnemy(CurrentLayout->GetIndexLayout(CurrentWave)[CurrentEnemy].Type);
 		CurrentEnemy++;

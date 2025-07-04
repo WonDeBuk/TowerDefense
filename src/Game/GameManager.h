@@ -5,6 +5,7 @@
 #include "Attack.h"
 #include "Tower.h"
 #include "Enemy/SlimeEnemy.h"
+#include "Enemy/WrathSlimeEnemy.h"
 #include "WaveLayout.h"
 #include <new>
 #include <raylib.h>
@@ -21,7 +22,7 @@ class Attack;
 class GameManager
 {
 private:
-    char EnemyList[MAX_ENEMY][sizeof(Enemy)];
+    char EnemyList[MAX_ENEMY][136];
     bool EnemyUsed[MAX_ENEMY] = { false };
     size_t TotalEnemy;
 
@@ -64,7 +65,7 @@ public:
     static GameManager& GetInstance();
     const Vector2* GetWayPointList() const;
     const size_t& GetWayPointSize() const;
-    const char(&GetEnemyList() const)[MAX_ENEMY][sizeof(Enemy)];
+    const char(&GetEnemyList() const)[MAX_ENEMY][136];
     const bool(&GetEnemyUsed() const)[MAX_ENEMY];
     const size_t& GetTotalEnemy() const;
 
