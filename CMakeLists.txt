@@ -22,7 +22,6 @@ set(HEADERS
     src/Game/WaveManager.h
 
     src/Game/WaveLayout.h
-    src/Game/WaveLayout/ForestWaveLayout.h
 
     src/Game/Enemy.h
     src/Game/Enemy/SlimeEnemy.h
@@ -59,7 +58,6 @@ set(SOURCES
     src/Game/WaveManager.cpp
 
     src/Game/WaveLayout.cpp
-    src/Game/WaveLayout/ForestWaveLayout.cpp
 
     src/Game/Enemy.cpp
     src/Game/Enemy/SlimeEnemy.cpp

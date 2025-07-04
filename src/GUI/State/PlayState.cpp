@@ -1,4 +1,5 @@
 #include "PlayState.h"
+#include "Game/GameManager.h"
 
 PlayState::PlayState()
 {
@@ -14,6 +15,7 @@ void PlayState::Update()
     if (CheckCollisionPointRec(MousePosition, ForestMap)) {
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             Director::GetInstance().TransitionTo(RENDER_STATE::GAME);
+            GameManager::GetInstance().ChangeLayoutConfig(WAVE_LAYOUT_FOREST);
         }
     }
     if (CheckCollisionPointRec(MousePosition, BackButton)) {

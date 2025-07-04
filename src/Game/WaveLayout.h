@@ -19,17 +19,17 @@ enum WaveLayoutType {
 EnemyType ConvertToEnemyType(const std::string& _s);
 
 class WaveLayout {
-protected:
-	WaveLayout();
+private:
 	unsigned short* MaxEnemyInWave; //number of enemies per wave
 	unsigned short MaxWave; //number of waves the game has
 	size_t WaveTime; //the timer for the current wave
 	TimedSpawn** Layout; //the list of enemies for the game
 public:
-	virtual ~WaveLayout();
-	static WaveLayout& GetInstance(const WaveLayoutType&);
-	virtual const unsigned short& GetMaxWave() const;
-	virtual const unsigned short& GetMaxEnemyInWave(const size_t&) const;
-	virtual TimedSpawn** GetLayout();
-	virtual TimedSpawn* GetIndexLayout(const unsigned short&);
+	WaveLayout();
+	~WaveLayout();
+	const unsigned short& GetMaxWave() const;
+	const unsigned short& GetMaxEnemyInWave(const size_t&) const;
+	void LoadContent(const WaveLayoutType&);
+	TimedSpawn** GetLayout();
+	TimedSpawn* GetIndexLayout(const unsigned short&);
 };

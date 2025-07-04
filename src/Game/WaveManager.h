@@ -22,8 +22,9 @@ private:
 	}
 
 public:
+	~WaveManager();
 	static WaveManager& GetInstance();
-	void SwitchTo(const WaveLayoutType&);
+	void SetLayout(WaveLayout&);
 	bool Invoke();
 	void Update();
 	void Draw();

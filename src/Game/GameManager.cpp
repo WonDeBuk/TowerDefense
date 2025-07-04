@@ -106,3 +106,14 @@ void GameManager::DeallocateEnemy(const size_t& _id) {
 const size_t& GameManager::GetTotalEnemy() const {
     return TotalEnemy;
 }
+
+void GameManager::ChangeLayoutConfig(const WaveLayoutType& _type) {
+    switch (_type) {
+    case WAVE_LAYOUT_FOREST:
+        WaveManager::GetInstance().SetLayout(LayoutConfig[0]);
+        break;
+    default:
+        WaveManager::GetInstance().SetLayout(LayoutConfig[0]);
+    }
+   
+}

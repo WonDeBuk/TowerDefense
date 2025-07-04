@@ -1,5 +1,9 @@
 #include "WaveManager.h"
 
+WaveManager::~WaveManager() {
+	delete CurrentLayout;
+}
+
 WaveManager& WaveManager::GetInstance() {
 	static WaveManager Instance;
 	return Instance;
@@ -12,8 +16,8 @@ std::string TypeToString(EnemyType _type) {
 	}
 }
 
-void WaveManager::SwitchTo(const WaveLayoutType& _type) {
-	CurrentLayout = &WaveLayout::GetInstance(_type);
+void WaveManager::SetLayout(WaveLayout& _layout) {
+	CurrentLayout = &_layout;
 }
 
 bool WaveManager::Invoke() {

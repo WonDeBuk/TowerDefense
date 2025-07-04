@@ -5,6 +5,7 @@
 #include "Attack.h"
 #include "Tower.h"
 #include "Enemy/SlimeEnemy.h"
+#include "WaveLayout.h"
 #include <new>
 #include <raylib.h>
 
@@ -27,6 +28,8 @@ private:
     char AttackList[MAX_ATTACK][sizeof(Attack)];
     bool AttackUsed[MAX_ATTACK] = { false };
     
+    WaveLayout LayoutConfig[4];
+
     Vector2* WayPointList;
     size_t WayPointSize;
     size_t Cash;
@@ -38,6 +41,11 @@ private:
         Timer = 120;
         WayPointList = new Vector2[MAX_WAYPOINT];
         WayPointSize = 10;
+
+        LayoutConfig[0].LoadContent(WAVE_LAYOUT_FOREST);
+        LayoutConfig[1].LoadContent(WAVE_LAYOUT_FOREST);
+        LayoutConfig[2].LoadContent(WAVE_LAYOUT_FOREST);
+        LayoutConfig[3].LoadContent(WAVE_LAYOUT_FOREST);
 
         WayPointList[0] = { 80.0f, 675.0f };
         WayPointList[1] = { 225.0f, 675.0f };
@@ -59,6 +67,8 @@ public:
     const char(&GetEnemyList() const)[MAX_ENEMY][sizeof(Enemy)];
     const bool(&GetEnemyUsed() const)[MAX_ENEMY];
     const size_t& GetTotalEnemy() const;
+
+    void ChangeLayoutConfig(const WaveLayoutType&);
 
     void Draw();
     void AddEnemy(const EnemyType&);

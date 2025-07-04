@@ -4,6 +4,7 @@
 #include "GUI/Director.h"
 #include "Utils/AssetManager.h"
 #include "Game/GameManager.h"
+#include "Game/WaveManager.h"
 
 #include <string>
 #include <iostream>
@@ -16,7 +17,6 @@ int main()
 {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Tower Defense");
     SetTargetFPS(60);
-
     Director::GetInstance().TransitionTo(RENDER_STATE::MAIN);
     while (!WindowShouldClose())
     {
