@@ -1,0 +1,18 @@
+total_waves                                     <---self-explanatory
+total_enemies_in_wave
+enemy_type time_spawn quantity delay_between    <---first wave //since there is delay, for the next enemy spawn, please do take account of that or else this will be inaccurate
+enemy_type time_spawn quantity delay_between
+...
+                                                <---separartion
+total_enemies_in_wave
+enemy_type time_spawn quantity delay_between    <---second wave
+...
+
+(.. x total_waves)                              <---do this [total_waves] times
+
+
+
+Whenever adding a new enemy class
+1.Change allocation in GameManager
+2.Change ConvertToEnemyType in WaveLayout.cpp
+3.Change CMakeLists.txt -- should be obvious
