@@ -8,7 +8,6 @@ Attack::Attack() {
 }
 
 Attack::~Attack() {
-    Lifespan = 0;
 
 }
 
@@ -24,12 +23,38 @@ void Attack::SetDestination(const Vector2& _dest) {
     Destination = _dest;
 }
 
-void Attack::Die() {
-    OnExpired();
-    
+void Attack::SetDirection(const Vector2& _og, const Vector2& _dest) {
+    SetOrigin(_og);
+    SetDestination(_dest);
+    Direction = Vector2Normalize(Vector2Subtract(_dest, _og));
 }
 
+void Attack::SetDirection(const Vector2& _dir) {
+    Direction = _dir;
+}
 
+void Attack::Update() {
+    if (Lifespan >= 600) Die();
+
+    char (&EnemyList)[MAX_ENEMY][136] = GameManager::GetInstance().GetEnemyList();
+    const bool(&EnemyUsed)[MAX_ENEMY] = GameManager::GetInstance().GetEnemyUsed();
+
+    for (size_t i = 0; i < MAX_ENEMY; i++) {
+        if (EnemyUsed[i] == true && CheckCollisionCircles(Origin, 16, reinterpret_cast<Enemy*>(EnemyList[i])->GetPosition(), 32.0f)) {
+            reinterpret_cast<Enemy*>(EnemyList[i])->OnDamaged(Damage);
+            Die();
+            return;
+        }
+    }
+
+    Origin.x += Direction.x * Speed / GetFPS();
+    Origin.y += Direction.y * Speed / GetFPS();
+    Lifespan++;
+}
+
+void Attack::Die() {
+    GameManager::GetInstance().DeallocateAttack(ID);
+}
 /*
 extern Texture2D* Laser;
 extern Texture2D* Aura;

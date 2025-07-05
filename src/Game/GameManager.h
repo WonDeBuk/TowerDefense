@@ -4,8 +4,6 @@
 #include "Enemy.h"
 #include "Attack.h"
 #include "Tower.h"
-#include "Enemy/SlimeEnemy.h"
-#include "Enemy/WrathSlimeEnemy.h"
 #include "WaveLayout.h"
 #include <new>
 #include <raylib.h>
@@ -26,7 +24,7 @@ private:
     bool EnemyUsed[MAX_ENEMY] = { false };
     size_t TotalEnemy;
 
-    char AttackList[MAX_ATTACK][sizeof(Attack)];
+    char AttackList[MAX_ATTACK][80];
     bool AttackUsed[MAX_ATTACK] = { false };
     
     WaveLayout LayoutConfig[4];
@@ -39,7 +37,7 @@ private:
     GameManager()
     {        
         TotalEnemy = 0;
-        Timer = 120;
+        Timer = 60;
         WayPointList = new Vector2[MAX_WAYPOINT];
         WayPointSize = 10;
 
@@ -65,7 +63,7 @@ public:
     static GameManager& GetInstance();
     const Vector2* GetWayPointList() const;
     const size_t& GetWayPointSize() const;
-    const char(&GetEnemyList() const)[MAX_ENEMY][136];
+    char(&GetEnemyList())[MAX_ENEMY][136];
     const bool(&GetEnemyUsed() const)[MAX_ENEMY];
     const size_t& GetTotalEnemy() const;
 
@@ -73,9 +71,16 @@ public:
 
     void Draw();
     void AddEnemy(const EnemyType&);
+    void AddAttack(const AttackType&, const size_t&, const size_t&, const Vector2&, const Vector2&);
+
     void UpdateEnemy();
+    void UpdateAttack();
     void Update();
     void AddCash(const size_t&);
+
     Enemy* AllocateEnemy(const EnemyType&);
     void DeallocateEnemy(const size_t&);
+
+    Attack* AllocateAttack(const AttackType&, const size_t&, const size_t&);
+    void DeallocateAttack(const size_t&);
 };

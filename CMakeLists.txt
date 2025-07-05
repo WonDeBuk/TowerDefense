@@ -26,9 +26,10 @@ set(HEADERS
     src/Game/Enemy.h
     src/Game/Enemy/SlimeEnemy.h
     src/Game/Enemy/WrathSlimeEnemy.h
+    src/Game/Enemy/SniperSlimeEnemy.h
     
     src/Game/Attack.h
-    src/Game/Attack/BulletAttack.h
+    src/Game/Attack/ProjectileAttack.h
 
     src/Game/Tower.h
     
@@ -63,9 +64,10 @@ set(SOURCES
     src/Game/Enemy.cpp
     src/Game/Enemy/SlimeEnemy.cpp
     src/Game/Enemy/WrathSlimeEnemy.cpp
+    src/Game/Enemy/SniperSlimeEnemy.cpp
     
     src/Game/Attack.cpp
-    src/Game/Attack/BulletAttack.cpp
+     src/Game/Attack/ProjectileAttack.cpp
 
     src/Game/Tower.cpp
     

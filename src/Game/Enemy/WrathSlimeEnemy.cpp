@@ -12,10 +12,15 @@ WrathSlimeEnemy::WrathSlimeEnemy() {
 void WrathSlimeEnemy::Update() {
     if (Timer > 0) {
         Timer--;
-        SizeFactor += 0.05f;
+        SizeFactor += 0.05f * (-2.0f * Used + 1.0f);
+		if (Timer == 0) Used = true;
     }
+
 	Enemy::Update();
 	if (FrameTime >= 3) {
+		if (Health > BASE_HEALTH) {
+			OnDamaged(10);
+		}
 		FrameTime = 0;
 		FrameState++;
 	}
@@ -23,7 +28,7 @@ void WrathSlimeEnemy::Update() {
 }
 
 void WrathSlimeEnemy::Draw() {
-	DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/Slime.png"), { 32.0f * FrameState, 32.0f * AnimationState, 32.0f, 32.0f }, { CurrentPosition.x - (32.0f * SizeFactor), CurrentPosition.y - (64.0f * SizeFactor), SizeFactor * 64.0f, SizeFactor * 64.0f}, {0.0f, 0.0f}, 0.0f, RED);
+	DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/WrathSlime.png"), { 32.0f * FrameState, 32.0f * AnimationState, 32.0f, 32.0f }, { CurrentPosition.x - (32.0f * SizeFactor), CurrentPosition.y - (64.0f * SizeFactor), SizeFactor * 64.0f, SizeFactor * 64.0f}, {0.0f, 0.0f}, 0.0f, WHITE);
     DrawRectangleLines(CurrentPosition.x - 32.0f, CurrentPosition.y - 64.0f, 64.0f, 64.0f, RED);
 }
 
@@ -33,14 +38,18 @@ void WrathSlimeEnemy::OnDamaged(const size_t& _dmg) {
 		Die();
 		return;
 	}
-	if (!Used && Health > BASE_HEALTH / 2 && Health - _dmg <= BASE_HEALTH / 2) {
+	if (!Used && !Timer && Health > BASE_HEALTH / 2 && Health - _dmg <= BASE_HEALTH / 2) {
 		Timer = 15;
-		Used = true;
         Speed = BASE_SPEED * 2;
-        Health = BASE_HEALTH * 3;
+        Health = BASE_HEALTH * 10;
 	}
-	else Health -= _dmg;
 
+	else if (Used && Health > BASE_HEALTH && Health - _dmg <= BASE_HEALTH) {
+		Timer = 15;
+		Speed = BASE_SPEED;
+	}
+
+	Health -= _dmg;
 }
 
 void WrathSlimeEnemy::DrawHealthBar() {

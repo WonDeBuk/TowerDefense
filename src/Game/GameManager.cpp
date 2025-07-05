@@ -1,5 +1,8 @@
 #include "GameManager.h"
 #include "WaveManager.h"
+#include "Enemy/SlimeEnemy.h"
+#include "Enemy/WrathSlimeEnemy.h"
+#include "Attack/ProjectileAttack.h"
 #include <thread>
 #include <string>
 #include <iostream>
@@ -8,6 +11,11 @@ GameManager::~GameManager() {
     for (size_t i = 0; i < MAX_ENEMY; i++) {
         if (EnemyUsed[i] == true)
             DeallocateEnemy(i);
+    }
+
+    for (size_t i = 0; i < MAX_ATTACK; i++) {
+        if (AttackUsed[i] == true)
+            DeallocateAttack(i);
     }
 }
 
@@ -24,7 +32,7 @@ const size_t& GameManager::GetWayPointSize() const {
     return WayPointSize;
 }
 
-const char(&GameManager::GetEnemyList() const)[MAX_ENEMY][136] {
+char(&GameManager::GetEnemyList())[MAX_ENEMY][136] {
     return EnemyList;
 }
 
@@ -43,6 +51,12 @@ void GameManager::Draw()
             reinterpret_cast<Enemy*>(EnemyList[i])->DrawHealthBar();
         }
     }
+
+    for (size_t i = 0; i < MAX_ATTACK; i++) {
+        if (AttackUsed[i] == true) {
+            reinterpret_cast<Attack*>(AttackList[i])->Draw();
+        }
+    }
     WaveManager::GetInstance().Draw();
     DrawText(TextFormat("Mouse Position: [%.0f, %.0f]", mousePos.x, mousePos.y), 10, 10, 20, WHITE);
 }
@@ -55,6 +69,13 @@ void GameManager::AddEnemy(const EnemyType& __Type) {
     }
 }
 
+void GameManager::AddAttack(const AttackType& _type, const size_t& _dmg, const size_t& _spd, const Vector2& _og, const Vector2& _dest) {
+    Attack* obj = AllocateAttack(_type, _dmg, _spd);
+    if (obj != nullptr) {
+        obj->SetDirection(_og, _dest);
+    }
+}
+
 void GameManager::UpdateEnemy() {
     for (size_t i = 0; i < MAX_ENEMY; i++) {
         if (EnemyUsed[i] == true) {
@@ -63,19 +84,34 @@ void GameManager::UpdateEnemy() {
     }
 }
 
-void GameManager::Update() {   
+void GameManager::UpdateAttack() {
+    for (size_t i = 0; i < MAX_ATTACK; i++) {
+        if (AttackUsed[i] == true) {
+            reinterpret_cast<Attack*>(AttackList[i])->Update();
+        }
+    }
+}
+
+void GameManager::Update() { 
+    Enemy* LowestEnemy = nullptr;
     for (size_t i = 0; i < MAX_ENEMY; i++) {
         if (EnemyUsed[i] == true) {
             Enemy* obj = reinterpret_cast<Enemy*>(EnemyList[i]);
-            if (CheckCollisionPointCircle(GetMousePosition(), obj->GetPosition(), 64) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                obj->OnDamaged(25);
-                break;
-            }
+            if (LowestEnemy == nullptr || LowestEnemy->GetHealth() > obj->GetHealth()) LowestEnemy = obj;
         }
     }
 
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && LowestEnemy && (Timer >= 60)) {
+        if (Timer % 10 == 0) AddAttack(ATTACK_PROJECTILE, 150, 15000, GetMousePosition(), LowestEnemy->GetPosition());
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            Timer = 0;
+        }
+    }
+
+    UpdateAttack();
     UpdateEnemy();
     WaveManager::GetInstance().Update();
+    Timer++;
 }
 
 void GameManager::AddCash(const size_t& _cash)
@@ -91,13 +127,12 @@ Enemy* GameManager::AllocateEnemy(const EnemyType& _type) {
             switch (_type) {
             case ENEMY_SLIME:
                 obj = new (EnemyList[i]) SlimeEnemy;
-                obj->SetID(i);
                 break;
             case ENEMY_WRATH_SLIME:
                 obj = new (EnemyList[i]) WrathSlimeEnemy;
-                obj->SetID(i);
                 break;
             }
+            obj->SetID(i);
             return obj;
         }
     }
@@ -115,6 +150,31 @@ const size_t& GameManager::GetTotalEnemy() const {
     return TotalEnemy;
 }
 
+Attack* GameManager::AllocateAttack(const AttackType& _type, const size_t& _dmg, const size_t& _spd) {
+    for (size_t i = 0; i < MAX_ATTACK; i++) {
+        if (AttackUsed[i] == false) {
+            AttackUsed[i] = true;
+            Attack* obj = nullptr;
+            switch (_type) {
+            case ATTACK_PROJECTILE:
+                obj = new (AttackList[i]) ProjectileAttack(_dmg, _spd);
+                break;
+            }
+            obj->SetID(i);
+            return obj;
+        }
+    }
+
+
+    return nullptr;
+}
+
+void GameManager::DeallocateAttack(const size_t& _id) {
+    if (AttackUsed[_id] == false) return;
+    AttackUsed[_id] = false;
+    reinterpret_cast<Attack*>(AttackList[_id])->~Attack();
+}
+
 void GameManager::ChangeLayoutConfig(const WaveLayoutType& _type) {
     switch (_type) {
     case WAVE_LAYOUT_FOREST:
@@ -123,5 +183,4 @@ void GameManager::ChangeLayoutConfig(const WaveLayoutType& _type) {
     default:
         WaveManager::GetInstance().SetLayout(LayoutConfig[0]);
     }
-   
 }

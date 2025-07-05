@@ -7,23 +7,21 @@
 #include <vector>
 
 enum AttackType {
-    ATTACK_BULLET,
+    ATTACK_PROJECTILE,
     ATTACK_NONE,
-    ZOLTRAAK,
-    PROJECTILE,
-    MISSILE
 };
 
 class Attack {
 protected:
-    AttackType Type;
-
     size_t Damage;
     size_t Speed;
     
     Vector2 Origin;
     Vector2 Destination;
-    double Lifespan;
+    Vector2 Direction;
+    size_t Lifespan;
+    size_t FrameState;
+    size_t FrameTime;
 
     size_t ID;
 public:
@@ -31,11 +29,12 @@ public:
     virtual ~Attack();
 
     virtual void SetID(const size_t&);
+    virtual void SetDirection(const Vector2&, const Vector2&);
+    virtual void SetDirection(const Vector2&);
     virtual void SetOrigin(const Vector2&);
     virtual void SetDestination(const Vector2&);
-    virtual void Update() = 0;
+    virtual void Update();
     virtual void Draw() = 0;
-    virtual void OnExpired() = 0;
     virtual void Die();
 };
 
