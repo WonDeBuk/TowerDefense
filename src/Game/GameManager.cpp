@@ -2,6 +2,7 @@
 #include "WaveManager.h"
 #include "Enemy/SlimeEnemy.h"
 #include "Enemy/WrathSlimeEnemy.h"
+#include "Enemy/SniperSlimeEnemy.h"
 #include "Attack/ProjectileAttack.h"
 #include <thread>
 #include <string>
@@ -102,7 +103,7 @@ void GameManager::Update() {
     }
 
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && LowestEnemy && (Timer >= 60)) {
-        if (Timer % 10 == 0) AddAttack(ATTACK_PROJECTILE, 150, 15000, GetMousePosition(), LowestEnemy->GetPosition());
+        if (Timer % 10 == 0) AddAttack(ATTACK_PROJECTILE, 40, 250, GetMousePosition(), LowestEnemy->GetPosition());
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
             Timer = 0;
         }
@@ -131,6 +132,8 @@ Enemy* GameManager::AllocateEnemy(const EnemyType& _type) {
             case ENEMY_WRATH_SLIME:
                 obj = new (EnemyList[i]) WrathSlimeEnemy;
                 break;
+            case ENEMY_SNIPER_SLIME:
+                obj = new (EnemyList[i]) SniperSlimeEnemy;
             }
             obj->SetID(i);
             return obj;

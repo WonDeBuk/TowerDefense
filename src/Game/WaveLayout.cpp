@@ -3,6 +3,7 @@
 EnemyType ConvertToEnemyType(const std::string& _s) {
 	if (_s == "ENEMY_SLIME") return ENEMY_SLIME;
 	if (_s == "ENEMY_WRATH_SLIME") return ENEMY_WRATH_SLIME;
+	if (_s == "ENEMY_SNIPER_SLIME") return ENEMY_SNIPER_SLIME;
 	return ENEMY_NONE;
 }
 

@@ -8,7 +8,7 @@ float GetRandomFloat(float min, float max) {
     return min + ((float)GetRandomValue(0, 100) / 100.0f) * (max - min);
 }
 
-Enemy::Enemy() : SpawnOffsetX(0), SpawnOffsetY(0) {
+Enemy::Enemy() : SpawnOffsetX(GetRandomFloat(-10.0f, 10.0f)), SpawnOffsetY(GetRandomFloat(-10.0f, 10.0f)) {
     WaypointIndex = 0;
     Direction = { 0, 0 };
     AnimationState = 0;
@@ -26,6 +26,10 @@ Vector2 Enemy::GetPosition() {
     return CurrentPosition;
 }
 
+size_t& Enemy::GetHealth() {
+    return Health;
+}
+
 void Enemy::SetID(const size_t& _id) {
     if (_id >= 0 && _id < MAX_ENEMY)
         ID = _id;
@@ -39,6 +43,8 @@ void Enemy::SetPosition(const Vector2& _pos) {
 
 void Enemy::Update()
 {
+    
+
     GameManager& GameM = GameManager::GetInstance();
     
     if (CurrentPosition.x == GameM.GetWayPointList()[WaypointIndex].x + SpawnOffsetX &&

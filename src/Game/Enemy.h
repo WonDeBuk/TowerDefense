@@ -7,7 +7,8 @@ class GameManager;
 enum EnemyType {
     ENEMY_NONE,
     ENEMY_SLIME,
-    ENEMY_WRATH_SLIME
+    ENEMY_WRATH_SLIME,
+    ENEMY_SNIPER_SLIME
 };
 
 class Enemy {
@@ -38,6 +39,7 @@ public:
     virtual ~Enemy();
 
     virtual Vector2 GetPosition();
+    virtual size_t& GetHealth();
 
     virtual void SetID(const size_t&);
     virtual void SetPosition(const Vector2&);

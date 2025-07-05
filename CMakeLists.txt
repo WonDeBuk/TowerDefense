@@ -67,7 +67,7 @@ set(SOURCES
     src/Game/Enemy/SniperSlimeEnemy.cpp
     
     src/Game/Attack.cpp
-     src/Game/Attack/ProjectileAttack.cpp
+    src/Game/Attack/ProjectileAttack.cpp
 
     src/Game/Tower.cpp
     
