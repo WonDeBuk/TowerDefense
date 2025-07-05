@@ -70,7 +70,7 @@ void GameManager::AddEnemy(const EnemyType& __Type) {
     }
 }
 
-void GameManager::AddAttack(const AttackType& _type, const size_t& _dmg, const size_t& _spd, const Vector2& _og, const Vector2& _dest) {
+void GameManager::AddAttack(const AttackType& _type, const unsigned int& _dmg, const unsigned int& _spd, const Vector2& _og, const Vector2& _dest) {
     Attack* obj = AllocateAttack(_type, _dmg, _spd);
     if (obj != nullptr) {
         obj->SetDirection(_og, _dest);
@@ -115,13 +115,13 @@ void GameManager::Update() {
     Timer++;
 }
 
-void GameManager::AddCash(const size_t& _cash)
+void GameManager::AddCash(const unsigned int& _cash)
 {
     Cash += _cash;
 }
 
 Enemy* GameManager::AllocateEnemy(const EnemyType& _type) {
-    for (size_t i = 0; i < MAX_ENEMY; i++) {
+    for (unsigned short i = 0; i < MAX_ENEMY; i++) {
         if (EnemyUsed[i] == false) {
             EnemyUsed[i] = true;
             Enemy* obj = nullptr;
@@ -142,7 +142,7 @@ Enemy* GameManager::AllocateEnemy(const EnemyType& _type) {
     return nullptr;
 }
 
-void GameManager::DeallocateEnemy(const size_t& _id) {
+void GameManager::DeallocateEnemy(const unsigned short& _id) {
     if (EnemyUsed[_id] == false) return;
     TotalEnemy--;
     EnemyUsed[_id] = false;
@@ -153,8 +153,8 @@ const size_t& GameManager::GetTotalEnemy() const {
     return TotalEnemy;
 }
 
-Attack* GameManager::AllocateAttack(const AttackType& _type, const size_t& _dmg, const size_t& _spd) {
-    for (size_t i = 0; i < MAX_ATTACK; i++) {
+Attack* GameManager::AllocateAttack(const AttackType& _type, const unsigned short& _dmg, const unsigned short& _spd) {
+    for (unsigned short i = 0; i < MAX_ATTACK; i++) {
         if (AttackUsed[i] == false) {
             AttackUsed[i] = true;
             Attack* obj = nullptr;
@@ -172,7 +172,7 @@ Attack* GameManager::AllocateAttack(const AttackType& _type, const size_t& _dmg,
     return nullptr;
 }
 
-void GameManager::DeallocateAttack(const size_t& _id) {
+void GameManager::DeallocateAttack(const unsigned short& _id) {
     if (AttackUsed[_id] == false) return;
     AttackUsed[_id] = false;
     reinterpret_cast<Attack*>(AttackList[_id])->~Attack();

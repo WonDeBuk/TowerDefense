@@ -16,21 +16,24 @@ Enemy::Enemy() : SpawnOffsetX(GetRandomFloat(-10.0f, 10.0f)), SpawnOffsetY(GetRa
     FrameTime = 0;
     Timer = 0;
     ID = -1;
+    OnTrack = true;
+    KnockBackFrame = 0;
+    KnockBackForce = 0.0f;
 }
 
 Enemy::~Enemy() {
-    std::cout << Health << ' ';
+    std::cout << Speed << std::endl;
 }
 
-Vector2 Enemy::GetPosition() {
+Vector2& Enemy::GetPosition() {
     return CurrentPosition;
 }
 
-size_t& Enemy::GetHealth() {
+unsigned int& Enemy::GetHealth() {
     return Health;
 }
 
-void Enemy::SetID(const size_t& _id) {
+void Enemy::SetID(const unsigned short& _id) {
     if (_id >= 0 && _id < MAX_ENEMY)
         ID = _id;
 }
@@ -38,17 +41,53 @@ void Enemy::SetID(const size_t& _id) {
 void Enemy::SetPosition(const Vector2& _pos) {
     CurrentPosition.x = _pos.x + SpawnOffsetX;
     CurrentPosition.y = _pos.y + SpawnOffsetY;
-    NextPosition = CurrentPosition;
 }
+
+void Enemy::CalculateDirection(const Vector2& _source, const Vector2& _dest) {
+    Direction = Vector2Normalize(Vector2Subtract(_dest, _source));
+    float Angle = atan2f(Direction.y, Direction.x);
+    if (Angle > -PI / 4 && Angle <= PI / 4) AnimationState = 0; //left
+    else if (Angle > PI / 4 && Angle <= PI * 3 / 4) AnimationState = 1; //up
+    else if (Angle > PI * 3 / 4 || Angle <= -PI * 3 / 4) AnimationState = 0; //right
+    else AnimationState = 1; //down
+}
+
+void Enemy::ApplyKnockBack(const float& _force, const unsigned short& _frame, const Vector2& _source) {
+    KnockBackForce = _force / _frame;
+    KnockBackFrame = _frame;
+    if (OnTrack) MemoryPosition = CurrentPosition;
+    OnTrack = false;
+    CalculateDirection(CurrentPosition, _source);
+;}
 
 void Enemy::Update()
 {
-    
+    if (!OnTrack && KnockBackFrame) {
+        //std::cout << CurrentPosition.x << ' ' << CurrentPosition.y << std::endl;
+        Speed -= KnockBackForce * KnockBackFrame;
+        KnockBackFrame--;
+        if (KnockBackFrame == 0) {
+            CalculateDirection(CurrentPosition, MemoryPosition);
+            Speed = 100; //placeholder ...
+        }
+    }
 
     GameManager& GameM = GameManager::GetInstance();
+    Vector2 OffsetWaypoint = { GameM.GetWayPointList()[WaypointIndex].x + SpawnOffsetX, GameM.GetWayPointList()[WaypointIndex].y + SpawnOffsetY };
+    float ClosingVicinity = 0.0f;
+
+    if (!OnTrack && KnockBackFrame == 0) {
+        ClosingVicinity = Vector2DistanceSqr(CurrentPosition, MemoryPosition);
+        if (ClosingVicinity <= powf(Speed / GetFPS(), 2)) {
+            OnTrack = true;
+            CurrentPosition = MemoryPosition;
+            CalculateDirection(CurrentPosition, OffsetWaypoint);
+            return;
+        }
+    }
     
-    if (CurrentPosition.x == GameM.GetWayPointList()[WaypointIndex].x + SpawnOffsetX &&
-        CurrentPosition.y == GameM.GetWayPointList()[WaypointIndex].y + SpawnOffsetY) {
+    ClosingVicinity = Vector2DistanceSqr(CurrentPosition, OffsetWaypoint);
+    if (CurrentPosition == OffsetWaypoint) {
         WaypointIndex++;
         if (WaypointIndex == GameM.GetWayPointSize())
         {
@@ -56,31 +95,28 @@ void Enemy::Update()
             return;
         }
         Direction = Vector2Normalize(Vector2Subtract(GameM.GetWayPointList()[WaypointIndex], GameM.GetWayPointList()[WaypointIndex - 1]));
-        //recalculating direction the enemy faces
-        float Angle = atan2f(Direction.y, Direction.x);
-        if (Angle > -PI / 4 && Angle <= PI / 4) AnimationState = 0; //left
-        else if (Angle > PI / 4 && Angle <= PI * 3 / 4) AnimationState = 1; //up
-        else if (Angle > PI * 3 / 4 || Angle <= -PI * 3 / 4) AnimationState = 0; //right
-        else AnimationState = 1; //down
+        if (Direction.x == 1) AnimationState = 0;
+        else if (Direction.x == -1) AnimationState = 0;
+        else if (Direction.y == 1) AnimationState = 1;
+        else AnimationState = 1;
 
-        NextPosition.x = CurrentPosition.x + Speed * Direction.x / GetFPS();
-        NextPosition.y = CurrentPosition.y + Speed * Direction.y / GetFPS();
+        CurrentPosition.x += Speed * Direction.x / GetFPS();
+        CurrentPosition.y += Speed * Direction.y / GetFPS();
+        return;
     }
 
-    Vector2 OffsetWayPoint = { GameM.GetWayPointList()[WaypointIndex].x + SpawnOffsetX, GameM.GetWayPointList()[WaypointIndex].y + SpawnOffsetY};
-    float SqrDistance = Vector2DistanceSqr(NextPosition, OffsetWayPoint);
-    if (SqrDistance <= powf(Speed / GetFPS(), 2)) {
-        CurrentPosition = NextPosition;
-        NextPosition = OffsetWayPoint;
+    
+    if (ClosingVicinity <= powf(Speed / GetFPS(), 2)) {
+        CurrentPosition = OffsetWaypoint;
+        OnTrack = true;
+        return;
     }
-    else {
-        CurrentPosition = NextPosition;
-        NextPosition.x = CurrentPosition.x + Speed * Direction.x / GetFPS();
-        NextPosition.y = CurrentPosition.y + Speed * Direction.y / GetFPS();
-    }
+
+    CurrentPosition.x += Speed * Direction.x / GetFPS();
+    CurrentPosition.y += Speed * Direction.y / GetFPS();
 }
 
-void Enemy::OnDamaged(const size_t& _damage)
+void Enemy::OnDamaged(const unsigned int& _damage)
 {
     if (Health <= _damage)
     {

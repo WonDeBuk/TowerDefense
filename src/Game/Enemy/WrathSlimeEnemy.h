@@ -4,9 +4,9 @@
 
 class WrathSlimeEnemy : public Enemy {
 private:
-	static constexpr size_t BASE_HEALTH = 150;
-	static constexpr size_t BASE_SPEED = 75;
-	static constexpr size_t BASE_CASH_DROP = 500;
+	static constexpr unsigned int BASE_HEALTH = 150;
+	static constexpr float BASE_SPEED = 75;
+	static constexpr unsigned int BASE_CASH_DROP = 500;
 	float SizeFactor;
 	bool Used;
 public:
@@ -15,5 +15,5 @@ public:
 	void Update();
 	void Draw();
 	void DrawHealthBar();
-	void OnDamaged(const size_t&);
+	void OnDamaged(const unsigned int&);
 };

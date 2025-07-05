@@ -13,22 +13,22 @@ enum AttackType {
 
 class Attack {
 protected:
-    size_t Damage;
-    size_t Speed;
+    unsigned int Damage;
+    float Speed;
     
     Vector2 Origin;
     Vector2 Destination;
     Vector2 Direction;
-    size_t Lifespan;
-    size_t FrameState;
-    size_t FrameTime;
+    unsigned short Lifespan;
+    unsigned short FrameState;
+    unsigned short FrameTime;
 
-    size_t ID;
+    unsigned short ID;
 public:
     Attack();
     virtual ~Attack();
 
-    virtual void SetID(const size_t&);
+    virtual void SetID(const unsigned short&);
     virtual void SetDirection(const Vector2&, const Vector2&);
     virtual void SetDirection(const Vector2&);
     virtual void SetOrigin(const Vector2&);

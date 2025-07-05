@@ -32,7 +32,7 @@ void WrathSlimeEnemy::Draw() {
     DrawRectangleLines(CurrentPosition.x - 32.0f, CurrentPosition.y - 64.0f, 64.0f, 64.0f, RED);
 }
 
-void WrathSlimeEnemy::OnDamaged(const size_t& _dmg) {
+void WrathSlimeEnemy::OnDamaged(const unsigned int& _dmg) {
 	if (Health <= _dmg) {
 		OnDeath();
 		Die();
@@ -53,6 +53,7 @@ void WrathSlimeEnemy::OnDamaged(const size_t& _dmg) {
 }
 
 void WrathSlimeEnemy::DrawHealthBar() {
-    DrawRectangle(CurrentPosition.x - 50.0f, CurrentPosition.y - 100.0f * SizeFactor, 100.0f, 5.0f, (Health > BASE_HEALTH) ? BLUE : BLACK);
-    if (Health <= BASE_HEALTH) DrawRectangle(CurrentPosition.x - 50.0f, CurrentPosition.y - 100.0f * SizeFactor, 100.0f * Health / BASE_HEALTH, 5.0f, RED);
+    DrawRectangle(CurrentPosition.x - 50.0f, CurrentPosition.y - 100.0f * SizeFactor, 100.0f, 5.0f, BLACK);
+	DrawRectangle(CurrentPosition.x - 50.0f, CurrentPosition.y - 100.0f * SizeFactor, 100.0f * ((Health >= BASE_HEALTH) ? 1.0f : 1.0f * Health / BASE_HEALTH), 5.0f, RED);
+	if (Health > BASE_HEALTH) DrawRectangle(CurrentPosition.x - 50.0f, CurrentPosition.y - 100.0f * SizeFactor, 100.0f * ((Health - BASE_HEALTH >= BASE_HEALTH) ? 1.0f : (1.0f * Health - BASE_HEALTH) / BASE_HEALTH), 5.0f, YELLOW);
 }

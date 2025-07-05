@@ -3,7 +3,7 @@
 #include "cmath"
 #include "Utils/AssetManager.h"
 
-ProjectileAttack::ProjectileAttack(const size_t& _dmg, const size_t& _spd) {
+ProjectileAttack::ProjectileAttack(const unsigned int& _dmg, const float& _spd) {
 	Damage = _dmg;
 	Speed = _spd;
 	Lifespan = 0;

@@ -16,37 +16,45 @@ public:
     const float SpawnOffsetX;
     const float SpawnOffsetY;
 protected:
-    size_t Health; //current health
+    unsigned int Health; //current health
+    unsigned int CashDrop; //money dropped upon death
     float Speed; //current speed
-    size_t CashDrop; //money dropped upon death
     
-    size_t WaypointIndex; //the waypoint it is heading to
+    unsigned short WaypointIndex; //the waypoint it is heading to
     Vector2 CurrentPosition; //the position on the path
-    Vector2 NextPosition; //the next position along the path
     Vector2 Direction; //the direction of movement
 
-    size_t FrameTime;
-    size_t AnimationState; //the kind direction
-    size_t FrameState; //the animation frame
+    Vector2 MemoryPosition; //some kind of anchor for the enemy when it is displaced
 
-    size_t LifeSpan; //the total time of which the enemy exists
-    size_t Timer; //something for ability
+    unsigned short FrameTime;
+    unsigned short AnimationState; //the kind direction
+    unsigned short FrameState; //the animation frame
+
+    unsigned short LifeSpan; //the total time of which the enemy exists
+    unsigned short Timer; //something for ability
     float PathTravel; //the total distance the enemy travels
 
-    size_t ID; //index number when the enemy is spawned
+    unsigned short ID; //index number when the enemy is spawned
+   
+    bool OnTrack; //is enemy following the path
+    unsigned short KnockBackFrame;
+    float KnockBackForce;
 public:
     Enemy();
     virtual ~Enemy();
 
-    virtual Vector2 GetPosition();
-    virtual size_t& GetHealth();
+    virtual Vector2& GetPosition();
+    virtual unsigned int& GetHealth();
 
-    virtual void SetID(const size_t&);
+    virtual void ApplyKnockBack(const float&, const unsigned short&, const Vector2&);
+
+    virtual void CalculateDirection(const Vector2&, const Vector2&);
+    virtual void SetID(const unsigned short&);
     virtual void SetPosition(const Vector2&);
     virtual void Update();
     virtual void Draw() = 0;
     virtual void DrawHealthBar() = 0;
-    virtual void OnDamaged(const size_t&);
+    virtual void OnDamaged(const unsigned int&);
     virtual void OnDeath();
     virtual void Die();
 };

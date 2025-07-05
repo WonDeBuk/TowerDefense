@@ -22,7 +22,7 @@ class GameManager
 private:
     char EnemyList[MAX_ENEMY][136];
     bool EnemyUsed[MAX_ENEMY] = { false };
-    size_t TotalEnemy;
+    unsigned short TotalEnemy;
 
     char AttackList[MAX_ATTACK][80];
     bool AttackUsed[MAX_ATTACK] = { false };
@@ -71,16 +71,16 @@ public:
 
     void Draw();
     void AddEnemy(const EnemyType&);
-    void AddAttack(const AttackType&, const size_t&, const size_t&, const Vector2&, const Vector2&);
+    void AddAttack(const AttackType&, const unsigned int&, const unsigned int&, const Vector2&, const Vector2&);
 
     void UpdateEnemy();
     void UpdateAttack();
     void Update();
-    void AddCash(const size_t&);
+    void AddCash(const unsigned int&);
 
     Enemy* AllocateEnemy(const EnemyType&);
-    void DeallocateEnemy(const size_t&);
+    void DeallocateEnemy(const unsigned short&);
 
-    Attack* AllocateAttack(const AttackType&, const size_t&, const size_t&);
-    void DeallocateAttack(const size_t&);
+    Attack* AllocateAttack(const AttackType&, const unsigned short&, const unsigned short&);
+    void DeallocateAttack(const unsigned short&);
 };

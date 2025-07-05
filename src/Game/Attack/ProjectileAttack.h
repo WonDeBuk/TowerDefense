@@ -4,7 +4,7 @@
 
 class ProjectileAttack : public Attack {
 public:
-	ProjectileAttack(const size_t&, const size_t&);
+	ProjectileAttack(const unsigned int&, const float&);
 	void Draw();
 	void Update();
 };

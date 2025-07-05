@@ -11,7 +11,7 @@ Attack::~Attack() {
 
 }
 
-void Attack::SetID(const size_t& _id) {
+void Attack::SetID(const unsigned short& _id) {
     ID = _id;
 }
 
@@ -41,7 +41,7 @@ void Attack::Update() {
 
     for (size_t i = 0; i < MAX_ENEMY; i++) {
         if (EnemyUsed[i] == true && CheckCollisionCircles(Origin, 16, reinterpret_cast<Enemy*>(EnemyList[i])->GetPosition(), 32.0f)) {
-            reinterpret_cast<Enemy*>(EnemyList[i])->OnDamaged(Damage);
+            reinterpret_cast<Enemy*>(EnemyList[i])->ApplyKnockBack(100, 15, Origin);
             Die();
             return;
         }
