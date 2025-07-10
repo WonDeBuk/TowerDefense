@@ -2,16 +2,17 @@
 
 #include "raylib.h"
 #include "Director.h"
+#include "../Utils/MathUtils.hpp"
 #include <string>
 
-class Director;
-
 class RenderState {
+private:
 protected:
     RenderState();
-    std::string StateTitle;
 public:
     virtual ~RenderState();
     virtual void Update();
     virtual void Draw() const;
+    virtual void Enter();
+    virtual void Exit();
 }; 

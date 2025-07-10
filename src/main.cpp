@@ -2,33 +2,24 @@
 #include "rlgl.h"
 
 #include "GUI/Director.h"
-#include "Utils/AssetManager.h"
+#include "Utils/ResourceManager.h"
 #include "Game/GameManager.h"
-#include "Game/WaveManager.h"
+#include "Utils/MathUtils.hpp"
 
 #include <string>
 #include <iostream>
-#include <thread>
-
-#define SCREEN_WIDTH 1600
-#define SCREEN_HEIGHT 960
 
 int main()
 {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Tower Defense");
     SetTargetFPS(60);
-    Director::GetInstance().TransitionTo(RENDER_STATE::MAIN);
-    while (!WindowShouldClose())
-    {
-        BeginDrawing();
+    Director* MainDirector = &Director::GetInstance();
+    MainDirector->Init();
+    while (!WindowShouldClose()) {
         ClearBackground(RAYWHITE);
-        Director::GetInstance().Draw();
+        BeginDrawing();
+        MainDirector->Draw();
         EndDrawing();
-        Director::GetInstance().Update();
+        MainDirector->Update();
     }
-    Director::GetInstance().TransitionTo(RENDER_STATE::WAITING);
-
-    return 0;
-    
 }
-

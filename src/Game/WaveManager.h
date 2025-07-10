@@ -1,32 +1,17 @@
 #pragma once
 
+#include "./Utils/Define.h"
 #include "GameManager.h"
-#include "WaveLayout.h"
 
 class WaveManager {
 private:
-	Rectangle SkipButton;
-	unsigned short CurrentWave;
-	unsigned short CurrentEnemy;
-	bool IntermissionTime;
-	size_t WaveTime;
-	WaveLayout* CurrentLayout;
-
-	WaveManager() {
-		SkipButton = { 10, 300, 100, 40 };
-		CurrentWave = 0;
-		CurrentEnemy = 0;
-		IntermissionTime = true;
-		WaveTime = 0;
-		CurrentLayout = nullptr;
-	}
-
+    static WaveData WaveList[MAX_WAVE];
+    static int CurrentWaveIndex;
+    static int WaveListSize;
+    static WaveData* CurrentWavePointer;
+    static PhaseData* CurrentPhasePointer;
 public:
-	~WaveManager();
-	static WaveManager& GetInstance();
-	void SetLayout(WaveLayout&);
-	bool Invoke();
-	void Update();
-	void Draw();
+    static void ResetConfig();
+    static void ReadConfig(MapType _MapType);
+    static void Update();
 };
-

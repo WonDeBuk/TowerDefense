@@ -1,276 +1,105 @@
-#include "Game/Enemy.h"
-#include "Game/GameManager.h"
+#include "Enemy.h"
+#include "GameManager.h"
 #include <cmath>
+#include <assert.h>
 #include <iostream>
 #include <raymath.h>
 
-float GetRandomFloat(float min, float max) {
-    return min + ((float)GetRandomValue(0, 100) / 100.0f) * (max - min);
+Enemy::Enemy() {
+    // Khởi tạo thời gian sống
+    EnemyLifespan = 0;
+
+    // Khởi tạo giá trị index của điểm Waypoint hướng tới ban đầu
+    HeadingWaypointIndex = 1;
+
+    // Khởi tạo vị trí ban đầu của Enemy ở vị trí của Waypoint đầu tiên
+    EnemyCurrentPosition = GameManager::GetWaypointByIndex(0);
+
+    // Khởi tạo hướng ban đầu của Enemy
+    EnemyDirection = Vector2Normalize(Vector2Subtract(GameManager::GetWaypointByIndex(HeadingWaypointIndex), GameManager::GetWaypointByIndex(HeadingWaypointIndex - 1)));
+
+    // Khởi tạo trạng thái hoạt ảnh ban đầu
+    EnemyFrameState = 0;
 }
 
-Enemy::Enemy() : SpawnOffsetX(GetRandomFloat(-10.0f, 10.0f)), SpawnOffsetY(GetRandomFloat(-10.0f, 10.0f)) {
-    WaypointIndex = 0;
-    Direction = { 0, 0 };
-    AnimationState = 0;
-    FrameState = 0;
-    FrameTime = 0;
-    Timer = 0;
-    ID = -1;
-    OnTrack = true;
-    KnockBackFrame = 0;
-    KnockBackForce = 0.0f;
+Enemy::~Enemy() {}
+
+void Enemy::SetEnemyID(const int& _ID) {
+    EnemyID = _ID;
 }
 
-Enemy::~Enemy() {
-    std::cout << Speed << std::endl;
-}
-
-Vector2& Enemy::GetPosition() {
-    return CurrentPosition;
-}
-
-unsigned int& Enemy::GetHealth() {
-    return Health;
-}
-
-void Enemy::SetID(const unsigned short& _id) {
-    if (_id >= 0 && _id < MAX_ENEMY)
-        ID = _id;
-}
-
-void Enemy::SetPosition(const Vector2& _pos) {
-    CurrentPosition.x = _pos.x + SpawnOffsetX;
-    CurrentPosition.y = _pos.y + SpawnOffsetY;
-}
-
-void Enemy::CalculateDirection(const Vector2& _source, const Vector2& _dest) {
-    Direction = Vector2Normalize(Vector2Subtract(_dest, _source));
-    float Angle = atan2f(Direction.y, Direction.x);
-    if (Angle > -PI / 4 && Angle <= PI / 4) AnimationState = 0; //left
-    else if (Angle > PI / 4 && Angle <= PI * 3 / 4) AnimationState = 1; //up
-    else if (Angle > PI * 3 / 4 || Angle <= -PI * 3 / 4) AnimationState = 0; //right
-    else AnimationState = 1; //down
-}
-
-void Enemy::ApplyKnockBack(const float& _force, const unsigned short& _frame, const Vector2& _source) {
-    KnockBackForce = _force / _frame;
-    KnockBackFrame = _frame;
-    if (OnTrack) MemoryPosition = CurrentPosition;
-    OnTrack = false;
-    CalculateDirection(CurrentPosition, _source);
-;}
-
-void Enemy::Update()
-{
-    if (!OnTrack && KnockBackFrame) {
-        //std::cout << CurrentPosition.x << ' ' << CurrentPosition.y << std::endl;
-        Speed -= KnockBackForce * KnockBackFrame;
-        KnockBackFrame--;
-        if (KnockBackFrame == 0) {
-            CalculateDirection(CurrentPosition, MemoryPosition);
-            Speed = 100; //placeholder ...
+Vector2 Enemy::GetEnemyFuturePosition(const int &_DeltaTime) const {
+    Vector2 EnemyFuturePosition = EnemyCurrentPosition;
+    int TempHeadingWaypointIndex = HeadingWaypointIndex;
+    Vector2 TempHeadingWaypointPosition = GameManager::GetWaypointByIndex(HeadingWaypointIndex);
+    Vector2 TempEnemyDirection = EnemyDirection;
+    for (int i = 0; i < _DeltaTime;) {
+        // Nếu khoảng cách từ Enemy đến vị trí của Waypoint lớn hơn khoảng cách mà Enemy có thể đi
+        // trong khoảng thời gian _DeltaTime còn lại thì thuật toán kế thúc, đã tìm được vị trí
+        // trong tương lai sau _DeltaTime
+        if (Vector2Distance(EnemyFuturePosition, TempHeadingWaypointPosition) >= (EnemySpeed * (_DeltaTime - i))) {
+            EnemyFuturePosition.x += (_DeltaTime - i) * EnemySpeed * TempEnemyDirection.x;
+            EnemyFuturePosition.y += (_DeltaTime - i) * EnemySpeed * TempEnemyDirection.y;
+            i = _DeltaTime;
+        } else {
+            i += (int) ceilf(Vector2Distance(EnemyFuturePosition, TempHeadingWaypointPosition) / EnemySpeed);
+            EnemyFuturePosition = TempHeadingWaypointPosition;
+            if (TempHeadingWaypointIndex != GameManager::GetWaypointSize() - 1) {
+                TempHeadingWaypointIndex++;
+                TempHeadingWaypointPosition = GameManager::GetWaypointByIndex(TempHeadingWaypointIndex);
+                TempEnemyDirection = Vector2Normalize(Vector2Subtract(GameManager::GetWaypointByIndex(TempHeadingWaypointIndex), GameManager::GetWaypointByIndex(TempHeadingWaypointIndex - 1)));
+            } else {
+                break;
+            }
         }
     }
 
-    GameManager& GameM = GameManager::GetInstance();
-    Vector2 OffsetWaypoint = { GameM.GetWayPointList()[WaypointIndex].x + SpawnOffsetX, GameM.GetWayPointList()[WaypointIndex].y + SpawnOffsetY };
-    float ClosingVicinity = 0.0f;
+    return EnemyFuturePosition;
+}
 
-    if (!OnTrack && KnockBackFrame == 0) {
-        ClosingVicinity = Vector2DistanceSqr(CurrentPosition, MemoryPosition);
-        if (ClosingVicinity <= powf(Speed / GetFPS(), 2)) {
-            OnTrack = true;
-            CurrentPosition = MemoryPosition;
-            CalculateDirection(CurrentPosition, OffsetWaypoint);
-            return;
+void Enemy::Update() {
+    // Kiểm tra nếu vị trí hiện tại bằng với vị trí của Waypoint mà Enemy đang hướng đến thì ta cập nhật các properties
+    if (EnemyCurrentPosition == GameManager::GetWaypointByIndex(HeadingWaypointIndex)) {
+        // Tăng index của Waypoint mà Enemy đang hướng đến sang Waypoint kế tiếp trong danh sách Waypoint
+        HeadingWaypointIndex++;
+        // Kiểm tra nếu đã đi đến Waypoint cuối cùng thì sẽ Kill Enemy
+        if (HeadingWaypointIndex == GameManager::GetWaypointSize()) {
+            Enemy::EnemyKill();
         }
+        // Cập nhật hướng Enemy đang đi
+        EnemyDirection = Vector2Normalize(Vector2Subtract(GameManager::GetWaypointByIndex(HeadingWaypointIndex), GameManager::GetWaypointByIndex(HeadingWaypointIndex - 1)));
+        // Di chuyển vị trí của Enemy
+        EnemyCurrentPosition.x += EnemySpeed * EnemyDirection.x;
+        EnemyCurrentPosition.y += EnemySpeed * EnemyDirection.y;
     }
-    
-    ClosingVicinity = Vector2DistanceSqr(CurrentPosition, OffsetWaypoint);
-    if (CurrentPosition == OffsetWaypoint) {
-        WaypointIndex++;
-        if (WaypointIndex == GameM.GetWayPointSize())
-        {
-            Die();
-            return;
-        }
-        Direction = Vector2Normalize(Vector2Subtract(GameM.GetWayPointList()[WaypointIndex], GameM.GetWayPointList()[WaypointIndex - 1]));
-        if (Direction.x == 1) AnimationState = 0;
-        else if (Direction.x == -1) AnimationState = 0;
-        else if (Direction.y == 1) AnimationState = 1;
-        else AnimationState = 1;
+    // Kiểm tra nếu khoảng cách giữa vị trí hiện tại và điểm Waypoint đang hướng tới nếu nhỏ hơn hoặc
+    // bằng khoảng cách có thể đi trong một đơn vị thời gian thì ta đặt vị trí của Enemy ở vị trí của
+    // điểm Waypoint đang hướng tớ, nếu không thì Enemy sẽ đi qua khỏi điểm Waypoint
+    else if (Vector2DistanceSqr(EnemyCurrentPosition, GameManager::GetWaypointByIndex(HeadingWaypointIndex)) <= EnemySpeed * EnemySpeed) {
+        // Cập nhật vị trí của Enemy tại điểm Waypoint
+        EnemyCurrentPosition = GameManager::GetWaypointByIndex(HeadingWaypointIndex);
+    } 
+    // Nếu không thuộc một trong hai trường hợp trên thì Enemy di chuyển bình thường
+    else {
+        // Di chuyển vị trí của Enemy
+        EnemyCurrentPosition.x += EnemySpeed * EnemyDirection.x;
+        EnemyCurrentPosition.y += EnemySpeed * EnemyDirection.y;
+    }
 
-        CurrentPosition.x += Speed * Direction.x / GetFPS();
-        CurrentPosition.y += Speed * Direction.y / GetFPS();
+    EnemyLifespan++;
+}
+
+void Enemy::OnDamage(const float& _Damage) {
+    if (EnemyHealth <= _Damage) {
+        OnDeath();
         return;
     }
-
-    
-    if (ClosingVicinity <= powf(Speed / GetFPS(), 2)) {
-        CurrentPosition = OffsetWaypoint;
-        OnTrack = true;
-        return;
-    }
-
-    CurrentPosition.x += Speed * Direction.x / GetFPS();
-    CurrentPosition.y += Speed * Direction.y / GetFPS();
+    EnemyHealth -= _Damage;
 }
 
-void Enemy::OnDamaged(const unsigned int& _damage)
-{
-    if (Health <= _damage)
-    {
-        Die();
-        return;
-    }
-
-    Health -= _damage;
+void Enemy::OnDeath() {
 }
 
-void Enemy::OnDeath()
-{
-    GameManager::GetInstance().AddCash(CashDrop);
+void Enemy::EnemyKill() const{
+    GameManager::GetInstance().KillEnemy(EnemyID);
 }
-
-void Enemy::Die()
-{
-    if (Health == 0) OnDeath();
-    GameManager::GetInstance().DeallocateEnemy(ID);
-
-}
-/*
-Enemy::Enemy() : Angle(0.0f), Health(0), AnimationState(0), EnemyPosition({0.0f, 0.0f}), EnemyFuturePosition({0.0f, 0.0f}), StartWayPoint({0.0f, 0.0f}), EndWayPoint({0.0f, 0.0f}), SpawnTime(0), CurrentWayPoint(1), Type(ENEMY_TYPE::ENEMY_NONE)
-{
-}
-
-const ENEMY_TYPE &Enemy::GetEnemyType() const
-{
-    return Type;
-}
-
-const Vector2& Enemy::GetEnemyPosition() const
-{
-    return EnemyPosition;
-}
-
-const size_t &Enemy::GetHealth() const
-{
-    return Health;
-}
-void Enemy::SetEnemyPosition(const Vector2& __Position)
-{
-    EnemyPosition = __Position;
-    float DeltaX = EndWayPoint.x - StartWayPoint.x;
-    float DeltaY = EndWayPoint.y - StartWayPoint.y;
-    Angle = atan2f(DeltaY, DeltaX);
-    EnemyFuturePosition.x = EnemyPosition.x + 0.5f * cos(Angle);
-    EnemyFuturePosition.y = EnemyPosition.y + 0.5f * sin(Angle);
-}
-
-void Enemy::SetStartWayPoint(const Vector2& __WayPoint)
-{
-    StartWayPoint = __WayPoint;
-}
-
-void Enemy::SetEndWayPoint(const Vector2& __WayPoint)
-{
-    EndWayPoint = __WayPoint;
-}
-
-void Enemy::SetType(const ENEMY_TYPE& __Type)
-{
-    Type = __Type;
-}
-
-void Enemy::SetHealth(const size_t& __Health)
-{
-    Health = __Health;
-}
-
-void Enemy::AddDamage(const size_t& __Damage)
-{
-    if (__Damage >= Health)
-    {
-        Type = ENEMY_TYPE::ENEMY_NONE;
-        AnimationState = 0;
-        SpawnTime = 0;
-    }
-    else
-    {
-        Health -= __Damage;
-    }
-}
-
-void Enemy::SetCurrentWayPoint(const size_t& __CurrentWayPoint)
-{
-    CurrentWayPoint = __CurrentWayPoint;
-}
-
-void Enemy::Draw() const
-{
-    if (Type == ENEMY_TYPE::ZOMBIE)
-    {
-        // DrawRectangleLinesEx({(int) EnemyPosition.x - 24.0f, (int) EnemyPosition.y - 24.0f, 48.0f, 48.0f}, 1.0f, WHITE);
-        DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/Slime.png"), {AnimationState * 32.0f, AnimationState / 3 * 32.0f, 32.0f, 32.0f}, {(int) EnemyPosition.x - 24.0f, (int) EnemyPosition.y - 24.0f, 48.0f, 48.0f}, {0.0f, 0.0f}, 0.0f, WHITE);
-        DrawHealth();
-    }
-}
-
-void Enemy::DrawHealth() const
-{
-    if (Type == ENEMY_TYPE::ENEMY_NONE)
-    {
-        return;
-    }
-
-    DrawTexturePro(AssetManager::GetInstance().LoadTexture("ui/HealthBar.png"), {(5 - static_cast<size_t>((float) Health / ((float) 800 / 5))) * 48.0f, 0.0f, 48.0f, 16.0f}, { (int) EnemyPosition.x - 32.0f,(int) EnemyPosition.y - 36.0f, 64.0f, 16.0f }, {0.0f, 0.0f}, 0.0f, WHITE);
-}
-
-void Enemy::Update()
-{
-    if (Type == ENEMY_TYPE::ENEMY_NONE)
-    {
-        return;
-    }
-
-    if (SpawnTime % 10 == 0)
-    {
-        AnimationState++;
-        AnimationState %= 3;
-        if (PI / 2 - abs(Angle) < 0.01f)
-        {
-            AnimationState += 3;
-        }
-        SpawnTime = 0;
-    }
-
-    float DifferenceFutureEnd = sqrt((EnemyFuturePosition.x - EndWayPoint.x) * (EnemyFuturePosition.x - EndWayPoint.x) +
-                                        (EnemyFuturePosition.y - EndWayPoint.y) * (EnemyFuturePosition.y - EndWayPoint.y));
-    if (DifferenceFutureEnd - 0.5f > 0.01f)
-    {
-        EnemyPosition = EnemyFuturePosition;
-    }
-    else
-    {
-        ++CurrentWayPoint;
-        EnemyPosition = EndWayPoint;
-        if (CurrentWayPoint == GameManager::GetInstance().GetWayPointSize())
-        {
-            Type = ENEMY_TYPE::ENEMY_NONE;
-            AnimationState = 0;
-            SpawnTime = 0;
-            return;
-        }
-        StartWayPoint = EndWayPoint;
-        EndWayPoint = GameManager::GetInstance().GetWayPointList()[CurrentWayPoint];
-        float DeltaX = EndWayPoint.x - StartWayPoint.x;
-        float DeltaY = EndWayPoint.y - StartWayPoint.y;
-        Angle = atan2f(DeltaY, DeltaX);
-    }
-
-    EnemyFuturePosition.x = EnemyPosition.x + 0.5f * cos(Angle);
-    EnemyFuturePosition.y = EnemyPosition.y + 0.5f * sin(Angle);
-
-    SpawnTime++;
-}
-*/

@@ -1,82 +1,33 @@
 #pragma once
 
 #include <cmath>
-#include <cstdlib>
 #include "raylib.h"
 
-Vector2 Lerp(const Vector2& p0, const Vector2& p1, float t) {
-    return {
-        p0.x + t * (p1.x - p0.x),
-        p0.y + t * (p1.y - p0.y)
-    };
-}
 
-Vector2 Bezier(const Vector2& p0, const Vector2& p1, const Vector2& p2, float t) {
-    float u = 1.0f - t;
-    return {
-        u * u * p0.x + 2.0f * u * t * p1.x + t * t * p2.x,
-        u * u * p0.y + 2.0f * u * t * p1.y + t * t * p2.y
-    };
-}
+#define SCREEN_WIDTH 1600
+#define SCREEN_HEIGHT 960
+const Color Palette[] = {
+    {248, 167, 146, 255},
+    {246, 156, 155, 255},
+    {244, 151, 169, 255},
+    {219, 135, 185, 255},
+    {189, 129, 183, 255},
+    {153, 119, 180, 255},
+    {135, 123, 185, 255},
+    {124, 139, 198, 255},
+    {107, 188, 233, 255},
+    {106, 203, 222, 255},
+    {118, 203, 200, 255},
+    {130, 204, 181, 255},
+    {143, 205, 158, 255},
+    {213, 226, 134, 255},
+    {238, 235, 128, 255},
+    {255, 246, 143, 255},
+    {255, 237, 129, 255},
+    {254, 225, 133, 255},
+    {250, 188, 137, 255},
+    {249, 180, 138, 255}
+};
+const float SegmentTime = 2000.0f;
 
-float BezierDerivative(const Vector2& p0, const Vector2& p1, const Vector2& p2, float t) {
-    return 2.0f * (1.0f - t) * (p1.x - p0.x) + 2.0f * t * (p2.x - p1.x);
-}
-
-Vector2 Normalize(const Vector2& v) {
-    float length = sqrt(v.x * v.x + v.y * v.y);
-    if (length > 0.0f) {
-        return { v.x / length, v.y / length };
-    }
-    return { 0.0f, 0.0f };
-}
-
-Vector2 Perpendicular(const Vector2& v) {
-    return { -v.y, v.x };
-}
-
-// Vector2 BezierCubic(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Vector2& p3, float t) {
-//     float u = 1.0f - t;
-//     return {
-//         u * u * u * p0.x + 3.0f * u * u * t * p1.x + 3.0f * u * t * t * p2.x + t * t * t * p3.x,
-//         u * u * u * p0.y + 3.0f * u * u * t * p1.y + 3.0f * u * t * t * p2.y + t * t * t * p3.y
-//     };
-// }
-
-float length(const Vector2& v) {
-    return sqrt(v.x * v.x + v.y * v.y);
-}
-
-float randomOffset(float range) {
-    return (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * range;
-}
-
-Vector2 Subtract(const Vector2& v1, const Vector2& v2) {
-    return { v1.x - v2.x, v1.y - v2.y };
-}
-
-Vector2 Multiply(const Vector2& v, float scalar) {
-    return { v.x * scalar, v.y * scalar };
-}
-
-Vector2 Add(const Vector2& v1, const Vector2& v2) {
-    return { v1.x + v2.x, v1.y + v2.y };
-}
-
-void generateBezierWithNoise(
-    const Vector2& startPoint,
-    const Vector2& arrivePoint,
-    Vector2& control1,
-    Vector2& control2,
-    float noiseStrength = 30.0f
-) {
-    Vector2 dir = Normalize(Subtract(arrivePoint, startPoint));
-    Vector2 perp = Perpendicular(dir);
-    float distance = length(Subtract(arrivePoint, startPoint));
-
-    float offset1 = randomOffset(noiseStrength);
-    float offset2 = randomOffset(noiseStrength);
-
-    control1 = Add(startPoint, Add(Multiply(dir, (distance * 0.3f)), Multiply(perp, offset1)));
-    control2 = Add(startPoint, Add(Multiply(dir, (distance * 0.6f)), Multiply(perp, offset2)));
-}
+Vector3 ColorCalculate();

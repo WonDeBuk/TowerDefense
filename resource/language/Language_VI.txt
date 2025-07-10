@@ -1,0 +1,13 @@
+MainButton1: Bắt Đầu
+MainButton2: Tiếp Tục
+MainButton3: Từ Điển
+MainButton4: Cài Đặt
+Setting1: Cài Đặt
+Setting2: Âm Nhạc
+Setting3: Hiệu Ứng
+Setting4: Ngôn Ngữ
+ContinueTitle: Tiếp Tục
+DictionaryTitle: Từ Điển
+InformationTitle: Thông Tin
+Error: Lỗi
+BackButton: Trở Về

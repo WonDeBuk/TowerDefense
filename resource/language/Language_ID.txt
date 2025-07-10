@@ -1,0 +1,12 @@
+MainButton1: Awal
+MainButton2: Melanjutkan
+MainButton3: Kamus
+MainButton4: Pengaturan
+Setting1: Pengaturan
+Setting2: Musik
+Setting3: Memengaruhi
+Setting4: Bahasa
+DictionaryTitle: Kamus
+InformationTitle: Informasi
+Error: Kesalahan
+BackButton: Kembali

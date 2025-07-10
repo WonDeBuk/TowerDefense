@@ -1,86 +1,77 @@
 #pragma once
 
-#include "Utils/AssetManager.h"
+#include "./Utils/Define.h"
 #include "Enemy.h"
 #include "Attack.h"
-#include "Tower.h"
-#include "WaveLayout.h"
-#include <new>
+// #include "Tower.h"
 #include <raylib.h>
 
-#define MAX_ENEMY 100
-#define MAX_ATTACK 100
-#define MAX_TOWER 10
-#define MAX_WAYPOINT 20
-#define ENEMY_SPAWN_TIME 100
-#define MAP_WIDTH 50
-#define MAP_HEIGHT 30
-class Attack;
-
-class GameManager
-{
+class GameManager {
 private:
-    char EnemyList[MAX_ENEMY][136];
-    bool EnemyUsed[MAX_ENEMY] = { false };
-    unsigned short TotalEnemy;
+    // Các property thuộc về Enemy
+    static char EnemyPool[MAX_ENEMY_AMOUNT][MAX_ENEMY_SIZE];
+    static bool EnemyPoolTracker[MAX_ENEMY_AMOUNT];
+    static int CurrentEnemyAmount;
+    static Vector2 WaypointList[MAX_WAYPOINT_AMOUNT];
+    static int WaypointSize;
 
-    char AttackList[MAX_ATTACK][80];
-    bool AttackUsed[MAX_ATTACK] = { false };
-    
-    WaveLayout LayoutConfig[4];
+    // Các property thuộc về Attack
+    static char AttackPool[MAX_ATTACK_AMOUNT][MAX_ATTACK_SIZE];
+    static bool AttackPoolTracker[MAX_ATTACK_AMOUNT];
+    static int CurrentAttackAmount;
 
-    Vector2* WayPointList;
-    size_t WayPointSize;
-    size_t Cash;
-    size_t Timer;
+    // Các property thuộc về Tower
+    static char TowerPool[MAX_TOWER_AMOUNT][MAX_TOWER_SIZE];
+    static Vector2 TowerPlotList[MAX_TOWER_AMOUNT];
+    static bool TowerPlotAndPoolTracker[MAX_TOWER_AMOUNT];
+    static int TowerPlotSize;
+    static int CurrentTowerAmount;
 
-    GameManager()
-    {        
-        TotalEnemy = 0;
-        Timer = 60;
-        WayPointList = new Vector2[MAX_WAYPOINT];
-        WayPointSize = 10;
+    // Các property khác
+    static MapType CurrentMap;
+    static Texture2D* MapTexture;
+    static size_t Timer;
 
-        LayoutConfig[0].LoadContent(WAVE_LAYOUT_FOREST);
-        LayoutConfig[1].LoadContent(WAVE_LAYOUT_FOREST);
-        LayoutConfig[2].LoadContent(WAVE_LAYOUT_FOREST);
-        LayoutConfig[3].LoadContent(WAVE_LAYOUT_FOREST);
-
-        WayPointList[0] = { 80.0f, 675.0f };
-        WayPointList[1] = { 225.0f, 675.0f };
-        WayPointList[2] = { 225.0f, 375.0f };
-        WayPointList[3] = { 480.0f, 375.0f };
-        WayPointList[4] = { 480.0f, 795.0f };
-        WayPointList[5] = { 770.0f, 795.0f };
-        WayPointList[6] = { 770.0f, 245.0f };
-        WayPointList[7] = { 1150.0f, 245.0f };
-        WayPointList[8] = { 1150.0f, 535.0f };
-        WayPointList[9] = { 1570.0f, 535.0f };
-    }
+    GameManager();
 public:
-    ~GameManager();
+    // Các method liên quan đến config của game
+    static GameManager& GetInstance();                                              // Dùng để lấy instance của GameManager để sử dụng các hàm non-static
+    static const size_t& GetTime();                                                 // Dùng để lấy thời gian hiện tại của GameManager để đồng bộ các hoạt động
+    static const int& GetWaypointSize();                                            // Dùng để lấy số lượng waypoint của map: dùng trong hàm di chuyển của Enemy khi Enemy gặp waypoint cuối thì Enemy sẽ chết
+    static const Vector2& GetWaypointByIndex(int _WaypointIndex);                   // Dùng để lấy tọa độ của một waypoint cụ thể thông qua index của waypoint: dùng trong hàm di chuyển của Enemy dùng để tính toán hướng của Enemy
+    static const Vector2(&GetWaypointList())[MAX_WAYPOINT_AMOUNT];                  // Dùng để lấy danh sách tọa độ các waypoint của map
+    static const Vector2(&GetTowerPlotList())[MAX_TOWER_AMOUNT];                    // Dùng để lấy danh sách tọa độ của các vị trí đặt tháp: dùng trong GameState để có thể lấy các vị trí để người chơi thực hiện quá trình đặt tháp
+    static const Vector2& GetTowerPlotByID(const int& _TowerID);                    // Dùng để lấy tọa độ của một chỗ đặt tháp cụ thể bằng thông qua ID: dùng để set vị trí cho các tower
+    static const bool(&GetTowerPlotAndPoolTracker())[MAX_TOWER_AMOUNT];             // Dùng để lấy danh sách kiểm tra xem các vị trí đặt tháp có trụ được đặt hay chưa: dùng trong GameState để check xem vị trí đặt có được đặt tháp hay chưa
+    static const int& GetTowerPlotSize();                                           // Dùng để lấy số lượng vị trí đặt tháp của map
+    static const MapType& GetCurrentMap();
+    void ResetConfig();                                                             // Dùng để xóa hết tất cả dữ liệu của map hiện tại
+    void ChangeConfig(const MapType& _MapType);                                     // Dùng để đọc dữ liệu từ config và nạp vào nơi chứa dữ liệu config map
+    void ReadConfig(const MapType& _MapType);
+    void UnitTestPrintData();
 
-    static GameManager& GetInstance();
-    const Vector2* GetWayPointList() const;
-    const size_t& GetWayPointSize() const;
-    char(&GetEnemyList())[MAX_ENEMY][136];
-    const bool(&GetEnemyUsed() const)[MAX_ENEMY];
-    const size_t& GetTotalEnemy() const;
+    // Các method liên quan đến việc sử dụng EnemyPool
+    static const char(&GetEnemyPool())[MAX_ENEMY_AMOUNT][MAX_ENEMY_SIZE];
+    static const bool(&GetEnemyPoolTracker())[MAX_ENEMY_AMOUNT];
+    static const int& GetCurrentEnemyAmount();
+    Enemy* GetEnemyByID(const int& _EnemyID) const;
+    static void AddEnemy(const EnemyType& _EnemyType, Enemy* _EnemyTemplate = nullptr);
+    void KillEnemy(const int& _EnemyID);
 
-    void ChangeLayoutConfig(const WaveLayoutType&);
+    // Các method liên quan đến việc sử dụng AttackPool
+    static const char(&GetAttackPool())[MAX_ENEMY_AMOUNT][MAX_ATTACK_SIZE];
+    static const bool(&GetAttackPoolTracker())[MAX_ENEMY_AMOUNT];
+    static const int& GetCurrentAttackAmount();
+    void AddAttack(const AttackType& _AttackType, const Attack* _AttackTemplate);
+    void KillAttack(const int& _AttackID);
 
-    void Draw();
-    void AddEnemy(const EnemyType&);
-    void AddAttack(const AttackType&, const unsigned int&, const unsigned int&, const Vector2&, const Vector2&);
+    // Các method liên quan đến việc sử dụng TowerPool
+    // static const char(&GetTowerPool())[MAX_TOWER_AMOUNT][MAX_TOWER_SIZE];
+    // static const int& GetCurrentTowerAmount();
+    // void AddTower(const TowerType& _TowerType, const int& _SlotID);
+    // void KillTower(const int& _TowerID);
 
-    void UpdateEnemy();
-    void UpdateAttack();
+
+    void Draw() const;
     void Update();
-    void AddCash(const unsigned int&);
-
-    Enemy* AllocateEnemy(const EnemyType&);
-    void DeallocateEnemy(const unsigned short&);
-
-    Attack* AllocateAttack(const AttackType&, const unsigned short&, const unsigned short&);
-    void DeallocateAttack(const unsigned short&);
 };

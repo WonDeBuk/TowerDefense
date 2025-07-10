@@ -6,32 +6,70 @@ A tower defense game implemented in C++ using Raylib for graphics and the State 
 ```
 TowerDefense/
 ├── src/
-│   ├── GUI/
-│   │   ├── MenuDirector.hpp
-│   │   ├── MenuDirector.cpp
-│   │   ├── MenuState.hpp
-│   │   ├── MainMenu.hpp
-│   │   ├── DictionaryMenuState.hpp
-│   │   ├── PlayMenuState.hpp
-│   │   ├── SettingsMenuState.hpp
-│   │   ├── TowerInfo.hpp
-│   │   ├── TowerListContainer.hpp
-│   │   ├── PagedContainer.hpp
-│   │   ├── MenuType.hpp
-│   │   └── MenuItem.hpp
-│   └── main.cpp
+│   ├── main.cpp
+│   ├── Utils/
+│   │   ├── AssetManager.cpp
+│   │   ├── AssetManager.h
+│   │   ├── MathUtils.hpp
+│   │   └── UnicodeText.hpp
+│   ├── Game/
+│   │   ├── Attack.cpp
+│   │   ├── Attack.h
+│   │   ├── Enemy.cpp
+│   │   ├── Enemy.h
+│   │   ├── GameManager.cpp
+│   │   ├── GameManager.h
+│   │   ├── Tower.cpp
+│   │   ├── Tower.h
+│   │   ├── Attack/
+│   │   │   ├── Area.h
+│   │   │   ├── Bullet.h
+│   │   │   ├── Laser.h
+│   │   │   ├── Missile.h
+│   │   │   └── Projectile.h
+│   │   ├── Enemy/
+│   │   │   └── Slime.h
+│   │   └── Tower/
+│   │       └── Frieren.h
+│   └── GUI/
+│       ├── Director.cpp
+│       ├── Director.h
+│       ├── RenderState.cpp
+│       ├── RenderState.h
+│       ├── State/
+│       │   ├── DictionaryState.cpp
+│       │   ├── DictionaryState.h
+│       │   ├── GameState.cpp
+│       │   ├── GameState.h
+│       │   ├── LoadGameState.cpp
+│       │   ├── LoadGameState.h
+│       │   ├── MainState.cpp
+│       │   ├── MainState.h
+│       │   ├── PlayState.cpp
+│       │   ├── PlayState.h
+│       │   ├── SettingState.cpp
+│       │   ├── SettingState.h
+│       │   ├── WaitingState.cpp
+│       │   └── WaitingState.h
+│       └── Element/
+│           ├── ChampionListContainer.cpp
+│           ├── ChampionListContainer.h
+│           └── PagedContainer.h
 ├── raylib/
 │   ├── include/
-│   │   └── raylib.h
+│   │   ├── raylib.h
+│   │   ├── raymath.h
+│   │   └── rlgl.h
 │   ├── lib/
 │   │   └── raylib.lib
 │   └── bin/
 │       └── raylib.dll
 ├── assets/
-│   ├── textures/
-│   ├── sounds/
-│   ├── music/
-│   └── fonts/
+│   ├── fonts/
+│   │   └── CoderCrux.otf
+│   └── textures/
+│       └── ui/
+│           └── [various image and shader files]
 ├── CMakeLists.txt
 └── README.md
 ```
