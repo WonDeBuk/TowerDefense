@@ -1,69 +1,88 @@
 #include "Director.h"
-#include "State/DictionaryState.h"
-#include "State/LoadGameState.h"
+#include <iostream>
 #include "State/MainState.h"
 #include "State/PlayState.h"
-#include "State/SettingState.h"
-#include "State/WaitingState.h"
 #include "State/GameState.h"
+#include "State/WaitingState.h"
+#include "State/DictionaryState.h"
+#include "State/LoadGameState.h"
+#include "State/SettingState.h"
 
-Director& Director::GetInstance()
-{
+Director::Director() : Time(0) {
+    
+}
+
+void Director::Init() {
+    MenuBuffer = new RenderState*[7];
+    MenuBuffer[0] = new MainState;
+    MenuBuffer[1] = new PlayState;
+    MenuBuffer[2] = new LoadGameState;
+    MenuBuffer[3] = new DictionaryState;
+    MenuBuffer[4] = new SettingState;
+    MenuBuffer[5] = new WaitingState;
+    MenuBuffer[6] = new GameState;
+    CurrentState = MenuBuffer[0];
+}
+
+Director& Director::GetInstance() {
     static Director Instance;
     return Instance;
 }
 
-void Director::TransitionTo(const RENDER_STATE &__State)
-{
-
-    if (CurrentState) {
-        delete CurrentState;
-        CurrentState = nullptr;
-    }
+void Director::TransitionTo(const RENDER_STATE &__State) {
+    CurrentState->Exit();
 
     switch (__State) {
         case RENDER_STATE::MAIN:
-            CurrentState = new MainState;
-            break;
-        case RENDER_STATE::DICTIONARY:
-            CurrentState = new DictionaryState;
+            CurrentState = MenuBuffer[0];
             break;
         case RENDER_STATE::PLAY:
-            CurrentState = new PlayState;
+            CurrentState = MenuBuffer[1];
             break;
         case RENDER_STATE::LOAD_GAME:
-            CurrentState = new LoadGameState;
+            CurrentState = MenuBuffer[2];
+            break;
+        case RENDER_STATE::DICTIONARY:
+            CurrentState = MenuBuffer[3];
             break;
         case RENDER_STATE::SETTING:
-            CurrentState = new SettingState;
-            break;
-        case RENDER_STATE::GAME:
-            CurrentState = new GameState;
+            CurrentState = MenuBuffer[4];
             break;
         case RENDER_STATE::WAITING:
-            CurrentState = new WaitingState;
+            CurrentState = MenuBuffer[5];
+            break;
+        case RENDER_STATE::GAME:
+            CurrentState = MenuBuffer[6];
             break;
         default:
             break;
     }
+
+    CurrentState->Enter();
 }
 
 void Director::Update() {
+    Time++;
     if (CurrentState) {
         CurrentState->Update();
     }
 }
 
-void Director::Draw() {
+void Director::Draw() const {
     if (CurrentState) {
         CurrentState->Draw();
     }
 }
 
-Director::~Director()
-{
-    if (CurrentState) {
-        delete CurrentState;
-        CurrentState = nullptr;
+size_t Director::GetTime() const {
+    return Time;
+}
+
+Director::~Director() {
+    Director::TransitionTo(RENDER_STATE::WAITING);
+    for (int i = 0; i < 5; i++)
+    {
+        delete MenuBuffer[i];
     }
+    delete[] MenuBuffer;
 }

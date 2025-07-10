@@ -6,12 +6,55 @@
 class DictionaryState : public RenderState
 {
 private:
-    ChampionListContainer ChampionList;
-    Rectangle BackButton;
+    // Container Properties
+    Rectangle ContainerDimension;
+    const float TDPaddingPercent = 0.125f;
+    const float RLPaddingPercent = 0.125f;
+    const float ContentMargin = 20.0f;
+    const float PaddingFromTitleContent = 20.0f;
+
+    // Icon Properties
+    const float PaddingFromText = 20.0f;
+    Rectangle DictionaryIconDimension[2];
+    Rectangle InformationIconDimension[2];
+    Texture2D* DictionaryIconTexture[2];
+    Texture2D* InformationIconTexture;
+
+    // Content Properties
+    char* DictionaryTitle;
+    Vector2 DictionaryTitleSize;
+    Vector2 DictionaryTitlePosition;
+    char* InformationTitle;
+    Vector2 InformationTitleSize;
+    Vector2 InformationTitlePosition;
+    Font* ContentFont;
+    const float ContentFontSize = 48.0f;
+
+    // Dictionary Container Properties
+    Rectangle DictionaryContainerDimension;
+    const float DictionaryContainerPercentage = 0.55f;
+    ChampionListContainer* ChampionList;
+
+    // Information Container Properties
+    Rectangle InformationContainerDimension;
+    const float InformationContainerPercentage = 0.4f;
+
+    // Back Button Properties
+    Rectangle BackButtonDimension;
+    Rectangle ButtonIconDimension;
+    Rectangle BackButtonIndicatorDimension[4];
+    char* BackContent;
+    Vector2 BackContentSize;
+    Vector2 BackContentPosition;
+    Texture2D* BackButtonIcon;
+    Texture2D* BackButtonBoxIndicator;
+    bool IsBackButtonHover;
+    const float PaddingBotContainer = 20.0f;
 public:
     DictionaryState();
 
     void Update() override;
-
     void Draw() const override;
+    void Enter() override;
+    void Exit() override;
 }; 

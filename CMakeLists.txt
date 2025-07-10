@@ -8,35 +8,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
 # Define asset paths
-set(ASSETS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/assets")
-set(ASSETS_OUTPUT_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets")
+set(RESOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resource")
+set(RESOURCE_OUTPUT_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resource")
 
 # Add header files
-set(HEADERS    
-    src/Utils/LanguageManager.h
-    src/Utils/AssetManager.h
+set(HEADERS
+    src/Utils/Define.h
+    src/Utils/ResourceManager.h
+    src/GUI/Director.h
     src/Utils/MathUtils.hpp
     src/Utils/UnicodeText.hpp
-
-    src/Game/GameManager.h
-    src/Game/WaveManager.h
-
-    src/Game/WaveLayout.h
-
-    src/Game/Enemy.h
-    src/Game/Enemy/SlimeEnemy.h
-    src/Game/Enemy/WrathSlimeEnemy.h
-    src/Game/Enemy/SniperSlimeEnemy.h
-    
-    src/Game/Attack.h
-    src/Game/Attack/ProjectileAttack.h
-
-    src/Game/Tower.h
-    
-    src/GUI/Element/PagedContainer.h
-    src/GUI/Element/ChampionListContainer.h
-    
-    src/GUI/Director.h
     src/GUI/RenderState.h
     src/GUI/State/DictionaryState.h
     src/GUI/State/LoadGameState.h
@@ -45,35 +26,23 @@ set(HEADERS
     src/GUI/State/SettingState.h
     src/GUI/State/WaitingState.h
     src/GUI/State/GameState.h
+    src/GUI/Element/PagedContainer.h
+    src/GUI/Element/ChampionListContainer.h
+    src/Game/GameManager.h
+    src/Game/WaveManager.h
+    src/Game/Enemy.h
+    src/Game/Attack.h
+    src/Game/Attack/Projectile.h
+    src/Game/Attack/Missile.h
+    src/Game/Enemy/Slime.h
 )
 
 # Add source files
 set(SOURCES
     src/main.cpp
-
-    src/Utils/LanguageManager.cpp 
-    src/Utils/AssetManager.cpp
-    src/Utils/MathUtils.hpp
+    src/Utils/ResourceManager.cpp
+    src/Utils/MathUtils.cpp
     src/Utils/UnicodeText.hpp
-    
-    src/Game/GameManager.cpp
-    src/Game/WaveManager.cpp
-
-    src/Game/WaveLayout.cpp
-
-    src/Game/Enemy.cpp
-    src/Game/Enemy/SlimeEnemy.cpp
-    src/Game/Enemy/WrathSlimeEnemy.cpp
-    src/Game/Enemy/SniperSlimeEnemy.cpp
-    
-    src/Game/Attack.cpp
-    src/Game/Attack/ProjectileAttack.cpp
-
-    src/Game/Tower.cpp
-    
-    src/GUI/Element/PagedContainer.h
-    src/GUI/Element/ChampionListContainer.cpp
-    
     src/GUI/Director.cpp
     src/GUI/RenderState.cpp
     src/GUI/State/DictionaryState.cpp
@@ -83,10 +52,19 @@ set(SOURCES
     src/GUI/State/SettingState.cpp
     src/GUI/State/WaitingState.cpp
     src/GUI/State/GameState.cpp
+    src/GUI/Element/PagedContainer.h
+    src/GUI/Element/ChampionListContainer.cpp
+    src/game/GameManager.cpp
+    src/game/WaveManager.cpp
+    src/game/Enemy.cpp
+    src/Game/Enemy/Slime.cpp
+    src/Game/Attack.cpp
+    src/Game/Attack/Projectile.cpp
+    src/Game/Attack/Missile.cpp
 )
 
 # Create executable
-add_executable(${PROJECT_NAME} ${SOURCES} )
+add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Specify the path to Raylib library and include directories
 # You'll need to modify these paths according to your Raylib installation
@@ -124,22 +102,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     $<TARGET_FILE_DIR:${PROJECT_NAME}>/raylib.dll
 )
 
-# Create directories for assets in build directory
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory
-    $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets/maps
-    $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets/ui
-    $<TARGET_FILE_DIR:${PROJECT_NAME}>/saves
-)
-
-# Copy assets to build directory
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${ASSETS_DIR}"
-    "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
-)
-
 # Add preprocessor definition for asset path
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-    ASSETS_PATH="${ASSETS_DIR}"
+    RESOURCE_PATH="${RESOURCE_DIR}"
 ) 

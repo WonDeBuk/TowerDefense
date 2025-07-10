@@ -1,19 +1,31 @@
 #pragma once
 
 #include "PagedContainer.h"
-#include "Utils/AssetManager.h"
+#include "Utils/ResourceManager.h"
 #include <string>
 
-typedef struct ChampionInfo
+class ChampionListContainer : public PagedContainer<ChampionData>
 {
-    std::string ChampionName;
-    std::string ChampionTier;
-};
-
-class ChampionListContainer : public PagedContainer<ChampionInfo>
-{
+private:
+    Texture2D** ChampionTexture;
+    Texture2D** ItemBorder;
+    Texture2D** ItemCover;
+    Texture2D* ItemBackground;
+    Texture2D* NextButtonTexture;
+    Texture2D* PreviousButtonTexture;
+    Texture2D* BoxIndicator;
+    Font* ContentFont;
+    Rectangle* BoxIndicatorDimension;
+    Rectangle* ContentDimension;
+    Rectangle* CoverDimension;
+    Rectangle* BackgroundDimension;
+    Rectangle* ChampionIconDimension;
+    float ScaleFactor;
+    const float ContentFontSize = 24.0f;
 public:
-    ChampionListContainer(const Rectangle &__ContainerBound, const size_t &__NumRow, const size_t &__NumColumn, ChampionInfo* __ItemList = nullptr, const size_t& __ItemListSize = 0, const float &__ItemHeightPadding = 0.0f, const float &__ItemWidthPadding = 0.0f);
-    ~ChampionListContainer();
-    void DrawItem(const ChampionInfo& __Champion, const Rectangle& __ItemBound, const bool& __IsSelected, const bool& __IsHovered) const override;
+    ChampionListContainer(Rectangle, const int&, const int&, const ChampionData*, const int&);
+    void Update() override;
+    void Draw() const override;
+    void UpdateContentDimension();
+    ~ChampionListContainer() override;
 }; 

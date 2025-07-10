@@ -1,0 +1,12 @@
+MainButton1: Start
+MainButton2: Fortsetzen
+MainButton3: Worterbuch
+MainButton4: Einstellungen
+Setting1: Einstellungen
+Setting2: Musik
+Setting3: Effekte
+Setting4: Sprache
+DictionaryTitle: Worterbuch
+InformationTitle: Information
+Error: Fehler
+BackButton: Zuruck

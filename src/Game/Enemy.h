@@ -4,90 +4,55 @@
 
 class GameManager;
 
-enum EnemyType {
-    ENEMY_NONE,
-    ENEMY_SLIME,
-    ENEMY_WRATH_SLIME,
-    ENEMY_SNIPER_SLIME
-};
-
 class Enemy {
-public:
-    const float SpawnOffsetX;
-    const float SpawnOffsetY;
 protected:
-    unsigned int Health; //current health
-    unsigned int CashDrop; //money dropped upon death
-    float Speed; //current speed
+    // Các property cơ bản cần thiết
+    int EnemyID;			// Dùng để chứa ID của Enemy trong EnemyPool
+    int HeadingWaypointIndex;		// Dùng để chứa index của waypoint mà Enemy đang hướng đến
+    int EnemyLifespan;			// Dùng để chứa thời gian từ khi xuất hiện của Enemy
+    float EnemyHealth;			// Dùng để chứa máu của Enemy
+    float EnemySpeed;			// Dùng để chứa tốc độ di chuyển của Enemy
+
+    // Các property về toán
+    Vector2 EnemyCurrentPosition;	// Dùng để chứa vị trí hiện tại của Enemy
+    Vector2 EnemyDirection;		// Dùng để chứa hướng di chuyển của Enemy
+    Rectangle EnemyHitbox;		// Dùng để kiểm tra với các hàm kiểm tra đụng độ
     
-    unsigned short WaypointIndex; //the waypoint it is heading to
-    Vector2 CurrentPosition; //the position on the path
-    Vector2 Direction; //the direction of movement
+    // Các property về animation
+    int EnemyFrameState;		// Dùng để chuyển động giữa các frame trong một animation
+    int EnemyFrameStateAmount;		// Dùng để chứa số lượng frame của một animation
+    int EnemyAnimationTimer;		// Dùng để đếm thời gian để thực hiện các điều kiện animation
 
-    Vector2 MemoryPosition; //some kind of anchor for the enemy when it is displaced
-
-    unsigned short FrameTime;
-    unsigned short AnimationState; //the kind direction
-    unsigned short FrameState; //the animation frame
-
-    unsigned short LifeSpan; //the total time of which the enemy exists
-    unsigned short Timer; //something for ability
-    float PathTravel; //the total distance the enemy travels
-
-    unsigned short ID; //index number when the enemy is spawned
-   
-    bool OnTrack; //is enemy following the path
-    unsigned short KnockBackFrame;
-    float KnockBackForce;
+    // Các property về texture
+    Vector2 EnemyTextureSize;		// Dùng để chứa kích thước của một frame của Enemy
+    Texture2D* EnemyTexture;		// Dùng để chứa texture của Enemy
+    Rectangle EnemyDrawbox;		// Dùng để xác định nơi vẽ texture
 public:
     Enemy();
-    virtual ~Enemy();
+    ~Enemy();
 
-    virtual Vector2& GetPosition();
-    virtual unsigned int& GetHealth();
-
-    virtual void ApplyKnockBack(const float&, const unsigned short&, const Vector2&);
-
-    virtual void CalculateDirection(const Vector2&, const Vector2&);
-    virtual void SetID(const unsigned short&);
-    virtual void SetPosition(const Vector2&);
     virtual void Update();
-    virtual void Draw() = 0;
-    virtual void DrawHealthBar() = 0;
-    virtual void OnDamaged(const unsigned int&);
+    virtual void Draw() const = 0;
+
+    virtual void OnDamage(const float& _Damage);
     virtual void OnDeath();
-    virtual void Die();
-};
+    
+    virtual void UpdateAnimation() = 0;
+    virtual void DrawHealthBar() const = 0;
+    
+    // Dùng để lấy được vị trí trong tương lai của Enemy sau _DeltaTime tick: sử dụng trong hàm dự đoán và hàm cập nhật
+    Vector2 GetEnemyFuturePosition(const int& _DeltaTime) const;
 
-/*
-class Enemy
-{
-    private:
-        Vector2 EnemyPosition;
-        Vector2 EnemyFuturePosition;
-        Vector2 StartWayPoint;
-        Vector2 EndWayPoint;
-        size_t SpawnTime;
-        size_t CurrentWayPoint;
-        size_t AnimationState;
-        size_t Health;
-        float Angle;
-        ENEMY_TYPE Type;
-    public:
-        Enemy();
+    int& GetEnemyID() {return EnemyID;}
+    int& GetHeaddingWaypointIndex() {return HeadingWaypointIndex;}
+    float& GetEnemyHealth() {return EnemyHealth;}
+    float& GetEnemySpeed() {return EnemySpeed;}
 
-        const ENEMY_TYPE& GetEnemyType() const;
-        const Vector2& GetEnemyPosition() const;
-        const size_t& GetHealth() const;
-        void SetEnemyPosition(const Vector2&);
-        void SetStartWayPoint(const Vector2&);
-        void SetEndWayPoint(const Vector2&);
-        void SetCurrentWayPoint(const size_t&);
-        void SetType(const ENEMY_TYPE&);
-        void SetHealth(const size_t&);
-        void AddDamage(const size_t&);
-        void Draw() const;
-        void DrawHealth() const;
-        void Update();
+    Vector2& GetEnemyCurrentPosition() {return EnemyCurrentPosition;}
+    Vector2& GetEnemyDirection() {return EnemyDirection;}
+    Rectangle& GetHitBox() {return EnemyHitbox;}
+
+    void SetEnemyID(const int& _ID);
+
+    void EnemyKill() const;
 };
-*/

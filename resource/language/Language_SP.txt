@@ -1,0 +1,12 @@
+MainButton1: Comenzar
+MainButton2: Continuar
+MainButton3: Diccionario
+MainButton4: Configuración
+Setting1: Configuración
+Setting2: Música
+Setting3: Efecto
+Setting4: Idioma
+DictionaryTitle: Diccionario
+InformationTitle: Información
+Error: Error
+BackButton: Atrás

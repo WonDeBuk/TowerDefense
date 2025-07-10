@@ -1,0 +1,34 @@
+#pragma once
+
+#include "raylib.h"
+#include "Define.h"
+#include <string>
+#include <unordered_map>
+#include <map>
+
+class ResourceManager {
+private:
+    std::unordered_map<std::string, Texture2D> TextureCache;
+    std::unordered_map<std::string, std::string> PlaceholderCache;
+
+    ResourceManager();
+public:
+    static ResourceManager& GetInstance();
+    const std::string GetResourcePath(const std::string&);
+
+    void ReadLanguage();
+    void ChangeLanguage(const Language&);
+
+    const Texture2D& LoadTexture(const std::string&);
+    const std::string& LoadPlaceholder(const std::string&) const;
+
+    static Font GlobalFont;
+    static Language CurrentLanguage;
+    static const ChampionData ChampionDataList[];
+    static const std::string ParseLanguageToString[];
+    static const std::string ParseTierToString[];
+    static const std::string ParseMapTypeToString[];
+    static const std::map<std::string,EnemyType> ParseStringToEnemyType;
+
+    ~ResourceManager();
+};
