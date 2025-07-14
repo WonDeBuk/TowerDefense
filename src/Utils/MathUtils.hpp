@@ -31,3 +31,5 @@ const Color Palette[] = {
 const float SegmentTime = 2000.0f;
 
 Vector3 ColorCalculate();
+
+float GetRandomFloat(float _min, float _max);

@@ -21,7 +21,7 @@
 #define MAP_HEIGHT 30
 
 enum MapType {
-    FOREST, FROZEN, DESERT, COUNTING
+    FOREST, FROZEN, DESERT, MAPCOUNTING
 };
 
 enum EnemyType {
@@ -33,7 +33,7 @@ enum AttackType {
 };
 
 enum TowerType {
-    FRIEREN, TOWERCOUTING
+    FRIEREN, MILIM, RIMURU, FERN, SHUNA, STARK, TOWERCOUTING
 };
 
 enum Language {
@@ -46,6 +46,11 @@ enum ChampionTier {
 
 enum GameStatePeriod {
     WAVE, BUILD, RESUME, WIN, LOSE
+};
+
+typedef struct BlackListData {
+    int EnemyID = -1;
+    int TimeAdded;
 };
 
 typedef struct EnemyData {

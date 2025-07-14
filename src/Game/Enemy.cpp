@@ -92,6 +92,7 @@ void Enemy::Update() {
 void Enemy::OnDamage(const float& _Damage) {
     if (EnemyHealth <= _Damage) {
         OnDeath();
+        EnemyKill();
         return;
     }
     EnemyHealth -= _Damage;
