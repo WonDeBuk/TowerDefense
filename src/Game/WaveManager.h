@@ -1,6 +1,6 @@
 #pragma once
 
-#include "./Utils/Define.h"
+#include "../Utils/Define.h"
 #include "GameManager.h"
 
 class WaveManager {

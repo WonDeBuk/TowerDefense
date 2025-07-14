@@ -1,19 +1,20 @@
 #include "ChampionListContainer.h"
 #include "GUI/Director.h"
+#include "GUI/State/DictionaryState.h"
 #include <iostream>
 
-ChampionListContainer::ChampionListContainer(Rectangle _CB, const int& _IPR, const int& _IPC, const ChampionData* _IL, const int& _ILS)
-: PagedContainer<ChampionData>(_CB, _IPR, _IPC, _IL, _ILS) {
+ChampionListContainer::ChampionListContainer(Rectangle _CB, const int& _IPR, const int& _IPC, const Champion* _IL, const int& _ILS, DictionaryState* _OD)
+: PagedContainer<Champion>(_CB, _IPR, _IPC, _IL, _ILS), OwnerDictionary(_OD) {
     ChampionTexture = new Texture2D*[ItemListSize];
-    ItemBorder = new Texture2D*[(int) ChampionTier::CHAMPIONTIERCOUNTING];
-    ItemCover = new Texture2D*[(int) ChampionTier::CHAMPIONTIERCOUNTING]; 
-    for (int i = 0; i < (int) ChampionTier::CHAMPIONTIERCOUNTING; i++) {
+    ItemBorder = new Texture2D*[(int) ChampionTierType::COUNTING];
+    ItemCover = new Texture2D*[(int) ChampionTierType::COUNTING]; 
+    for (int i = 0; i < (int) ChampionTierType::COUNTING; i++) {
         ItemBorder[i] = const_cast<Texture2D*>(&ResourceManager::GetInstance().LoadTexture("ui/" + ResourceManager::ParseTierToString[i] + "Border.png"));
         ItemCover[i] = const_cast<Texture2D*>(&ResourceManager::GetInstance().LoadTexture("ui/" + ResourceManager::ParseTierToString[i] + "Cover.png"));
     }
     for (int i = 0; i < ItemListSize; i++)
     {
-        ChampionTexture[i] = const_cast<Texture2D*>(&ResourceManager::GetInstance().LoadTexture("ui/" + ItemList[i].ChampionName + "Icon.png"));
+        ChampionTexture[i] = ResourceManager::ChampionDataList[i].ChampionIcon;
     }
     
     ItemBackground = const_cast<Texture2D*>(&ResourceManager::GetInstance().LoadTexture("ui/ChampionBackground.png"));
@@ -43,15 +44,26 @@ ChampionListContainer::ChampionListContainer(Rectangle _CB, const int& _IPR, con
     ChampionListContainer::UpdateContentDimension();
 }
 
+void ChampionListContainer::SetSelectedIndex(const int &_Index)
+{
+    if (_Index == -1) {
+        SelectedIndex = -1;
+        PageStartIndex = 0;
+        PageEndIndex = std::min(ItemPerColumn * ItemPerRow, ItemListSize);
+        PageNumItem = PageEndIndex;
+        CurrentPage = 0;
+    }
+}
+
 void ChampionListContainer::Draw() const {
     size_t Time = Director::GetInstance().GetTime();
     for (int i = 0; i < PageNumItem; i++) {
         int GlobalIndex = PageStartIndex + i;
         DrawTexturePro(*ItemBackground, {0.0f, 0.0f, 68.0f, 92.0f}, BackgroundDimension[i], {0.0f, 0.0f}, 0.0f, WHITE);
         DrawTexturePro(*ChampionTexture[GlobalIndex], {16.0f, 16.0f, 32.0f, 48.0f}, ChampionIconDimension[i], {0.0f, 0.0f}, 0.0f, WHITE);
-        DrawTexturePro(*ItemCover[(int)ItemList[GlobalIndex].ChampionTier], {0.0f, 0.0f, 68.0f, 22.0f}, CoverDimension[i], {0.0f, 0.0f}, 0.0f, WHITE);
-        DrawTexturePro(*ItemBorder[(int)ItemList[GlobalIndex].ChampionTier], {0.0f, 0.0f, 76.0f, 100.0f}, ItemBound[i], {0.0f, 0.0f}, 0.0f, WHITE);
-        DrawTextEx(*ContentFont, &ItemList[GlobalIndex].ChampionName[0], {ContentDimension[i].x, ContentDimension[i].y}, ContentFontSize, 1.0f, WHITE);
+        DrawTexturePro(*ItemCover[(int) ItemList[GlobalIndex].ChampionTier], {0.0f, 0.0f, 68.0f, 22.0f}, CoverDimension[i], {0.0f, 0.0f}, 0.0f, WHITE);
+        DrawTexturePro(*ItemBorder[(int) ItemList[GlobalIndex].ChampionTier], {0.0f, 0.0f, 76.0f, 100.0f}, ItemBound[i], {0.0f, 0.0f}, 0.0f, WHITE);
+        DrawTextEx(*ContentFont, ResourceManager::ParseChampionTypeToString[GlobalIndex].c_str(), {(float) ((int) ContentDimension[i].x), (float) ((int) ContentDimension[i].y)}, ContentFontSize, 1.0f, WHITE);
     }
 
     if (IsNextButtonShow) {
@@ -122,19 +134,27 @@ void ChampionListContainer::Update() {
         }
     }
 
-    for (int i = 0; i < PageNumItem; i++) {
+    int i;
+
+    for (i = 0; i < PageNumItem; i++) {
         if (CheckCollisionPointRec(MousePosition, ItemBound[i])) {
             HoveredIndex = i;
             BoxIndicatorDimension[0] = {ItemBound[i].x - 16.0f, ItemBound[i].y - 16.0f, 24.0f, 24.0f};
             BoxIndicatorDimension[1] = {ItemBound[i].x - 8.0f + ItemBound[i].width, ItemBound[i].y - 16.0f, 24.0f, 24.0f};
             BoxIndicatorDimension[2] = {ItemBound[i].x - 16.0f, ItemBound[i].y - 8.0f + ItemBound[i].height, 24.0f, 24.0f};
             BoxIndicatorDimension[3] = {ItemBound[i].x - 8.0f + ItemBound[i].width, ItemBound[i].y - 8.0f + ItemBound[i].height, 24.0f, 24.0f};
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                SelectedIndex = i;
-            }
             break;
         } else {
             HoveredIndex = -1;
+        }
+    }
+
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        if (HoveredIndex != -1) {
+            SelectedIndex = i + PageStartIndex;
+            OwnerDictionary->UpdateInformationPanel();
+        } else {
+            if (!IsPreviousButtonHover && !IsNextButtonShow) SelectedIndex = -1;
         }
     }
     
@@ -142,7 +162,7 @@ void ChampionListContainer::Update() {
 
 void ChampionListContainer::UpdateContentDimension() {
     for (int i = 0; i < PageNumItem; i++) {
-        Vector2 TextDimension = MeasureTextEx(*ContentFont, &ItemList[PageStartIndex + i].ChampionName[0], ContentFontSize, 1.0f);
+        Vector2 TextDimension = MeasureTextEx(*ContentFont, ResourceManager::ParseChampionTypeToString[PageStartIndex + i].c_str(), ContentFontSize, 1.0f);
         ContentDimension[i] = {floorf(CoverDimension[i].x + (68.0f * ScaleFactor - TextDimension.x) / 2), floorf(CoverDimension[i].y + 6.0f * ScaleFactor + (16.0f * ScaleFactor - TextDimension.y) / 2), TextDimension.x, TextDimension.y};
     }
 }

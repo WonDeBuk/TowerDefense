@@ -2,6 +2,7 @@
 
 #include "raylib.h"
 #include "Define.h"
+#include "Champion.h"
 #include <string>
 #include <unordered_map>
 #include <map>
@@ -16,6 +17,7 @@ public:
     static ResourceManager& GetInstance();
     const std::string GetResourcePath(const std::string&);
 
+    void ReadChampionData();
     void ReadLanguage();
     void ChangeLanguage(const Language&);
 
@@ -24,11 +26,14 @@ public:
 
     static Font GlobalFont;
     static Language CurrentLanguage;
-    static const ChampionData ChampionDataList[];
+    static Champion ChampionDataList[(int) ChampionType::COUNTING];
+    static const std::string ParseChampionTypeToString[(int) ChampionType::COUNTING];
+    static const std::string ParseChampionAnimationStateToString[(int) ChampionAnimationState::COUNTING];
     static const std::string ParseLanguageToString[];
     static const std::string ParseTierToString[];
     static const std::string ParseMapTypeToString[];
     static const std::map<std::string,EnemyType> ParseStringToEnemyType;
+    static const std::map<std::string,ChampionTierType> ParseStringToChampionTierType;
 
     ~ResourceManager();
 };

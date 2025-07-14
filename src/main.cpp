@@ -5,6 +5,7 @@
 #include "Utils/ResourceManager.h"
 #include "Game/GameManager.h"
 #include "Utils/MathUtils.hpp"
+#include "Utils/UnicodeText.hpp"
 
 #include <string>
 #include <iostream>

@@ -2,10 +2,195 @@
 
 #include "raylib.h"
 #include <string>
+#include <vector>
 
 //static void DrawTextJustified(const std::string& Text, float TextWidth, float FontSize);
 static void DrawTextBoxed(Font font, const char *text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint);   // Draw text using font inside rectangle limits
 static void DrawTextBoxedSelectable(Font font, const char *text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint, int selectStart, int selectLength, Color selectTint, Color selectBackTint);
+
+static void DrawTextJustified(Font font, const char* text, Vector2 position, float width, float fontSize, float spacing, Color tint, float lineSpacing = -1.0f, float minSpaceWidth = 5.0f) {
+    // Default line spacing to font size if not specified
+    if (lineSpacing < 0) lineSpacing = fontSize;
+    // Starting draw position
+    float posX = position.x;
+    float posY = position.y;
+    // Measure one space character width for normal (non-justified) spacing
+    Vector2 spaceMeasure = MeasureTextEx(font, " ", fontSize, spacing);
+    float spaceWidth = spaceMeasure.x;
+    
+    std::vector<std::string> lineWords;
+    float lineWordsWidth = 0.0f;
+    std::string word;
+
+    // Helper lambda: draw the current line of words.
+    // doJustify=true distributes extra space (full-justify), false leaves it left-aligned.
+    auto drawLine = [&](bool doJustify) {
+        if (lineWords.empty()) return;
+        float x = posX;
+        float y = posY;
+        size_t n = lineWords.size();
+        if (doJustify && n > 1) {
+            // Compute total width of words
+            float totalWordsW = 0.0f;
+            for (const auto &w : lineWords) {
+                Vector2 m = MeasureTextEx(font, w.c_str(), fontSize, spacing);
+                totalWordsW += m.x;
+            }
+            float extraSpace = width - totalWordsW;
+            int gaps = (int)n - 1;
+            // Distribute extra space (as integer pixels)
+            int totalExtra = (int)roundf(extraSpace);
+            int baseGap = totalExtra / gaps;
+            int remainder = totalExtra % gaps;
+            // Draw each word, adding gap after each except last
+            for (size_t i = 0; i < n; i++) {
+                const std::string &w = lineWords[i];
+                DrawTextEx(font, w.c_str(), { x, y }, fontSize, spacing, tint);
+                float wW = MeasureTextEx(font, w.c_str(), fontSize, spacing).x;
+                x += wW;
+                if (i < n - 1) {
+                    int gap = baseGap + ((int)i < remainder ? 1 : 0);
+                    x += (float)gap;
+                }
+            }
+        } else {
+            // Left-align (no justification): one normal space between words
+            for (size_t i = 0; i < n; i++) {
+                const std::string &w = lineWords[i];
+                DrawTextEx(font, w.c_str(), { x, y }, fontSize, spacing, tint);
+                float wW = MeasureTextEx(font, w.c_str(), fontSize, spacing).x;
+                x += wW;
+                if (i < n - 1) x += spaceWidth;
+            }
+        }
+    };
+    
+    // Process characters in text
+    for (int i = 0; text[i] != '\0'; i++) {
+        char c = text[i];
+        if (c == '\n' || c == '\\') {
+            // Explicit newline: add any pending word, then draw line (no justify)
+            if (!word.empty()) {
+                float wW = MeasureTextEx(font, word.c_str(), fontSize, spacing).x;
+                if (lineWords.empty()) {
+                    lineWords.push_back(word);
+                    lineWordsWidth = wW;
+                } else {
+                    if (lineWordsWidth + wW + minSpaceWidth > width) {
+                        drawLine(true);
+                        posY += lineSpacing;
+                        lineWords.clear();
+                        lineWordsWidth = 0.0f;
+                        lineWords.push_back(word);
+                        lineWordsWidth = wW;
+                    } else {
+                        float newTotal = lineWordsWidth + wW;
+                        int gaps = (int)lineWords.size();
+                        float leftover = width - newTotal;
+                        if (leftover / gaps < minSpaceWidth) {
+                            drawLine(true);
+                            posY += lineSpacing;
+                            lineWords.clear();
+                            lineWordsWidth = 0.0f;
+                            lineWords.push_back(word);
+                            lineWordsWidth = wW;
+                        } else {
+                            lineWords.push_back(word);
+                            lineWordsWidth = newTotal;
+                        }
+                    }
+                }
+                word.clear();
+            }
+            // Draw the line (explicit break, so no justification)
+            drawLine(false);
+            posY += lineSpacing;
+            lineWords.clear();
+            lineWordsWidth = 0.0f;
+        }
+        else if (c == ' ') {
+            // Space: end of current word
+            if (!word.empty()) {
+                float wW = MeasureTextEx(font, word.c_str(), fontSize, spacing).x;
+                if (lineWords.empty()) {
+                    lineWords.push_back(word);
+                    lineWordsWidth = wW;
+                } else {
+                    // Check fit with minimum spacing
+                    if (lineWordsWidth + wW + minSpaceWidth > width) {
+                        // Word doesn't fit: wrap line before word
+                        drawLine(true);
+                        posY += lineSpacing;
+                        lineWords.clear();
+                        lineWordsWidth = 0.0f;
+                        lineWords.push_back(word);
+                        lineWordsWidth = wW;
+                    } else {
+                        // Check average gap if justified
+                        float newTotal = lineWordsWidth + wW;
+                        int gaps = (int)lineWords.size();
+                        float leftover = width - newTotal;
+                        if (leftover / gaps < minSpaceWidth) {
+                            // Not enough space per gap: wrap line before word
+                            drawLine(true);
+                            posY += lineSpacing;
+                            lineWords.clear();
+                            lineWordsWidth = 0.0f;
+                            lineWords.push_back(word);
+                            lineWordsWidth = wW;
+                        } else {
+                            lineWords.push_back(word);
+                            lineWordsWidth = newTotal;
+                        }
+                    }
+                }
+                word.clear();
+            }
+            // Ignore extra spaces
+        }
+        else {
+            // Accumulate character into current word
+            word.push_back(c);
+        }
+    }
+    // End of text: add last word if any
+    if (!word.empty()) {
+        float wW = MeasureTextEx(font, word.c_str(), fontSize, spacing).x;
+        if (lineWords.empty()) {
+            lineWords.push_back(word);
+            lineWordsWidth = wW;
+        } else {
+            if (lineWordsWidth + wW + minSpaceWidth > width) {
+                drawLine(true);
+                posY += lineSpacing;
+                lineWords.clear();
+                lineWordsWidth = 0.0f;
+                lineWords.push_back(word);
+                lineWordsWidth = wW;
+            } else {
+                float newTotal = lineWordsWidth + wW;
+                int gaps = (int)lineWords.size();
+                float leftover = width - newTotal;
+                if (leftover / gaps < minSpaceWidth) {
+                    drawLine(true);
+                    posY += lineSpacing;
+                    lineWords.clear();
+                    lineWordsWidth = 0.0f;
+                    lineWords.push_back(word);
+                    lineWordsWidth = wW;
+                } else {
+                    lineWords.push_back(word);
+                    lineWordsWidth = newTotal;
+                }
+            }
+        }
+        word.clear();
+    }
+    // Draw the final line (no justification on last line)
+    if (!lineWords.empty()) {
+        drawLine(false);
+    }
+}
 
 static void DrawTextBoxed(Font font, const char *text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint)
 {

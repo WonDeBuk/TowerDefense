@@ -12,7 +12,7 @@ class Slime: public Enemy {
 // Phần private này để cho loại Enemy Slime mặc định
 private:
 	static constexpr float BASE_HEALTH = 100.0f;
-	static constexpr float BASE_SPEED = 2.0f;
+	static constexpr float BASE_SPEED = 8.0f;
     Vector2 Test;
 // Dùng cho các loại Slime khác có thể kế thừa
 protected:

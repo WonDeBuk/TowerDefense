@@ -194,8 +194,12 @@ const int& GameManager::GetCurrentEnemyAmount() {
 Enemy* GameManager::GetEnemyByID(const int& _EnemyID) const {
     assert(_EnemyID < MAX_ENEMY_AMOUNT && "GameManager * Invalid Enemy Get");
     assert(_EnemyID >= 0 && "GameManager * Invalid Enemy Get");
-    assert(EnemyPoolTracker[_EnemyID] && "GameManager * Invalid Enemy Get");
-    return reinterpret_cast<Enemy*>(EnemyPool[_EnemyID]);
+    if (EnemyPoolTracker[_EnemyID]) {
+        return reinterpret_cast<Enemy*>(EnemyPool[_EnemyID]);
+    } else {
+        return nullptr;
+    }
+    
 }
 
 void GameManager::AddEnemy(const EnemyType& _EnemyType, Enemy* _EnemyTemplate) {

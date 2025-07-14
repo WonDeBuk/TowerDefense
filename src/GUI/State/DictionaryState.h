@@ -37,7 +37,15 @@ private:
 
     // Information Container Properties
     Rectangle InformationContainerDimension;
-    const float InformationContainerPercentage = 0.4f;
+    const float InformationContainerPercentage = 0.425f;
+    Vector2 ChampionIdleDrawPosition;
+    Vector2 ChampionCastDrawPosition;
+    Texture2D* ShowCaseBackgroundTexture;
+    Texture2D* NoneSelectedTexture;
+    Rectangle ShowCaseDimension;
+    Rectangle LoreDimension;
+    std::string* LoreContent;
+    const float LoreContentSize = 24.0f;
 
     // Back Button Properties
     Rectangle BackButtonDimension;
@@ -49,10 +57,16 @@ private:
     Texture2D* BackButtonIcon;
     Texture2D* BackButtonBoxIndicator;
     bool IsBackButtonHover;
-    const float PaddingBotContainer = 20.0f;
+    const float PaddingBotContainer = 40.0f;
+    const float ButtonFontSize = 32.0f;
+
+
+    // Private Method
+    void DrawInformationPanel() const;
 public:
     DictionaryState();
 
+    void UpdateInformationPanel();
     void Update() override;
     void Draw() const override;
     void Enter() override;

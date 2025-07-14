@@ -2,7 +2,7 @@
 #include "../Enemy.h"
 #include "raymath.h"
 #include "../GameManager.h"
-#include "././Utils/ResourceManager.h"
+#include "../../Utils/ResourceManager.h"
 
 Projectile Projectile::ProjectileTemplate;
 
@@ -11,6 +11,7 @@ const Attack* Projectile::ProjectileTemplateBuildAndGet(const Vector2 &_AttackSt
     ProjectileTemplate.AttackDestinationPosition = _AttackDestinationPosition;
     ProjectileTemplate.AttackCurrentPosition = _AttackStartPositon;
     ProjectileTemplate.AttackMovementSpeed = _AttackMovementSpeed;
+    ProjectileTemplate.AttackDamage = _AttackDamage;
     ProjectileTemplate.AttackOwnTowerID = _AttackOwnTowerID;
     ProjectileTemplate.AttackTargetID = _AttackTargetID;
     ProjectileTemplate.Lifespan = 0;
