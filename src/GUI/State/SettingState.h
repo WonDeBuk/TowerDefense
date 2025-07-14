@@ -40,7 +40,7 @@ private:
     Rectangle* FlagBound;
     Rectangle* FlagDimension;
     int HoverIndex;
-    const int NumOfLanguage = (int) Language::LANGUAGECOUNTING;
+    const int NumOfLanguage = (int) Language::COUNTING;
     Rectangle CurrentLanguageFlagDimension;
 
     const float TDPaddingPercent = 0.125f;
@@ -67,7 +67,8 @@ private:
     Texture2D* BackButtonIcon;
     Texture2D* BackButtonBoxIndicator;
     bool IsBackButtonHover;
-    const float PaddingBotContainer = 20.0f;
+    const float PaddingBotContainer = 40.0f;
+    const float ButtonFontSize = 32.0f;
 public:
     SettingState();
 

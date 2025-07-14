@@ -50,7 +50,7 @@ void Missile::Update() {
             return;
         }
     } else {
-        if (AttackCurrentPosition == AttackDestinationPosition) {
+        if (CurrentPercentage >= 1.0f) {
             Attack::AttackKill();
             return;
         }

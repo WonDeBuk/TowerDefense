@@ -6,6 +6,7 @@ class PlayState : public RenderState
 {
 private:
     Rectangle ForestMap;
+    Rectangle FrozenMap;
     Rectangle BackButton;
 public:
     PlayState();

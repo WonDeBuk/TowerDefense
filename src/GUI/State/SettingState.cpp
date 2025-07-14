@@ -59,7 +59,9 @@ void SettingState::Draw() const
 {
     size_t Time = Director::GetInstance().GetTime();
     RenderState::Draw();
-    DrawRectangleRec(ContainerDimension, {0, 0, 0, 100});
+    DrawRectangleRounded(ContainerDimension, 0.2f, 0, {0, 0, 0, 100});
+    DrawRectangleRoundedLinesEx(ContainerDimension, 0.2f, 0, 2.0f, WHITE);
+
     for (int i = 0; i < 4; i++) {
         DrawTextEx(*ContentFont, SettingContent[i], {floorf(ContentDimension[i].x), floorf(ContentDimension[i].y)}, ContentFontSize, 1.0f, WHITE);
     }
@@ -77,9 +79,12 @@ void SettingState::Draw() const
             DrawTexturePro(*SettingIndicator, {12.0f * (i % 2), 24.0f * ((Time / 7) % 3) + 12.0f * (i / 2), 12.0f, 12.0f}, IndicatorDimension[i], {0.0f, 0.0f}, 0.0f, WHITE);
         }
     }
-    DrawRectanglePro(BackButtonDimension, {0.0f, 0.0f}, 0.0f, {0, 0, 0, 100});
+
+    // Back Button Draw
+    DrawRectangleRounded(BackButtonDimension, 0.4f, 0, {0, 0, 0, 100});
+    DrawRectangleRoundedLinesEx(BackButtonDimension, 0.4f, 0, 2.0f, WHITE);
     DrawTexturePro(*BackButtonIcon, {0.0f, 0.0f, 64.0f, 64.0f}, ButtonIconDimension, {0.0f, 0.0f}, 0.0f, WHITE);
-    DrawTextEx(*ContentFont, BackContent, BackContentPosition, ContentFontSize, 1.0f, WHITE);
+    DrawTextEx(*ContentFont, BackContent, BackContentPosition, ButtonFontSize, 1.0f, WHITE);
     if (IsBackButtonHover) {
         for (int i = 0; i < 4; i++) {
             DrawTexturePro(*BackButtonBoxIndicator, {12.0f * (i % 2), 24.0f * ((Time / 7) % 3) + 12.0f * (i / 2), 12.0f, 12.0f}, BackButtonIndicatorDimension[i], {0.0f, 0.0f}, 0.0f, WHITE);
@@ -92,10 +97,13 @@ void SettingState::Enter()
 {
     BackContent = &const_cast<std::string&>(ResourceManager::GetInstance().LoadPlaceholder("BackButton"))[0];
 
-    BackContentSize = MeasureTextEx(*ContentFont, BackContent, ContentFontSize, 1.0f);
-    BackButtonDimension = {ContainerDimension.x, ContainerDimension.y - BackContentSize.y - PaddingBotContainer, 32.0f + BackContentSize.x + PaddingFromText * 2.0f, BackContentSize.y};
-    BackContentPosition = {BackButtonDimension.x + 32.0f + PaddingFromText, BackButtonDimension.y};
-    ButtonIconDimension = {BackButtonDimension.x, BackButtonDimension.y, 48.0f, 48.0f};
+    BackContentSize = MeasureTextEx(*ContentFont, BackContent, ButtonFontSize, 1.0f);
+
+    const float BackButtonContentMargin = 5.0f;
+    const float PaddingFromLeft = 48.0f;
+    BackButtonDimension = {ContainerDimension.x + PaddingFromLeft, ContainerDimension.y - BackContentSize.y - BackButtonContentMargin * 2.0f - PaddingBotContainer, ButtonFontSize + BackContentSize.x + BackButtonContentMargin * 3.0f, ButtonFontSize + BackButtonContentMargin * 2.0f};
+    ButtonIconDimension = {BackButtonDimension.x + BackButtonContentMargin, BackButtonDimension.y + BackButtonContentMargin, ButtonFontSize, ButtonFontSize};
+    BackContentPosition = {BackButtonDimension.x + ButtonIconDimension.width + BackButtonContentMargin * 2, BackButtonDimension.y + BackButtonContentMargin};
     BackButtonIndicatorDimension[0] = {BackButtonDimension.x - 12.0f, BackButtonDimension.y - 12.0f, 12.0f, 12.0f};
     BackButtonIndicatorDimension[1] = {BackButtonDimension.x + BackButtonDimension.width, BackButtonDimension.y - 12.0f, 12.0f, 12.0f};
     BackButtonIndicatorDimension[2] = {BackButtonDimension.x - 12.0f, BackButtonDimension.y + BackButtonDimension.height, 12.0f, 12.0f};

@@ -1,5 +1,5 @@
 #include "WaveManager.h"
-#include "./Utils/ResourceManager.h"
+#include "../Utils/ResourceManager.h"
 #include <fstream>
 #include <string>
 #include <assert.h>

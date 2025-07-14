@@ -35,19 +35,21 @@ private:
 
     // Information Container Properties
     Rectangle InformationContainerDimension;
-    const float InformationContainerPercentage = 0.4f;
+    const float InformationContainerPercentage = 0.425f;
 
     // Back Button Properties
     Rectangle BackButtonDimension;
     Rectangle ButtonIconDimension;
     Rectangle BackButtonIndicatorDimension[4];
+    char* BackContent;
     Vector2 BackContentSize;
     Vector2 BackContentPosition;
     Texture2D* BackButtonIcon;
     Texture2D* BackButtonBoxIndicator;
-    char* BackContent;
     bool IsBackButtonHover;
-    const float PaddingBotContainer = 20.0f;
+    const float PaddingBotContainer = 40.0f;
+    const float ButtonFontSize = 32.0f;
+    
 public:
     LoadGameState();
 
