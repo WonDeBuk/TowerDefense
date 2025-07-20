@@ -2,8 +2,7 @@
 
 #include "../RenderState.h"
 
-class GameState : public RenderState
-{
+class GameState : public RenderState {
 private:
 
 public:

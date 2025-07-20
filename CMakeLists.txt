@@ -15,6 +15,7 @@ set(RESOURCE_OUTPUT_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resource")
 set(HEADERS
     src/Utils/Define.h
     src/Utils/ResourceManager.h
+    src/Utils/Champion.h
     src/GUI/Director.h
     src/Utils/MathUtils.hpp
     src/Utils/UnicodeText.hpp
@@ -49,6 +50,7 @@ set(SOURCES
     src/main.cpp
     src/Utils/ResourceManager.cpp
     src/Utils/MathUtils.cpp
+    src/Utils/Champion.cpp
     src/Utils/UnicodeText.hpp
     src/GUI/Director.cpp
     src/GUI/RenderState.cpp

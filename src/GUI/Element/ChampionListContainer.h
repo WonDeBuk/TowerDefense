@@ -4,7 +4,9 @@
 #include "Utils/ResourceManager.h"
 #include <string>
 
-class ChampionListContainer : public PagedContainer<ChampionData>
+class DictionaryState;
+
+class ChampionListContainer : public PagedContainer<Champion>
 {
 private:
     Texture2D** ChampionTexture;
@@ -20,10 +22,12 @@ private:
     Rectangle* CoverDimension;
     Rectangle* BackgroundDimension;
     Rectangle* ChampionIconDimension;
+    DictionaryState* OwnerDictionary;
     float ScaleFactor;
     const float ContentFontSize = 24.0f;
 public:
-    ChampionListContainer(Rectangle, const int&, const int&, const ChampionData*, const int&);
+    ChampionListContainer(Rectangle, const int&, const int&, const Champion*, const int&, DictionaryState*);
+    void SetSelectedIndex(const int& _Index);
     void Update() override;
     void Draw() const override;
     void UpdateContentDimension();

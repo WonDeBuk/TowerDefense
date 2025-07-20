@@ -53,6 +53,11 @@ void Missile::Update() {
             Attack::AttackKill();
             return;
         }
+    } else {
+        if (CurrentPercentage >= 1.0f) {
+            Attack::AttackKill();
+            return;
+        }
     }
 
     CurrentPercentage += AttackMovementSpeed / Vector2Distance(AttackStartPosition, AttackDestinationPosition);

@@ -14,7 +14,7 @@ Frieren::Frieren(): Tower() {
 	TowerAttackMovementSpeed = 5.0f;
 
 	OnCooldown = &Frieren::AttackModule_1;
-	
+
 	MaxShotAvailable = 1;
 	ShotRemaining = MaxShotAvailable;
 	UpgradeColor = { 245, 238, 218, 255 };
@@ -26,7 +26,7 @@ void Frieren::AttackModule_1() {
 		if (ShotRemaining < MaxShotAvailable) { //if burst mode is active and no enemy shows up for 20 frames, reload entirely
 			if (TowerDeltaCooldown <= -20) ShotRemaining = MaxShotAvailable;
 			else TowerDeltaCooldown--;
-		}
+}
 		return;
 	}
 
@@ -37,12 +37,12 @@ void Frieren::AttackModule_1() {
 
 	if (ShotRemaining) {
 		TowerDeltaCooldown = 15;
-	}
+			}
 	else {
 		TowerDeltaCooldown = TowerCooldown;
 		ShotRemaining = MaxShotAvailable;
+		}
 	}
-}
 
 void Frieren::AttackModule_3() {
 	(this->*GetTargetEnemy)();
@@ -50,10 +50,11 @@ void Frieren::AttackModule_3() {
 		if (ShotRemaining < MaxShotAvailable) {
 			if (TowerDeltaCooldown <= -15) ShotRemaining = MaxShotAvailable;
 			else TowerDeltaCooldown--;
-		}
-		return;
 	}
-	
+		return;
+		}
+	}
+
 	ShotRemaining--;
 	Vector2 TowerOffsetPosition = { TowerPosition.x + GetRandomFloat(-50.0f, 50.0f), TowerPosition.y + GetRandomFloat(-50.0f, 0.0f) };
 	Vector2 EnemyDefinitePosition = GetEnemyDefinitePosition(TowerOffsetPosition);
@@ -66,13 +67,13 @@ void Frieren::AttackModule_3() {
 	else {
 		TowerDeltaCooldown = TowerCooldown;
 		ShotRemaining = MaxShotAvailable;
-	}
+    }
 }
 
 void Frieren::OnUpgrade() {
 	if (TowerLevel == 3) return; //probably do some pop-up texts that say tower is maxed out or smth
 	TowerLevel++;
-	
+
 	switch (TowerLevel) {
 	case 2:
 		TowerCooldown = 70;
@@ -84,7 +85,7 @@ void Frieren::OnUpgrade() {
 		TotalCost += 000; //temp value, will come back later
 		//game manager do something involves cash here
 		UpgradeColor = { 227, 222, 209, 255 };
-		break;
+        break;
 	case 3:
 		TowerCooldown = 100;
 		TowerRange = 475.0f;
@@ -96,8 +97,8 @@ void Frieren::OnUpgrade() {
 		TotalCost += 000;
 		//
 		UpgradeColor = { 196, 195, 190, 255 };
-		break;
-	}
+        break;
+    }
 }
 
 void Frieren::Update() {

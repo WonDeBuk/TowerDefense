@@ -1,5 +1,5 @@
 #include "Slime.h"
-#include "././Utils/ResourceManager.h"
+#include "../../Utils/ResourceManager.h"
 #include <iostream>
 
 Slime::Slime() {

@@ -5,6 +5,7 @@
 PlayState::PlayState()
 {
     ForestMap = { 500.0f, 500.0f, 200.0f, 100.0f};
+    FrozenMap = { 800.0f, 500.0f, 200.0f, 100.0f};
     BackButton = { 10.0f, 10.0f, 100.0f, 50.0f };
 }
 
@@ -18,13 +19,23 @@ void PlayState::Update()
         WaveManager::ReadConfig(MapType::FOREST);
         Director::GetInstance().TransitionTo(RENDER_STATE::GAME);
     }
+
+    if (CheckCollisionPointRec(MousePosition, FrozenMap)) {
+        GameManager::GetInstance().ResetConfig();
+        GameManager::GetInstance().ReadConfig(MapType::FROZEN);
+        WaveManager::ResetConfig();
+        WaveManager::ReadConfig(MapType::FROZEN);
+        Director::GetInstance().TransitionTo(RENDER_STATE::GAME);
+    }
 }
 
 void PlayState::Draw() const
 {
     RenderState::Draw();
     DrawRectangleRec(ForestMap, GREEN);
+    DrawRectangleRec(FrozenMap, BLUE);
     DrawText("Forest Map", ForestMap.x + 10, ForestMap.y + 10, 20, WHITE);
+    DrawText("Frozen Map", FrozenMap.x + 10, FrozenMap.y + 10, 20, WHITE);
     DrawRectangleRec(BackButton, GRAY);
     DrawText("Back", BackButton.x + 10, BackButton.y + 10, 20, WHITE);
 }

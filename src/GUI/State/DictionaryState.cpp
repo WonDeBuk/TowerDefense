@@ -1,11 +1,15 @@
 #include "DictionaryState.h"
 #include "../Director.h"
 #include "././Utils/MathUtils.hpp"
+#include "././Utils/UnicodeText.hpp"
+#include "././Utils/Define.h"
+#include "././Utils/Champion.h"
 #include "././Utils/ResourceManager.h"
 #include <iostream>
 #include <assert.h>
 
-DictionaryState::DictionaryState() : IsBackButtonHover(false){
+DictionaryState::DictionaryState() : IsBackButtonHover(false)
+{
     // Calculate Container Dimension
     ContainerDimension = {(float) SCREEN_WIDTH * RLPaddingPercent, (float) SCREEN_HEIGHT * TDPaddingPercent, (float) SCREEN_WIDTH * (1.0f - 2 * RLPaddingPercent), (float) SCREEN_HEIGHT * (1.0f - 2 * TDPaddingPercent)};
     DictionaryContainerDimension = {ContainerDimension.x, ContainerDimension.y, ContainerDimension.width * DictionaryContainerPercentage, ContainerDimension.height};
@@ -24,7 +28,12 @@ DictionaryState::DictionaryState() : IsBackButtonHover(false){
     DictionaryState::Enter();
 
     // Initialize The PagedContainer
-    ChampionList = new ChampionListContainer({DictionaryContainerDimension.x + ContentMargin, DictionaryContainerDimension.y + DictionaryTitleSize.y + PaddingFromTitleContent + ContentMargin, DictionaryContainerDimension.width - 2.0f * ContentMargin, DictionaryContainerDimension.height - DictionaryTitleSize.y - PaddingFromTitleContent - 2.0f * ContentMargin}, 3, 3, const_cast<ChampionData*>(ResourceManager::ChampionDataList), 12);
+    ChampionList = new ChampionListContainer({DictionaryContainerDimension.x + ContentMargin, DictionaryContainerDimension.y + DictionaryTitleSize.y + PaddingFromTitleContent + ContentMargin, DictionaryContainerDimension.width - 2.0f * ContentMargin, DictionaryContainerDimension.height - DictionaryTitleSize.y - PaddingFromTitleContent - 2.0f * ContentMargin}, 3, 3, const_cast<Champion*>(ResourceManager::ChampionDataList), (int) ChampionType::COUNTING, this);
+
+    ShowCaseDimension = {InformationContainerDimension.x + ContentMargin, InformationContainerDimension.y + ContentMargin + InformationTitleSize.y + PaddingFromTitleContent, InformationContainerDimension.width - ContentMargin * 2.0f, 200.0f};
+    LoreDimension = {ShowCaseDimension.x, ShowCaseDimension.y + ShowCaseDimension.height + PaddingFromTitleContent, ShowCaseDimension.width, InformationContainerDimension.height - (ShowCaseDimension.y - InformationContainerDimension.y + PaddingFromTitleContent + ContentMargin + ShowCaseDimension.height)};
+    ChampionCastDrawPosition = {ShowCaseDimension.x + ShowCaseDimension.width * 5.0f / 7.0f, ShowCaseDimension.y + 150.0f};
+    ChampionIdleDrawPosition = {ShowCaseDimension.x + ShowCaseDimension.width * 2.0f / 7.0f, ShowCaseDimension.y + 150.0f};
 }
 
 void DictionaryState::Update()
@@ -48,8 +57,11 @@ void DictionaryState::Draw() const {
     RenderState::Draw();
 
     // Container Background Draw
-    DrawRectangleRec(DictionaryContainerDimension, {0, 0, 0, 100});
-    DrawRectangleRec(InformationContainerDimension, {0, 0, 0, 100});
+    DrawRectangleRounded(InformationContainerDimension, 0.2f, 0, {0, 0, 0, 100});
+    DrawRectangleRounded(DictionaryContainerDimension, 0.2f, 0, {0, 0, 0, 100});
+    DrawRectangleRoundedLinesEx(InformationContainerDimension, 0.2f, 0, 2.0f, WHITE);
+    DrawRectangleRoundedLinesEx(DictionaryContainerDimension, 0.2f, 0, 2.0f, WHITE);
+    
 
     // Title Draw
     DrawTextEx(*ContentFont, DictionaryTitle, DictionaryTitlePosition, ContentFontSize, 1.0f, WHITE);
@@ -62,9 +74,10 @@ void DictionaryState::Draw() const {
     }
 
     // Back Button Draw
-    DrawRectanglePro(BackButtonDimension, {0.0f, 0.0f}, 0.0f, {0, 0, 0, 100});
+    DrawRectangleRounded(BackButtonDimension, 0.4f, 0, {0, 0, 0, 100});
+    DrawRectangleRoundedLinesEx(BackButtonDimension, 0.4f, 0, 2.0f, WHITE);
     DrawTexturePro(*BackButtonIcon, {0.0f, 0.0f, 64.0f, 64.0f}, ButtonIconDimension, {0.0f, 0.0f}, 0.0f, WHITE);
-    DrawTextEx(*ContentFont, BackContent, BackContentPosition, ContentFontSize, 1.0f, WHITE);
+    DrawTextEx(*ContentFont, BackContent, BackContentPosition, ButtonFontSize, 1.0f, WHITE);
     if (IsBackButtonHover) {
         for (int i = 0; i < 4; i++) {
             DrawTexturePro(*BackButtonBoxIndicator, {12.0f * (i % 2), 24.0f * ((Time / 7) % 3) + 12.0f * (i / 2), 12.0f, 12.0f}, BackButtonIndicatorDimension[i], {0.0f, 0.0f}, 0.0f, WHITE);
@@ -73,7 +86,25 @@ void DictionaryState::Draw() const {
 
     // Paged Container Draw
     ChampionList->Draw();
+
+    DrawInformationPanel();
 }
+
+void DictionaryState::UpdateInformationPanel() {
+    int SelectedIndex = ChampionList->GetSelectedIndex();
+    LoreContent = const_cast<std::string*>(&ResourceManager::GetInstance().LoadPlaceholder(ResourceManager::ParseChampionTypeToString[SelectedIndex] + "Lore"));
+}
+
+void DictionaryState::DrawInformationPanel() const
+{
+    int SelectedIndex = ChampionList->GetSelectedIndex();
+    if (SelectedIndex != -1) {
+        ResourceManager::ChampionDataList[SelectedIndex].ChampionDraw(ChampionAnimationState::IDLE, ChampionIdleDrawPosition, false);
+        ResourceManager::ChampionDataList[SelectedIndex].ChampionDraw(ChampionAnimationState::CAST, ChampionCastDrawPosition, false);
+        DrawTextJustified(*ContentFont, (*LoreContent).c_str(), {LoreDimension.x, LoreDimension.y}, LoreDimension.width, LoreContentSize, 1.0f, WHITE);
+    }
+}
+
 
 void DictionaryState::Enter() {
     // Load Content
@@ -84,12 +115,14 @@ void DictionaryState::Enter() {
     // Calculate Content Size
     DictionaryTitleSize = MeasureTextEx(*ContentFont, DictionaryTitle, ContentFontSize, 1.0f);
     InformationTitleSize = MeasureTextEx(*ContentFont, InformationTitle, ContentFontSize, 1.0f);
-    BackContentSize = MeasureTextEx(*ContentFont, BackContent, ContentFontSize, 1.0f);
+    BackContentSize = MeasureTextEx(*ContentFont, BackContent, ButtonFontSize, 1.0f);
     
     // Back Button Properties Calculate
-    BackButtonDimension = {ContainerDimension.x, ContainerDimension.y - BackContentSize.y - PaddingBotContainer, 32.0f + BackContentSize.x + PaddingFromText * 2.0f, BackContentSize.y};
-    BackContentPosition = {BackButtonDimension.x + 32.0f + PaddingFromText, BackButtonDimension.y};
-    ButtonIconDimension = {BackButtonDimension.x, BackButtonDimension.y, 48.0f, 48.0f};
+    const float BackButtonContentMargin = 5.0f;
+    const float PaddingFromLeft = 48.0f;
+    BackButtonDimension = {ContainerDimension.x + PaddingFromLeft, ContainerDimension.y - BackContentSize.y - BackButtonContentMargin * 2.0f - PaddingBotContainer, ButtonFontSize + BackContentSize.x + BackButtonContentMargin * 3.0f, ButtonFontSize + BackButtonContentMargin * 2.0f};
+    ButtonIconDimension = {BackButtonDimension.x + BackButtonContentMargin, BackButtonDimension.y + BackButtonContentMargin, ButtonFontSize, ButtonFontSize};
+    BackContentPosition = {BackButtonDimension.x + ButtonIconDimension.width + BackButtonContentMargin * 2, BackButtonDimension.y + BackButtonContentMargin};
     BackButtonIndicatorDimension[0] = {BackButtonDimension.x - 12.0f, BackButtonDimension.y - 12.0f, 12.0f, 12.0f};
     BackButtonIndicatorDimension[1] = {BackButtonDimension.x + BackButtonDimension.width, BackButtonDimension.y - 12.0f, 12.0f, 12.0f};
     BackButtonIndicatorDimension[2] = {BackButtonDimension.x - 12.0f, BackButtonDimension.y + BackButtonDimension.height, 12.0f, 12.0f};
@@ -106,4 +139,5 @@ void DictionaryState::Enter() {
 
 void DictionaryState::Exit()
 {
+    ChampionList->SetSelectedIndex(-1);
 }

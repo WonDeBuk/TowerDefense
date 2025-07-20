@@ -99,6 +99,7 @@ void Enemy::OnDamage(const float& _Damage) {
 }
 
 void Enemy::OnDeath() {
+    Enemy::EnemyKill();
 }
 
 void Enemy::EnemyKill() const{

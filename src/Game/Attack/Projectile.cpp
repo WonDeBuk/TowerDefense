@@ -2,8 +2,7 @@
 #include "../Enemy.h"
 #include "raymath.h"
 #include "../GameManager.h"
-#include "././Utils/ResourceManager.h"
-#include <iostream>
+#include "../../Utils/ResourceManager.h"
 
 Projectile Projectile::ProjectileTemplate;
 
