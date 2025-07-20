@@ -65,6 +65,11 @@ enum class ChampionAnimationState {
     IDLE, CAST, COUNTING
 };
 
+typedef struct BlackListData {
+    int EnemyID = -1;
+    int TimeAdded;
+};
+
 typedef struct EnemyData {
     std::string StringName;
     float BaseHealth;

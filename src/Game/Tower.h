@@ -2,26 +2,48 @@
 
 #include "raylib.h"
 
+enum TargetType {
+    FIRST, LAST, WEAKEST, STRONGEST
+};
 
-class Tower
-{
+class Tower {
 protected:
+    int TowerCooldown;
+    int TowerDeltaCooldown;
+    int TowerLevel;
+    int TotalCost;
+    float TowerRange;
+    float TowerAttackDamage;
+    float TowerAttackMovementSpeed;
     Vector2 TowerPosition;
 
-    int TowerCurrentLevel;
-    float TowerRange;
-    float TowerDamage;
-    int TowerCooldown;
+    int TargetEnemyID;
+    int TowerID;                        //identical to TowerPlotID
 
-    size_t Lifespan;
+    size_t TowerLifespan;
+    void (Tower::*GetTargetEnemy)();
 public:
     Tower();
 
-    void SetTowerID(const size_t&);
+    virtual const float& GetTowerRange() const { return TowerRange; }
+    virtual const int& GetTowerCooldown() const { return TowerCooldown; }
+    virtual const int& GetTargetEnemyID() const { return TargetEnemyID; }
+    virtual const int& GetTowerID() const { return TowerID; }
+    virtual const Vector2& GetTowerPosition() const { return TowerPosition; }
 
-    
+    virtual void SetTargetType(const TargetType& _TargetType);
+    virtual void SetTowerID(const int& _ID);
+    virtual void SetTowerRange(const float& _TowerRange);
 
-    virtual void Update();
-    virtual void Draw() const;
-    virtual void SetTowerCurrentLevel(const int& __Level);
+    virtual void GetFirstEnemy();
+    virtual void GetLastEnemy();
+    virtual void GetWeakestEnemy();
+    virtual void GetStrongestEnemy();
+    virtual const Vector2 GetEnemyDefinitePosition(const Vector2& _AttackStartPosition) const;
+
+    virtual void Sell() {}                              //implement later...
+    virtual void OnUpgrade() = 0;
+    virtual void Update() = 0;
+    virtual void UpdateAnimation() = 0;
+    virtual void Draw() const = 0;
 };

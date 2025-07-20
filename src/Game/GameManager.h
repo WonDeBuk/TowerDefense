@@ -3,7 +3,7 @@
 #include "./Utils/Define.h"
 #include "Enemy.h"
 #include "Attack.h"
-// #include "Tower.h"
+#include "Tower.h"
 #include <raylib.h>
 
 class GameManager {
@@ -66,10 +66,11 @@ public:
     void KillAttack(const int& _AttackID);
 
     // Các method liên quan đến việc sử dụng TowerPool
-    // static const char(&GetTowerPool())[MAX_TOWER_AMOUNT][MAX_TOWER_SIZE];
-    // static const int& GetCurrentTowerAmount();
-    // void AddTower(const TowerType& _TowerType, const int& _SlotID);
-    // void KillTower(const int& _TowerID);
+    static const char(&GetTowerPool())[MAX_TOWER_AMOUNT][MAX_TOWER_SIZE];
+    static const int& GetCurrentTowerAmount();
+    Tower* GetTowerByID(const int& _TowerID) const;
+    void AddTower(const TowerType& _TowerType, const int& _SlotID);
+    void KillTower(const int& _TowerID);
 
 
     void Draw() const;

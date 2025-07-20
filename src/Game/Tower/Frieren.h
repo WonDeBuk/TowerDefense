@@ -1,24 +1,21 @@
 #pragma once
 
-#include "./Tower.h"
+#include "Game/Tower.h"
 
 class Frieren: public Tower {
 private:
-    int ShotsCounting;
-    int BaseShots;
-    size_t AnimationTimer;
-    int 
+	int MaxShotAvailable;
+	int ShotRemaining;
+	Color UpgradeColor; //delete later lmao
+	void (Frieren::*OnCooldown)();
 
-    int TargetEnemiesID[3];
-    int TargetEnemyID;
-
-    void (*Skill)();
-    void (*UpdateFrieren)();
-
-    void SkillLevel1();
-    void SkillLevel3();
-    void UpdateLevel1();
+	void AttackModule_1();
+	void AttackModule_3();
 public:
-    void SetTowerCurrentLevel(const int& _Level) override;
-    void Update() override;
+	Frieren();
+
+	void OnUpgrade() override;
+	void Update() override;
+	void UpdateAnimation() override;
+	void Draw() const override;
 };

@@ -17,7 +17,12 @@
 #include "Attack/Projectile.h"
 #include "Attack/Missile.h"
 
-// #include "Tower/Frieren.h"
+#include "Tower/Frieren.h"
+#include "Tower/Milim.h"
+#include "Tower/Rimuru.h"
+#include "Tower/Fern.h"
+#include "Tower/Shuna.h"
+#include "Tower/Stark.h"
 
 // Khởi tạo các biến static
 
@@ -41,7 +46,7 @@ int GameManager::TowerPlotSize = 0;
 int GameManager::CurrentTowerAmount = 0;
 
 // Các property khác
-MapType GameManager::CurrentMap = MapType::COUNTING;
+MapType GameManager::CurrentMap = MapType::MAPCOUNTING;
 Texture2D* GameManager::MapTexture = nullptr;
 size_t GameManager::Timer = 0;
 
@@ -114,7 +119,7 @@ void GameManager::ResetConfig() {
     CurrentAttackAmount = 0;
     CurrentTowerAmount = 0;
     TowerPlotSize = 0;
-    CurrentMap = MapType::COUNTING;
+    CurrentMap = MapType::MAPCOUNTING;
     MapTexture = nullptr;
     Timer = 0;
 }
@@ -194,12 +199,8 @@ const int& GameManager::GetCurrentEnemyAmount() {
 Enemy* GameManager::GetEnemyByID(const int& _EnemyID) const {
     assert(_EnemyID < MAX_ENEMY_AMOUNT && "GameManager * Invalid Enemy Get");
     assert(_EnemyID >= 0 && "GameManager * Invalid Enemy Get");
-    if (EnemyPoolTracker[_EnemyID]) {
-        return reinterpret_cast<Enemy*>(EnemyPool[_EnemyID]);
-    } else {
-        return nullptr;
-    }
-    
+    if (EnemyPoolTracker[_EnemyID]) return reinterpret_cast<Enemy*>(EnemyPool[_EnemyID]);
+    return nullptr;
 }
 
 void GameManager::AddEnemy(const EnemyType& _EnemyType, Enemy* _EnemyTemplate) {
@@ -273,6 +274,7 @@ void GameManager::AddAttack(const AttackType& _AttackType, const Attack* _Attack
         }
     }
 
+    if (EmptySlotID < 0 || EmptySlotID >= MAX_ATTACK_AMOUNT) return;
     assert(EmptySlotID < MAX_ATTACK_AMOUNT && "GameManager * Invalid Attack Add");
     assert(EmptySlotID >= 0 && "GameManager * Invalid Attack Add");
 
@@ -307,40 +309,62 @@ void GameManager::KillAttack(const int& _AttackID) {
 // Các method liên quan đến việc sử dụng TowerPool
 
 
-// const char(&GameManager::GetTowerPool())[MAX_TOWER_AMOUNT][MAX_TOWER_SIZE] {
-//     return TowerPool;
-// }
+ const char(&GameManager::GetTowerPool())[MAX_TOWER_AMOUNT][MAX_TOWER_SIZE] {
+     return TowerPool;
+ }
 
-// const int& GameManager::GetCurrentTowerAmount() {
-//     return CurrentAttackAmount;
-// }
+ const int& GameManager::GetCurrentTowerAmount() {
+     return CurrentTowerAmount;
+ }
 
-// void GameManager::AddTower(const TowerType& _TowerType, const int& _SlotID) {
-//     assert(_SlotID < TowerPlotSize && "GameManager * Invalid Tower Add");
-//     assert(_SlotID >= 0 && "GameManager * Invalid Tower Add");
-//     assert(!TowerPlotAndPoolTracker[_SlotID] && "GameManager * Invalid Attack Get");
+ Tower* GameManager::GetTowerByID(const int& _TowerID) const {
+     if (TowerPlotAndPoolTracker[_TowerID]) return reinterpret_cast<Tower*>(TowerPool[_TowerID]);
+     return nullptr;
+ }
 
-//     Tower* NewTowerObject = nullptr;
-//     switch (_TowerType) {
-//         case TowerType::FRIEREN:
-//             NewTowerObject = new (TowerPool[_SlotID]) Frieren();
-//             break;
-//         default:
-//             break;
-//     }
+ void GameManager::AddTower(const TowerType& _TowerType, const int& _SlotID) {
+     assert(_SlotID < TowerPlotSize && "GameManager * Invalid Tower Add");
+     assert(_SlotID >= 0 && "GameManager * Invalid Tower Add");
+     assert(!TowerPlotAndPoolTracker[_SlotID] && "GameManager * Invalid Attack Get");
 
-//     assert((NewTowerObject != nullptr) && "GameManager * Invalid TowerConstructor");
-//     NewTowerObject->SetTowerID(_SlotID);
-//     CurrentTowerAmount++;
-// }
+     Tower* NewTowerObject = nullptr;
+     switch (_TowerType) {
+         case TowerType::FRIEREN:
+             NewTowerObject = new (TowerPool[_SlotID]) Frieren();
+             break;
+         case TowerType::MILIM:
+             NewTowerObject = new (TowerPool[_SlotID]) Milim();
+             break;
+         case TowerType::RIMURU:
+             NewTowerObject = new (TowerPool[_SlotID]) Rimuru();
+             break;
+         case TowerType::FERN:
+             NewTowerObject = new (TowerPool[_SlotID]) Fern();
+             break;
+         case TowerType::SHUNA:
+             NewTowerObject = new (TowerPool[_SlotID]) Shuna();
+             break;
+         case TowerType::STARK:
+             NewTowerObject = new (TowerPool[_SlotID]) Stark();
+             break;
 
-// void GameManager::KillTower(const int& _TowerID) {
-//     assert(_TowerID < MAX_TOWER_AMOUNT && "GameManager * Invalid Tower Kill");
-//     assert(_TowerID >= 0 && "GameManager * Invalid Tower Kill");
-//     assert(!TowerPlotAndPoolTracker[_TowerID] && "GameManager * Invalid Tower Get");
-//     TowerPlotAndPoolTracker[_TowerID] = false;
-//     CurrentTowerAmount--;
-// }
+         default:
+             break;
+     }
+
+     assert((NewTowerObject != nullptr) && "GameManager * Invalid TowerConstructor");
+     TowerPlotAndPoolTracker[_SlotID] = true;
+     NewTowerObject->SetTowerID(_SlotID);
+     CurrentTowerAmount++;
+ }
+
+ void GameManager::KillTower(const int& _TowerID) {
+     assert(_TowerID < MAX_TOWER_AMOUNT && "GameManager * Invalid Tower Kill");
+     assert(_TowerID >= 0 && "GameManager * Invalid Tower Kill");
+     assert(!TowerPlotAndPoolTracker[_TowerID] && "GameManager * Invalid Tower Get");
+     TowerPlotAndPoolTracker[_TowerID] = false;
+     CurrentTowerAmount--;
+ }
 
 
 // Draw và Update
@@ -361,6 +385,12 @@ void GameManager::Draw() const {
         int EnemyDrawID = DrawLayerYCoorDepend.top().second;
         reinterpret_cast<Enemy*>(EnemyPool[EnemyDrawID])->Draw();
         DrawLayerYCoorDepend.pop();
+    }   
+
+    for (int i = 0; i < MAX_TOWER_AMOUNT; i++) {
+        if (TowerPlotAndPoolTracker[i]) {
+            reinterpret_cast<Tower*>(TowerPool[i])->Draw();
+        }
     }
 
      for (int i = 0; i < MAX_ATTACK_AMOUNT; i++) {
@@ -368,12 +398,8 @@ void GameManager::Draw() const {
              reinterpret_cast<Attack*>(AttackPool[i])->Draw();
          }
      }
-    
-    // for (int i = 0; i < MAX_TOWER_AMOUNT; i++) {
-    //     if (TowerPlotAndPoolTracker[i]) {
-    //         reinterpret_cast<Tower*>(TowerPool[i])->Draw();
-    //     }
-    // }
+   
+     DrawText(std::to_string(CurrentAttackAmount).c_str(), 600, 100, 32, BLACK);
 }
 
 void GameManager::Update() {
@@ -389,11 +415,11 @@ void GameManager::Update() {
          }
      }
     
-    // for (int i = 0; i < MAX_TOWER_AMOUNT; i++) {
-    //     if (TowerPlotAndPoolTracker[i]) {
-    //         reinterpret_cast<Tower*>(TowerPool[i])->Update();
-    //     }
-    // }
+     for (int i = 0; i < MAX_TOWER_AMOUNT; i++) {
+         if (TowerPlotAndPoolTracker[i]) {
+             reinterpret_cast<Tower*>(TowerPool[i])->Update();
+         }
+     }
 
     Timer++;
 }

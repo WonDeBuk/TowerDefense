@@ -5,7 +5,7 @@
 Attack::Attack() {}
 
 void Attack::Update() {
-    Lifespan++;
+    Lifespan--;
 }
 
 void Attack::SetAttackID(const int &_AttackID) {

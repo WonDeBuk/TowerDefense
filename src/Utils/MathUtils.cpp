@@ -20,3 +20,8 @@ Vector3 ColorCalculate() {
     if (Hue >= 360.0f) Hue -= 360.0f;
     return {Hue, Sat, Val};
 }
+
+float GetRandomFloat(float _min, float _max) {
+    float Percent = 1.0f * GetRandomValue(0, 1000) / 1000;
+    return _min + (Percent * (_max - _min));
+}

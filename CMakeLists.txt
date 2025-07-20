@@ -33,9 +33,16 @@ set(HEADERS
     src/Game/WaveManager.h
     src/Game/Enemy.h
     src/Game/Attack.h
+    src/Game/Tower.h
     src/Game/Attack/Projectile.h
     src/Game/Attack/Missile.h
     src/Game/Enemy/Slime.h
+    src/Game/Tower/Frieren.h
+    src/Game/Tower/Milim.h
+    src/Game/Tower/Rimuru.h
+    src/Game/Tower/Fern.h
+    src/Game/Tower/Shuna.h
+    src/Game/Tower/Stark.h
 )
 
 # Add source files
@@ -63,6 +70,13 @@ set(SOURCES
     src/Game/Attack.cpp
     src/Game/Attack/Projectile.cpp
     src/Game/Attack/Missile.cpp
+    src/Game/Tower.cpp
+    src/Game/Tower/Frieren.cpp
+    src/Game/Tower/Milim.cpp
+    src/Game/Tower/Rimuru.cpp
+    src/Game/Tower/Fern.cpp
+    src/Game/Tower/Shuna.cpp
+    src/Game/Tower/Stark.cpp
 )
 
 # Create executable
