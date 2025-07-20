@@ -1,6 +1,7 @@
 #include "Attack.h"
 #include "././Utils/MathUtils.hpp"
 #include "GameManager.h"
+#include "././Utils/SoundManager.h"
 
 Attack::Attack() {}
 

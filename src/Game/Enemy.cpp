@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <iostream>
 #include <raymath.h>
+#include "././Utils/SoundManager.h"
 
 Enemy::Enemy() {
     // Khởi tạo thời gian sống
@@ -91,14 +92,18 @@ void Enemy::Update() {
 
 void Enemy::OnDamage(const float& _Damage) {
     if (EnemyHealth <= _Damage) {
+        SoundManager::GetInstance().PlaySFX("oof.ogg");
+        VisualManager::GetInstance().AddImageVisual(7, "ui/CoinFlip.png", { EnemyCurrentPosition.x - 64.0f, EnemyCurrentPosition.y - 128.0f }, { 128.0f, 128.0f });
         OnDeath();
         EnemyKill();
         return;
     }
+    SoundManager::GetInstance().PlaySFX("hit.ogg");
     EnemyHealth -= _Damage;
 }
 
 void Enemy::OnDeath() {
+    
 }
 
 void Enemy::EnemyKill() const{

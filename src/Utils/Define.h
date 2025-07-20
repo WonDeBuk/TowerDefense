@@ -1,5 +1,6 @@
 #pragma once
 
+#include <raylib.h>
 #include <string>
 
 #define MAX_ENEMY_AMOUNT 100
@@ -20,32 +21,73 @@
 #define MAP_WIDTH 50
 #define MAP_HEIGHT 30
 
-enum MapType {
-    FOREST, FROZEN, DESERT, MAPCOUNTING
+#define CHAMPION_FRAME_AMOUNT 10
+#define CHAMPION_TEXTURE_SIZE 160.0f
+#define CHAMPION_TEXTURE_Y_OFFSET 128.0f
+#define CHAMPION_TEXTURE_DRAW_SIZE 320.0f
+
+#define MAX_VISUAL_AMOUNT 100
+#define VISUAL_UPDATE_PACE 3
+
+enum class MapType {
+    FOREST, FROZEN, DESERT, COUNTING
 };
 
-enum EnemyType {
-    SLIME, ENEMYCOUNTING
+enum class EnemyType {
+    SLIME, BANDIT, HORNET,
+    GOLEM, GRUMBLE, TITAN, 
+    REVENANT,
+    COUNTING
 };
 
-enum AttackType {
-    PROJECTILE, MISSILE, ATTACKCOUNTING
+enum class TargetType {
+    FIRST, LAST, WEAKEST, STRONGEST
 };
 
-enum TowerType {
-    FRIEREN, MILIM, RIMURU, FERN, SHUNA, STARK, TOWERCOUTING
+enum class AttackType {
+    PROJECTILE, MISSILE, COUNTING
 };
 
-enum Language {
-    ENGLISH, VIETNAMESE, DUTCH, FRENCH, ITALIAN, SPANISH, PORTUGUESE, RUSSIAN, INDONESIAN, LANGUAGECOUNTING
-};
-
-enum ChampionTier {
-    COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, MYTHIC, CHAMPIONTIERCOUNTING
+enum class Language {
+    ENGLISH, VIETNAMESE, DUTCH, FRENCH, ITALIAN, SPANISH, PORTUGUESE, RUSSIAN, INDONESIAN, COUNTING
 };
 
 enum GameStatePeriod {
     WAVE, BUILD, RESUME, WIN, LOSE
+};
+
+enum class ChampionTierType {
+    COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, MYTHIC, COUNTING
+};
+
+enum class ChampionType {
+    FRIEREN, RIMURU, MILIM, STARK, FERN, SHUNA, DAI, LINA, GOURRY, MAAM, XELLOS, POPP, COUNTING
+};
+
+// enum class ChampionType {
+//     FRIEREN, FERN, STARK, RIMURU, MILIM, SHUNA, DAI, POPP, LINA, GOURRY, MAAM, XELLOS, COUNTING
+// };
+
+// enum class ChampionAnimationState {
+//     IDLE, FIRST_CAST, SECOND_CAST, THIRD_CAST, COUNTING
+// };
+
+enum class ChampionAnimationState {
+    IDLE, CAST, COUNTING
+};
+
+typedef struct ImageVisualData {
+    int TotalFrame;
+    Texture2D* Display;
+    Vector2 Position;
+    Vector2 Size;
+    size_t Timer;
+};
+
+typedef struct TextVisualData {
+    Vector2 Position;
+    size_t Timer;
+    char Display[32];
 };
 
 typedef struct BlackListData {
@@ -59,11 +101,6 @@ typedef struct EnemyData {
     float BaseSpeed;
     float BaseCash;
 } EnemyData;
-
-typedef struct ChampionData {
-    std::string ChampionName;
-    ChampionTier ChampionTier;
-} ChampionData;
 
 typedef struct SpawnData {
     EnemyType SpawnEnemyType;

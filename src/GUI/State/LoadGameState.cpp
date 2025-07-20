@@ -1,6 +1,7 @@
 #include "LoadGameState.h"
 #include "../Director.h"
 #include "././Utils/ResourceManager.h"
+#include "././Utils/SoundManager.h"
 
 LoadGameState::LoadGameState() : IsBackButtonHover(false) {
     // Calculate Container Dimension
@@ -27,6 +28,7 @@ void LoadGameState::Update() {
     if (CheckCollisionPointRec(MousePosition, BackButtonDimension)) {
         IsBackButtonHover = true;
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            SoundManager::GetInstance().PlaySFX("click.ogg");
             Director::GetInstance().TransitionTo(RENDER_STATE::MAIN);
         }
     } else {
@@ -41,8 +43,10 @@ void LoadGameState::Draw() const {
     RenderState::Draw();
 
     // Container Background Draw
-    DrawRectangleRec(ContinueContainerDimension, {0, 0, 0, 100});
-    DrawRectangleRec(InformationContainerDimension, {0, 0, 0, 100});
+    DrawRectangleRounded(InformationContainerDimension, 0.2f, 0, {0, 0, 0, 100});
+    DrawRectangleRounded(ContinueContainerDimension, 0.2f, 0, {0, 0, 0, 100});
+    DrawRectangleRoundedLinesEx(InformationContainerDimension, 0.2f, 0, 2.0f, WHITE);
+    DrawRectangleRoundedLinesEx(ContinueContainerDimension, 0.2f, 0, 2.0f, WHITE);
 
     // Title Draw
     DrawTextEx(*ContentFont, ContinueTitle, ContinueTitlePosition, ContentFontSize, 1.0f, WHITE);
@@ -55,9 +59,10 @@ void LoadGameState::Draw() const {
     }
 
     // Back Button Draw
-    DrawRectanglePro(BackButtonDimension, {0.0f, 0.0f}, 0.0f, {0, 0, 0, 100});
+    DrawRectangleRounded(BackButtonDimension, 0.4f, 0, {0, 0, 0, 100});
+    DrawRectangleRoundedLinesEx(BackButtonDimension, 0.4f, 0, 2.0f, WHITE);
     DrawTexturePro(*BackButtonIcon, {0.0f, 0.0f, 64.0f, 64.0f}, ButtonIconDimension, {0.0f, 0.0f}, 0.0f, WHITE);
-    DrawTextEx(*ContentFont, BackContent, BackContentPosition, ContentFontSize, 1.0f, WHITE);
+    DrawTextEx(*ContentFont, BackContent, BackContentPosition, ButtonFontSize, 1.0f, WHITE);
     if (IsBackButtonHover) {
         for (int i = 0; i < 4; i++) {
             DrawTexturePro(*BackButtonBoxIndicator, {12.0f * (i % 2), 24.0f * ((Time / 7) % 3) + 12.0f * (i / 2), 12.0f, 12.0f}, BackButtonIndicatorDimension[i], {0.0f, 0.0f}, 0.0f, WHITE);
@@ -74,12 +79,14 @@ void LoadGameState::Enter() {
     // Calculate Content Size
     ContinueTitleSize = MeasureTextEx(*ContentFont, ContinueTitle, ContentFontSize, 1.0f);
     InformationTitleSize = MeasureTextEx(*ContentFont, InformationTitle, ContentFontSize, 1.0f);
-    BackContentSize = MeasureTextEx(*ContentFont, BackContent, ContentFontSize, 1.0f);
+    BackContentSize = MeasureTextEx(*ContentFont, BackContent, ButtonFontSize, 1.0f);
 
     // Back Button Properties Calculate
-    BackButtonDimension = {ContainerDimension.x, ContainerDimension.y - BackContentSize.y - PaddingBotContainer, 32.0f + BackContentSize.x + PaddingFromText * 2.0f, BackContentSize.y};
-    ButtonIconDimension = {BackButtonDimension.x, BackButtonDimension.y, 48.0f, 48.0f};
-    BackContentPosition = {BackButtonDimension.x + 32.0f + PaddingFromText, BackButtonDimension.y};
+    const float BackButtonContentMargin = 5.0f;
+    const float PaddingFromLeft = 48.0f;
+    BackButtonDimension = {ContainerDimension.x + PaddingFromLeft, ContainerDimension.y - BackContentSize.y - BackButtonContentMargin * 2.0f - PaddingBotContainer, ButtonFontSize + BackContentSize.x + BackButtonContentMargin * 3.0f, ButtonFontSize + BackButtonContentMargin * 2.0f};
+    ButtonIconDimension = {BackButtonDimension.x + BackButtonContentMargin, BackButtonDimension.y + BackButtonContentMargin, ButtonFontSize, ButtonFontSize};
+    BackContentPosition = {BackButtonDimension.x + ButtonIconDimension.width + BackButtonContentMargin * 2, BackButtonDimension.y + BackButtonContentMargin};
     BackButtonIndicatorDimension[0] = {BackButtonDimension.x - 12.0f, BackButtonDimension.y - 12.0f, 12.0f, 12.0f};
     BackButtonIndicatorDimension[1] = {BackButtonDimension.x + BackButtonDimension.width, BackButtonDimension.y - 12.0f, 12.0f, 12.0f};
     BackButtonIndicatorDimension[2] = {BackButtonDimension.x - 12.0f, BackButtonDimension.y + BackButtonDimension.height, 12.0f, 12.0f};

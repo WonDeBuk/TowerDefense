@@ -2,18 +2,25 @@
 #include "Game/Attack/Projectile.h"
 #include "Game/GameManager.h"
 #include <raymath.h>
+#include <iostream>
 
 Rimuru::Rimuru(): Tower() {
-	TowerCooldown = 22;
-	TowerDeltaCooldown = TowerCooldown / 2;
+	std::cout << PreviousAttackFrame << '\n';
+	CurrentChampion = ChampionType::RIMURU;
+	CurrentAnimationState = ChampionAnimationState::IDLE;
+	TowerLifespan = 10;
+	TowerCooldown = 100;
 	TotalCost = 1500;
 	TowerRange = 250.0f;
-	TowerAttackDamage = 15.0f;
+	TowerAttackDamage = 125.0f;
 	TowerAttackMovementSpeed = 10.0f;
 
 	OnCooldown = &Rimuru::AttackModule;
+}
 
-	UpgradeColor = { 163, 208, 255, 255 };
+void Rimuru::SetTowerID(const int& _TowerID) {
+	Tower::SetTowerID(_TowerID);
+	AttackPosition = { TowerPosition.x, TowerPosition.y + 48.0f };
 }
 
 void Rimuru::AttackModule() {
@@ -22,49 +29,44 @@ void Rimuru::AttackModule() {
 		return;
 	}
 
-	Vector2 EnemyDefinitePosition = GetEnemyDefinitePosition(TowerPosition);
-	size_t CalcLifespan = Vector2Distance(TowerPosition, EnemyDefinitePosition) / TowerAttackMovementSpeed;
-	GameManager::GetInstance().AddAttack(AttackType::PROJECTILE, Projectile::ProjectileTemplateBuildAndGet(TowerPosition, EnemyDefinitePosition, TowerAttackMovementSpeed, TowerAttackDamage, TargetEnemyID, TowerID, CalcLifespan, DARKBLUE));
+	CurrentAnimationState = ChampionAnimationState::CAST;
+	PreviousAttackFrame = TowerLifespan;
 
-	TowerDeltaCooldown = TowerCooldown;
+	Vector2 EnemyDefinitePosition = GetEnemyDefinitePosition(AttackPosition, TargetEnemyID);
+	size_t CalcLifespan = Vector2Distance(AttackPosition, EnemyDefinitePosition) / TowerAttackMovementSpeed * 1.5f;
+	GameManager::GetInstance().AddAttack(AttackType::PROJECTILE, Projectile::ProjectileTemplateBuildAndGet(AttackPosition, EnemyDefinitePosition, TowerAttackMovementSpeed, TowerAttackDamage, TargetEnemyID, TowerID, CalcLifespan, DARKBLUE));
 }
 
-void Rimuru::OnUpgrade() {
-	if (TowerLevel == 3) return;
+bool Rimuru::OnUpgrade() {
+	if (TowerLevel == 3) return false;
 	TowerLevel++;
 
 	switch (TowerLevel) {
 	case 2:
-		TowerCooldown = 14;
+		TowerCooldown = 95;
 		TowerRange = 280.0f;
-		TowerAttackDamage = 18.0f;
+		TowerAttackDamage = 150.0f;
 		TowerAttackMovementSpeed = 10.0f;
 		TotalCost += 000;
-		UpgradeColor = { 79, 165, 255, 255 };
 		break;
 	case 3:
-		TowerCooldown = 7;
+		TowerCooldown = 80;
 		TowerRange = 325.0f;
-		TowerAttackDamage = 23.0f;
-		TowerAttackMovementSpeed = 11.0f;
+		TowerAttackDamage = 225.0f;
+		TowerAttackMovementSpeed = 8.0f;
 		TotalCost += 000;
-		UpgradeColor = { 25, 129, 255, 255 };
 		break;
 	}
+	return true;
 }
 
 void Rimuru::Update() {
-	TowerLifespan++;
+	if (TowerLifespan - PreviousAttackFrame >= TowerCooldown) (this->*OnCooldown)();
+	if (TowerLifespan - PreviousAttackFrame >= 70) CurrentAnimationState = ChampionAnimationState::IDLE;
 
-	if (TowerDeltaCooldown <= 0) (this->*OnCooldown)();
-	else TowerDeltaCooldown--;
+	TowerLifespan++;
 }
 
 void Rimuru::UpdateAnimation() {
 
-}
-
-void Rimuru::Draw() const {
-	DrawCircleLines(TowerPosition.x, TowerPosition.y, TowerRange, WHITE);
-	DrawCircle(TowerPosition.x, TowerPosition.y, 24.0f, UpgradeColor);
 }

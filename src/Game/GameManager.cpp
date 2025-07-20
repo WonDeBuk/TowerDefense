@@ -11,8 +11,15 @@
 
 #include "./Utils/ResourceManager.h"
 #include "./Utils/MathUtils.hpp"
+#include "VisualManager.h"
 
 #include "Enemy/Slime.h"
+#include "Enemy/Bandit.h"
+#include "Enemy/Hornet.h"
+#include "Enemy/Golem.h"
+#include "Enemy/Grumble.h"
+#include "Enemy/Titan.h"
+#include "Enemy/Revenant.h"
 
 #include "Attack/Projectile.h"
 #include "Attack/Missile.h"
@@ -46,7 +53,7 @@ int GameManager::TowerPlotSize = 0;
 int GameManager::CurrentTowerAmount = 0;
 
 // Các property khác
-MapType GameManager::CurrentMap = MapType::MAPCOUNTING;
+MapType GameManager::CurrentMap = MapType::COUNTING;
 Texture2D* GameManager::MapTexture = nullptr;
 size_t GameManager::Timer = 0;
 
@@ -119,7 +126,7 @@ void GameManager::ResetConfig() {
     CurrentAttackAmount = 0;
     CurrentTowerAmount = 0;
     TowerPlotSize = 0;
-    CurrentMap = MapType::MAPCOUNTING;
+    CurrentMap = MapType::COUNTING;
     MapTexture = nullptr;
     Timer = 0;
 }
@@ -221,6 +228,24 @@ void GameManager::AddEnemy(const EnemyType& _EnemyType, Enemy* _EnemyTemplate) {
         case EnemyType::SLIME:
             NewEnemyObject = new (EnemyPool[EmptySlotID]) Slime();
             break;
+        case EnemyType::BANDIT:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Bandit();
+            break;
+        case EnemyType::HORNET:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Hornet();
+            break;
+        case EnemyType::GOLEM:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Golem();
+            break;
+        case EnemyType::GRUMBLE:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Grumble();
+            break;
+        case EnemyType::TITAN:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Titan();
+            break;
+        case EnemyType::REVENANT:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Revenant();
+            break;
         default:
             break;
         }
@@ -228,6 +253,24 @@ void GameManager::AddEnemy(const EnemyType& _EnemyType, Enemy* _EnemyTemplate) {
         switch (_EnemyType) {
         case EnemyType::SLIME:
             NewEnemyObject = new (EnemyPool[EmptySlotID]) Slime(*reinterpret_cast<Slime*>(_EnemyTemplate));
+            break;
+        case EnemyType::BANDIT:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Bandit(*reinterpret_cast<Bandit*>(_EnemyTemplate));
+            break;
+        case EnemyType::HORNET:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Hornet(*reinterpret_cast<Hornet*>(_EnemyTemplate));
+            break;
+        case EnemyType::GOLEM:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Golem(*reinterpret_cast<Golem*>(_EnemyTemplate));
+            break;
+        case EnemyType::GRUMBLE:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Grumble(*reinterpret_cast<Grumble*>(_EnemyTemplate));
+            break;
+        case EnemyType::TITAN:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Titan(*reinterpret_cast<Titan*>(_EnemyTemplate));
+            break;
+        case EnemyType::REVENANT:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Revenant(*reinterpret_cast<Revenant*>(_EnemyTemplate));
             break;
         default:
             break;
@@ -322,29 +365,29 @@ void GameManager::KillAttack(const int& _AttackID) {
      return nullptr;
  }
 
- void GameManager::AddTower(const TowerType& _TowerType, const int& _SlotID) {
+ void GameManager::AddTower(const ChampionType& _ChampionType, const int& _SlotID) {
      assert(_SlotID < TowerPlotSize && "GameManager * Invalid Tower Add");
      assert(_SlotID >= 0 && "GameManager * Invalid Tower Add");
      assert(!TowerPlotAndPoolTracker[_SlotID] && "GameManager * Invalid Attack Get");
 
      Tower* NewTowerObject = nullptr;
-     switch (_TowerType) {
-         case TowerType::FRIEREN:
+     switch (_ChampionType) {
+         case ChampionType::FRIEREN:
              NewTowerObject = new (TowerPool[_SlotID]) Frieren();
              break;
-         case TowerType::MILIM:
+         case ChampionType::MILIM:
              NewTowerObject = new (TowerPool[_SlotID]) Milim();
              break;
-         case TowerType::RIMURU:
+         case ChampionType::RIMURU:
              NewTowerObject = new (TowerPool[_SlotID]) Rimuru();
              break;
-         case TowerType::FERN:
+         case ChampionType::FERN:
              NewTowerObject = new (TowerPool[_SlotID]) Fern();
              break;
-         case TowerType::SHUNA:
+         case ChampionType::SHUNA:
              NewTowerObject = new (TowerPool[_SlotID]) Shuna();
              break;
-         case TowerType::STARK:
+         case ChampionType::STARK:
              NewTowerObject = new (TowerPool[_SlotID]) Stark();
              break;
 
@@ -393,16 +436,19 @@ void GameManager::Draw() const {
         }
     }
 
-     for (int i = 0; i < MAX_ATTACK_AMOUNT; i++) {
-         if (AttackPoolTracker[i]) {
-             reinterpret_cast<Attack*>(AttackPool[i])->Draw();
-         }
-     }
-   
+    VisualManager::GetInstance().Draw();
+    for (int i = 0; i < MAX_ATTACK_AMOUNT; i++) {
+        if (AttackPoolTracker[i]) {
+            reinterpret_cast<Attack*>(AttackPool[i])->Draw();
+        }
+    }
+        
      DrawText(std::to_string(CurrentAttackAmount).c_str(), 600, 100, 32, BLACK);
 }
 
 void GameManager::Update() {
+    VisualManager::GetInstance().Update();
+
     for (int i = 0; i < MAX_ENEMY_AMOUNT; i++) {
         if (EnemyPoolTracker[i]) {
             reinterpret_cast<Enemy*>(EnemyPool[i])->Update();

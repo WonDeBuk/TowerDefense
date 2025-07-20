@@ -29,7 +29,7 @@ private:
 
     // Music Properties
     Rectangle MusicContainerDimension;
-    
+
     // Effect Properties
     Rectangle EffectContainerDimension;
 
@@ -40,7 +40,7 @@ private:
     Rectangle* FlagBound;
     Rectangle* FlagDimension;
     int HoverIndex;
-    const int NumOfLanguage = (int) Language::LANGUAGECOUNTING;
+    const int NumOfLanguage = (int)Language::COUNTING;
     Rectangle CurrentLanguageFlagDimension;
 
     const float TDPaddingPercent = 0.125f;
@@ -67,7 +67,24 @@ private:
     Texture2D* BackButtonIcon;
     Texture2D* BackButtonBoxIndicator;
     bool IsBackButtonHover;
-    const float PaddingBotContainer = 20.0f;
+    const float PaddingBotContainer = 40.0f;
+    const float ButtonFontSize = 32.0f;
+
+    // Volume Slider properties
+    Rectangle BGMVolumeSlider;
+    Rectangle SFXVolumeSlider;
+    Rectangle BGMVolumeBar;
+    Rectangle SFXVolumeBar;
+    Rectangle BGMVolumeIconDimension;
+    Rectangle SFXVolumeIconDimension;
+    Texture2D* SoundIcon;
+    bool isDraggingBGM = false;
+    bool isDraggingSFX = false;
+    const float SliderWidth = 200.0f;
+    const float SliderHeight = 20.0f;
+    const float SliderHandleSize = 24.0f;
+    const float IconSize = 32.0f;
+    const float IconMargin = 10.0f;
 public:
     SettingState();
 
@@ -75,4 +92,4 @@ public:
     void Draw() const override;
     void Enter() override;
     void Exit() override;
-}; 
+};

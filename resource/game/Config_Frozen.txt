@@ -1,0 +1,51 @@
+Map Config:
+Waypoint Amount: 10
+X: -10.0, Y: 606.0
+X: 352.0, Y: 606.0
+X: 352.0, Y: 286.0
+X: 1122.0, Y: 286.0
+X: 1122.0, Y: 542.0
+X: 768.0, Y: 542.0
+X: 768.0, Y: 798.0
+X: 1406.0, Y: 798.0
+X: 1406.0, Y: 480.0
+X: 1582.0, Y: 480.0
+Tower Plot Amount: 6
+X: 150.0, Y: 460.0
+X: 586.0, Y: 480.0
+X: 632.0, Y: 180.0
+X: 982.0, Y: 180.0
+X: 1274.0, Y: 400.0
+X: 1274.0, Y: 660.0
+Wave Config:
+Wave Amount: 5
+
+Phase Amount: 2
+Spawn Amount: 1
+Type: GOLEM Quantity: 4 Delay: 100
+Spawn Amount: 1
+Type: GOLEM Quantity: 4 Delay: 50
+
+Phase Amount: 2
+Spawn Amount: 1
+Type: SLIME Quantity: 4 Delay: 50
+Spawn Amount: 1
+Type: SLIME Quantity: 4 Delay: 50
+
+Phase Amount: 2
+Spawn Amount: 1
+Type: SLIME Quantity: 4 Delay: 50
+Spawn Amount: 1
+Type: SLIME Quantity: 4 Delay: 50
+
+Phase Amount: 2
+Spawn Amount: 1
+Type: SLIME Quantity: 4 Delay: 50
+Spawn Amount: 1
+Type: SLIME Quantity: 4 Delay: 50
+
+Phase Amount: 2
+Spawn Amount: 1
+Type: SLIME Quantity: 4 Delay: 50
+Spawn Amount: 1
+Type: SLIME Quantity: 4 Delay: 50

@@ -7,6 +7,7 @@
 #include "State/DictionaryState.h"
 #include "State/LoadGameState.h"
 #include "State/SettingState.h"
+#include "././Utils/SoundManager.h"
 
 Director::Director() : Time(0) {
     
@@ -22,6 +23,8 @@ void Director::Init() {
     MenuBuffer[5] = new WaitingState;
     MenuBuffer[6] = new GameState;
     CurrentState = MenuBuffer[0];
+
+    SoundManager::GetInstance().PlayBGM("Menu.ogg");
 }
 
 Director& Director::GetInstance() {
@@ -59,6 +62,17 @@ void Director::TransitionTo(const RENDER_STATE &__State) {
     }
 
     CurrentState->Enter();
+
+    switch (__State) {
+    case RENDER_STATE::MAIN:
+        SoundManager::GetInstance().PlayBGM("Menu.ogg");
+        break;
+    case RENDER_STATE::GAME:
+        SoundManager::GetInstance().PlayBGM("test.ogg");
+        break;
+    default:
+        break;
+    }
 }
 
 void Director::Update() {

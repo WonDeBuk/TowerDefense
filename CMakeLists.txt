@@ -15,9 +15,11 @@ set(RESOURCE_OUTPUT_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resource")
 set(HEADERS
     src/Utils/Define.h
     src/Utils/ResourceManager.h
+    src/Utils/Champion.h
     src/GUI/Director.h
     src/Utils/MathUtils.hpp
     src/Utils/UnicodeText.hpp
+    src/Utils/SoundManager.h
     src/GUI/RenderState.h
     src/GUI/State/DictionaryState.h
     src/GUI/State/LoadGameState.h
@@ -30,12 +32,19 @@ set(HEADERS
     src/GUI/Element/ChampionListContainer.h
     src/Game/GameManager.h
     src/Game/WaveManager.h
+    src/Game/VisualManager.h
     src/Game/Enemy.h
     src/Game/Attack.h
     src/Game/Tower.h
     src/Game/Attack/Projectile.h
     src/Game/Attack/Missile.h
     src/Game/Enemy/Slime.h
+    src/Game/Enemy/Bandit.h
+    src/Game/Enemy/Hornet.h
+    src/Game/Enemy/Golem.h
+    src/Game/Enemy/Grumble.h
+    src/Game/Enemy/Titan.h
+    src/Game/Enemy/Revenant.h
     src/Game/Tower/Frieren.h
     src/Game/Tower/Milim.h
     src/Game/Tower/Rimuru.h
@@ -49,7 +58,9 @@ set(SOURCES
     src/main.cpp
     src/Utils/ResourceManager.cpp
     src/Utils/MathUtils.cpp
+    src/Utils/Champion.cpp
     src/Utils/UnicodeText.hpp
+    src/Utils/SoundManager.cpp
     src/GUI/Director.cpp
     src/GUI/RenderState.cpp
     src/GUI/State/DictionaryState.cpp
@@ -63,8 +74,15 @@ set(SOURCES
     src/GUI/Element/ChampionListContainer.cpp
     src/game/GameManager.cpp
     src/game/WaveManager.cpp
+    src/Game/VisualManager.cpp
     src/game/Enemy.cpp
     src/Game/Enemy/Slime.cpp
+    src/Game/Enemy/Bandit.cpp
+    src/Game/Enemy/Hornet.cpp
+    src/Game/Enemy/Golem.cpp
+    src/Game/Enemy/Grumble.cpp
+    src/Game/Enemy/Titan.cpp
+    src/Game/Enemy/Revenant.cpp
     src/Game/Attack.cpp
     src/Game/Attack/Projectile.cpp
     src/Game/Attack/Missile.cpp

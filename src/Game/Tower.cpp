@@ -1,26 +1,28 @@
 #include "Tower.h"
 #include "GameManager.h"
+#include "Utils/ResourceManager.h"
 #include <iostream>
 #include <raymath.h>
 
 Tower::Tower() {
 	TowerLevel = 1;
 	TowerLifespan = 0;
+	PreviousAttackFrame = 0; //Frame starts at 1 because of the draw function :((
 	TargetEnemyID = -1;
 }
 
 void Tower::SetTargetType(const TargetType& _TargetType) {
 	switch (_TargetType) {
-	case LAST:
+	case TargetType::LAST:
 		GetTargetEnemy = &Tower::GetLastEnemy;
 		break;
-	case WEAKEST:
+	case TargetType::WEAKEST:
 		GetTargetEnemy = &Tower::GetWeakestEnemy;
 		break;
-	case STRONGEST:
+	case TargetType::STRONGEST:
 		GetTargetEnemy = &Tower::GetStrongestEnemy;
 		break;
-	case FIRST:
+	case TargetType::FIRST:
 	default:
 		GetTargetEnemy = &Tower::GetFirstEnemy;
 	}
@@ -29,7 +31,7 @@ void Tower::SetTargetType(const TargetType& _TargetType) {
 void Tower::SetTowerID(const int& _ID) {
 	TowerID = _ID;
 	TowerPosition = GameManager::GetInstance().GetTowerPlotByID(_ID);
-	SetTargetType(FIRST);
+	SetTargetType(TargetType::FIRST);
 }
 
 void Tower::SetTowerRange(const float& _TowerRange) {
@@ -116,8 +118,8 @@ void Tower::GetStrongestEnemy() {
 	else TargetEnemyID = -1;
 }
 
-const Vector2 Tower::GetEnemyDefinitePosition(const Vector2& _AttackStartPosition) const {
-	Enemy* Target = GameManager::GetInstance().GetEnemyByID(TargetEnemyID);
+const Vector2 Tower::GetEnemyDefinitePosition(const Vector2& _AttackStartPosition, const int& _TargetEnemyID) const {
+	Enemy* Target = GameManager::GetInstance().GetEnemyByID(_TargetEnemyID);
 	Vector2 EnemyFuturePosition = Target->GetEnemyCurrentPosition();
 	float Eta = Vector2Distance(_AttackStartPosition, EnemyFuturePosition) / TowerAttackMovementSpeed;
 	for (int i = 0; i < 8; i++) {
@@ -129,4 +131,11 @@ const Vector2 Tower::GetEnemyDefinitePosition(const Vector2& _AttackStartPositio
 		Eta = (Eta2 + Eta) * 0.5f;
 	}
 	return EnemyFuturePosition;
+}
+
+void Tower::Draw() const {
+	//DrawCircleLines(TowerPosition.x, TowerPosition.y, TowerRange, {255, 255, 255, 100});
+	if (CurrentAnimationState == ChampionAnimationState::IDLE)
+		ResourceManager::ChampionDataList[(int)CurrentChampion].ChampionDraw(CurrentAnimationState, TowerPosition, false, TowerLifespan);
+	else ResourceManager::ChampionDataList[(int)CurrentChampion].ChampionDraw(CurrentAnimationState, TowerPosition, false, TowerLifespan % PreviousAttackFrame);
 }

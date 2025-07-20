@@ -1,6 +1,7 @@
 #include "MainState.h"
 #include "../Director.h"
 #include "././Utils/ResourceManager.h"
+#include "././Utils/SoundManager.h"
 #include <iostream>
 #include <string>
 
@@ -25,6 +26,7 @@ void MainState::Update()
     {
         if (CheckCollisionPointRec(MousePosition, ButtonBound[i])) {
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                SoundManager::GetInstance().PlaySFX("click.ogg");
                 switch (i)
                 {
                 case 0:

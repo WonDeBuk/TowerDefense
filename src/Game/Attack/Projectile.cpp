@@ -2,8 +2,7 @@
 #include "../Enemy.h"
 #include "raymath.h"
 #include "../GameManager.h"
-#include "././Utils/ResourceManager.h"
-#include <iostream>
+#include "../../Utils/ResourceManager.h"
 
 Projectile Projectile::ProjectileTemplate;
 
@@ -22,7 +21,7 @@ const Attack* Projectile::ProjectileTemplateBuildAndGet(const Vector2 &_AttackSt
 }
 
 void Projectile::Draw() const {
-    DrawCircle(AttackCurrentPosition.x, AttackCurrentPosition.y, 4.0f, AttackColor);
+    DrawCircle(AttackCurrentPosition.x, AttackCurrentPosition.y, 8.0f, AttackColor);
 }
 
 void Projectile::Update() {

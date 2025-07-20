@@ -1,5 +1,5 @@
 #include "Slime.h"
-#include "././Utils/ResourceManager.h"
+#include "../../Utils/ResourceManager.h"
 #include <iostream>
 
 Slime::Slime() {
@@ -60,6 +60,6 @@ void Slime::Draw() const {
 
 void Slime::DrawHealthBar() const {
 	if (EnemyHealth == BASE_HEALTH) return;
-	DrawRectangle(EnemyCurrentPosition.x - 50.0f, EnemyCurrentPosition.y - 100.0f, 100.0f, 5.0f, (EnemyHealth > BASE_HEALTH) ? YELLOW : BLACK);
-	if (EnemyHealth < BASE_HEALTH) DrawRectangle(EnemyCurrentPosition.x - 50.0f, EnemyCurrentPosition.y - 100.0f, 100.0f * EnemyHealth / BASE_HEALTH, 5.0f, RED);
+	DrawRectangle(EnemyCurrentPosition.x - 50.0f, EnemyCurrentPosition.y - 100.0f, 100.0f, 5.0f, BLACK);
+	DrawRectangle(EnemyCurrentPosition.x - 50.0f, EnemyCurrentPosition.y - 100.0f, 100.0f * EnemyHealth / BASE_HEALTH, 5.0f, RED);
 }

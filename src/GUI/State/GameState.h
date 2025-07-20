@@ -2,9 +2,9 @@
 
 #include "../RenderState.h"
 
-class GameState : public RenderState
-{
+class GameState : public RenderState {
 private:
+    int SelectedTower;
 
 public:
     GameState();
