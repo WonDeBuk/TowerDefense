@@ -31,12 +31,20 @@ set(HEADERS
     src/GUI/Element/ChampionListContainer.h
     src/Game/GameManager.h
     src/Game/WaveManager.h
+    src/Game/VisualManager.h
     src/Game/Enemy.h
     src/Game/Attack.h
     src/Game/Tower.h
     src/Game/Attack/Projectile.h
     src/Game/Attack/Missile.h
     src/Game/Enemy/Slime.h
+    src/Game/Enemy/Bandit.h
+    src/Game/Enemy/Hornet.h
+    src/Game/Enemy/Golem.h
+    src/Game/Enemy/Grumble.h
+    src/Game/Enemy/Titan.h
+    src/Game/Enemy/Revenant.h
+    src/Game/Enemy/Brawler.h
     src/Game/Tower/Frieren.h
     src/Game/Tower/Milim.h
     src/Game/Tower/Rimuru.h
@@ -65,8 +73,16 @@ set(SOURCES
     src/GUI/Element/ChampionListContainer.cpp
     src/game/GameManager.cpp
     src/game/WaveManager.cpp
+    src/Game/VisualManager.cpp
     src/game/Enemy.cpp
     src/Game/Enemy/Slime.cpp
+    src/Game/Enemy/Bandit.cpp
+    src/Game/Enemy/Hornet.cpp
+    src/Game/Enemy/Golem.cpp
+    src/Game/Enemy/Grumble.cpp
+    src/Game/Enemy/Titan.cpp
+    src/Game/Enemy/Revenant.cpp
+    src/Game/Enemy/Brawler.cpp
     src/Game/Attack.cpp
     src/Game/Attack/Projectile.cpp
     src/Game/Attack/Missile.cpp
