@@ -4,65 +4,95 @@
 #include <raymath.h>
 #include "Utils/MathUtils.hpp"
 #include <iostream>
+#include <cmath>
 
 Frieren::Frieren(): Tower() {
+	CurrentChampion = ChampionType::FRIEREN;
+	CurrentAnimationState = ChampionAnimationState::IDLE;
+	TowerLifespan = 45;
 	TowerCooldown = 90;
-	TowerDeltaCooldown = TowerCooldown / 2;
+	TowerDeltaCooldown = 90;
 	TotalCost = 350;
 	TowerRange = 350.0f;
-	TowerAttackDamage = 50.0f;
+	TowerAttackDamage = 25.0f;
 	TowerAttackMovementSpeed = 5.0f;
 
 	OnCooldown = &Frieren::AttackModule_1;
 
 	MaxShotAvailable = 1;
 	ShotRemaining = MaxShotAvailable;
-	UpgradeColor = { 245, 238, 218, 255 };
+}
+
+void Frieren::SetTowerID(const int& _TowerID) {
+	Tower::SetTowerID(_TowerID);
+	AttackPosition = { TowerPosition.x + 44.0f, TowerPosition.y - 96.0f };
 }
 
 void Frieren::AttackModule_1() {
 	(this->*GetTargetEnemy)();
 	if (TargetEnemyID == -1) {
-		if (ShotRemaining < MaxShotAvailable) { //if burst mode is active and no enemy shows up for 20 frames, reload entirely
-			if (TowerDeltaCooldown <= -20) ShotRemaining = MaxShotAvailable;
-			else TowerDeltaCooldown--;
-}
+		if (ShotRemaining < MaxShotAvailable && TowerLifespan - PreviousAttackFrame >= TowerCooldown / 4) {
+			ShotRemaining = MaxShotAvailable;
+			PreviousAttackFrame = TowerLifespan - TowerDeltaCooldown;
+			TowerDeltaCooldown = TowerCooldown;
+		}
 		return;
 	}
+	
+	PreviousAttackFrame = TowerLifespan;
+	CurrentAnimationState = ChampionAnimationState::CAST;
+
+	Vector2 EnemyDefinitePosition = GetEnemyDefinitePosition(AttackPosition, TargetEnemyID);
+	size_t CalcLifespan = (Vector2Distance(AttackPosition, EnemyDefinitePosition) / TowerAttackMovementSpeed) + 5;
+	GameManager::GetInstance().AddAttack(AttackType::PROJECTILE, Projectile::ProjectileTemplateBuildAndGet(AttackPosition, EnemyDefinitePosition, TowerAttackMovementSpeed, TowerAttackDamage, TargetEnemyID, TowerID, CalcLifespan, { 255, 90, 60, 255 }));
 
 	ShotRemaining--;
-	Vector2 EnemyDefinitePosition = GetEnemyDefinitePosition(TowerPosition);
-	size_t CalcLifespan = Vector2Distance(TowerPosition, EnemyDefinitePosition) / TowerAttackMovementSpeed;
-	GameManager::GetInstance().AddAttack(AttackType::PROJECTILE, Projectile::ProjectileTemplateBuildAndGet(TowerPosition, EnemyDefinitePosition, TowerAttackMovementSpeed, TowerAttackDamage, TargetEnemyID, TowerID, CalcLifespan, SKYBLUE));
-
 	if (ShotRemaining) {
-		TowerDeltaCooldown = 15;
-			}
+		TowerDeltaCooldown = 21;
+	}
 	else {
 		TowerDeltaCooldown = TowerCooldown;
 		ShotRemaining = MaxShotAvailable;
-		}
 	}
+}
 
 void Frieren::AttackModule_3() {
 	(this->*GetTargetEnemy)();
 	if (TargetEnemyID == -1) {
-		if (ShotRemaining < MaxShotAvailable) {
-			if (TowerDeltaCooldown <= -15) ShotRemaining = MaxShotAvailable;
-			else TowerDeltaCooldown--;
-	}
-		return;
+		if (ShotRemaining < MaxShotAvailable && TowerLifespan - PreviousAttackFrame >= TowerCooldown / 4) {
+			ShotRemaining = MaxShotAvailable;
+			PreviousAttackFrame = TowerLifespan - TowerDeltaCooldown;
+			TowerDeltaCooldown = TowerCooldown;
 		}
+		return;
 	}
+
+	PreviousAttackFrame = TowerLifespan;
+	CurrentAnimationState = ChampionAnimationState::CAST;
+
+	Vector2 AttackOffsetPosition = AttackPosition;
+	switch (ShotRemaining) {
+	case 6:
+	case 3:
+		AttackOffsetPosition.x -= 30.0f;
+		AttackOffsetPosition.y += 10.0f;
+		break;
+	case 5:
+	case 2:
+		AttackOffsetPosition.y -= 30.0f;
+		break;
+	default:
+		AttackOffsetPosition.x += 30.0f;
+		AttackOffsetPosition.y += 10.0f;
+		break;
+	}
+	Vector2 EnemyDefinitePosition = GetEnemyDefinitePosition(AttackOffsetPosition, TargetEnemyID);
+	size_t CalcLifespan = ceilf(Vector2Distance(AttackOffsetPosition, EnemyDefinitePosition) / TowerAttackMovementSpeed);
+	GameManager::GetInstance().AddAttack(AttackType::PROJECTILE, Projectile::ProjectileTemplateBuildAndGet(AttackOffsetPosition, EnemyDefinitePosition, TowerAttackMovementSpeed, TowerAttackDamage, TargetEnemyID, TowerID, CalcLifespan, { (unsigned char)GetRandomValue(175, 255), 0, 0, 255}));
 
 	ShotRemaining--;
-	Vector2 TowerOffsetPosition = { TowerPosition.x + GetRandomFloat(-50.0f, 50.0f), TowerPosition.y + GetRandomFloat(-50.0f, 0.0f) };
-	Vector2 EnemyDefinitePosition = GetEnemyDefinitePosition(TowerOffsetPosition);
-	size_t CalcLifespan = Vector2Distance(TowerOffsetPosition, EnemyDefinitePosition) / TowerAttackMovementSpeed;
-	GameManager::GetInstance().AddAttack(AttackType::PROJECTILE, Projectile::ProjectileTemplateBuildAndGet(TowerOffsetPosition, EnemyDefinitePosition, TowerAttackMovementSpeed, TowerAttackDamage, TargetEnemyID, TowerID, CalcLifespan, BLUE));
-
 	if (ShotRemaining > 0) {
-		TowerDeltaCooldown = 15;
+		TowerDeltaCooldown = 14;
 	}
 	else {
 		TowerDeltaCooldown = TowerCooldown;
@@ -70,49 +100,38 @@ void Frieren::AttackModule_3() {
     }
 }
 
-void Frieren::OnUpgrade() {
-	if (TowerLevel == 3) return; //probably do some pop-up texts that say tower is maxed out or smth
+bool Frieren::OnUpgrade() {
+	if (TowerLevel == 3) return false;
 	TowerLevel++;
 
 	switch (TowerLevel) {
 	case 2:
 		TowerCooldown = 70;
-		TowerRange = 400.0f;
-		TowerAttackDamage = 65.0f;
-		TowerAttackMovementSpeed = 6.0f;
+		TowerRange = 415.0f;
+		TowerAttackDamage = 35.0f;
+		TowerAttackMovementSpeed = 7.0f;
 		MaxShotAvailable = 2;
 		ShotRemaining = MaxShotAvailable;
 		TotalCost += 000; //temp value, will come back later
 		//game manager do something involves cash here
-		UpgradeColor = { 227, 222, 209, 255 };
         break;
 	case 3:
-		TowerCooldown = 100;
 		TowerRange = 475.0f;
-		TowerAttackDamage = 125.0f;
+		TowerAttackDamage = 40.0f;
 		TowerAttackMovementSpeed = 8.5f;
-		MaxShotAvailable = 5;
+		MaxShotAvailable = 6;
 		ShotRemaining = MaxShotAvailable;
 		OnCooldown = &Frieren::AttackModule_3;
 		TotalCost += 000;
 		//
-		UpgradeColor = { 196, 195, 190, 255 };
         break;
     }
+	return true;
 }
 
 void Frieren::Update() {
+	if (TowerLifespan - PreviousAttackFrame >= TowerDeltaCooldown) (this->*OnCooldown)();
+	if (TowerLifespan - PreviousAttackFrame >= 35) CurrentAnimationState = ChampionAnimationState::IDLE;
+
 	TowerLifespan++;
-
-	if (TowerDeltaCooldown <= 0) (this->*OnCooldown)();
-	else TowerDeltaCooldown--;
-}
-
-void Frieren::UpdateAnimation() {
-
-}
-
-void Frieren::Draw() const {
-	DrawCircleLines(TowerPosition.x, TowerPosition.y, TowerRange, WHITE);
-	DrawCircle(TowerPosition.x, TowerPosition.y, 24.0f, UpgradeColor);
 }

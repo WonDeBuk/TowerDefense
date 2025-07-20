@@ -1,5 +1,6 @@
 #pragma once
 
+#include <raylib.h>
 #include <string>
 
 #define MAX_ENEMY_AMOUNT 100
@@ -13,7 +14,7 @@
 
 #define MAX_WAYPOINT_AMOUNT 20
 
-#define MAX_SPAWN_PER_PHASE 5
+#define MAX_SPAWN_PER_PHASE 20
 #define MAX_PHASE_PER_WAVE 5
 #define MAX_WAVE 5
 
@@ -25,12 +26,23 @@
 #define CHAMPION_TEXTURE_Y_OFFSET 128.0f
 #define CHAMPION_TEXTURE_DRAW_SIZE 320.0f
 
+#define MAX_VISUAL_AMOUNT 100
+#define VISUAL_UPDATE_PACE 3
+
 enum class MapType {
     FOREST, FROZEN, DESERT, COUNTING
 };
 
 enum class EnemyType {
-    SLIME, COUNTING
+    SLIME, DINO, BANDIT, HORNET,
+    GOLEM, GRUMBLE, TITAN, 
+    REVENANT,
+    BRAWLER,
+    COUNTING
+};
+
+enum class TargetType {
+    FIRST, LAST, WEAKEST, STRONGEST
 };
 
 enum class AttackType {
@@ -63,6 +75,20 @@ enum class ChampionType {
 
 enum class ChampionAnimationState {
     IDLE, CAST, COUNTING
+};
+
+typedef struct ImageVisualData {
+    int TotalFrame;
+    Texture2D* Display;
+    Vector2 Position;
+    Vector2 Size;
+    size_t Timer;
+};
+
+typedef struct TextVisualData {
+    Vector2 Position;
+    size_t Timer;
+    char Display[32];
 };
 
 typedef struct BlackListData {

@@ -69,7 +69,7 @@ public:
     static const char(&GetTowerPool())[MAX_TOWER_AMOUNT][MAX_TOWER_SIZE];
     static const int& GetCurrentTowerAmount();
     Tower* GetTowerByID(const int& _TowerID) const;
-    void AddTower(const TowerType& _TowerType, const int& _SlotID);
+    void AddTower(const ChampionType& _ChampionType, const int& _SlotID);
     void KillTower(const int& _TowerID);
 
 

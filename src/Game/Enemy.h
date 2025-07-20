@@ -4,6 +4,12 @@
 
 class GameManager;
 
+enum EnemyAnimationState {
+    BACKWARD = -1,
+    FORWARD = 1
+
+};
+
 class Enemy {
 protected:
     // Các property cơ bản cần thiết

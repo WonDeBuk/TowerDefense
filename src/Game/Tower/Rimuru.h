@@ -4,15 +4,15 @@
 
 class Rimuru : public Tower {
 private:
-	Color UpgradeColor;
 	void (Rimuru::* OnCooldown)();
 
 	void AttackModule();
 public:
 	Rimuru();
 
-	void OnUpgrade() override;
+	void SetTowerID(const int& _TowerID) override;
+
+	bool OnUpgrade() override;
 	void Update() override;
 	void UpdateAnimation() override;
-	void Draw() const override;
 };

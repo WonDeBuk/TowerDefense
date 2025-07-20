@@ -4,6 +4,7 @@
 
 class GameState : public RenderState {
 private:
+    int SelectedTower;
 
 public:
     GameState();

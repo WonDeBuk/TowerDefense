@@ -38,6 +38,7 @@ set(HEADERS
     src/Game/Attack/Projectile.h
     src/Game/Attack/Missile.h
     src/Game/Enemy/Slime.h
+    src/Game/Enemy/Dino.h
     src/Game/Enemy/Bandit.h
     src/Game/Enemy/Hornet.h
     src/Game/Enemy/Golem.h
@@ -76,6 +77,7 @@ set(SOURCES
     src/Game/VisualManager.cpp
     src/game/Enemy.cpp
     src/Game/Enemy/Slime.cpp
+    src/Game/Enemy/Dino.cpp
     src/Game/Enemy/Bandit.cpp
     src/Game/Enemy/Hornet.cpp
     src/Game/Enemy/Golem.cpp

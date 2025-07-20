@@ -15,16 +15,16 @@ X: 150.0, Y: 460.0
 X: 586.0, Y: 480.0
 X: 632.0, Y: 180.0
 X: 982.0, Y: 180.0
-X: 1274.0, Y: 636.0
+X: 1274.0, Y: 400.0
 X: 1274.0, Y: 660.0
 Wave Config:
 Wave Amount: 5
 
 Phase Amount: 2
 Spawn Amount: 1
-Type: SLIME Quantity: 1 Delay: 50
+Type: GOLEM Quantity: 4 Delay: 100
 Spawn Amount: 1
-Type: SLIME Quantity: 4 Delay: 50
+Type: GOLEM Quantity: 4 Delay: 50
 
 Phase Amount: 2
 Spawn Amount: 1

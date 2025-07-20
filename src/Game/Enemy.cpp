@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "GameManager.h"
+#include "Game/VisualManager.h"
 #include <cmath>
 #include <assert.h>
 #include <iostream>
@@ -91,6 +92,7 @@ void Enemy::Update() {
 
 void Enemy::OnDamage(const float& _Damage) {
     if (EnemyHealth <= _Damage) {
+        VisualManager::GetInstance().AddImageVisual(7, "ui/CoinFlip.png", { EnemyCurrentPosition.x - 64.0f, EnemyCurrentPosition.y - 128.0f }, { 128.0f, 128.0f });
         OnDeath();
         EnemyKill();
         return;
@@ -99,7 +101,7 @@ void Enemy::OnDamage(const float& _Damage) {
 }
 
 void Enemy::OnDeath() {
-    Enemy::EnemyKill();
+     
 }
 
 void Enemy::EnemyKill() const{
