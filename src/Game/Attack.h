@@ -1,6 +1,7 @@
 #pragma once
 
 #include <raylib.h>
+#include "Utils/Define.h"
 
 class Attack {
 protected:
@@ -14,7 +15,7 @@ protected:
     int AttackID;                             // Vị trí của Attack trong AttackPool
     int AttackOwnTowerID;                     // Có thể sử dụng để biến đổi trạng thái hoạt ảnh, ví dụ như Attack laser thì khi mà Laser bắn đến mục tiêu thì kết thúc hoạt ảnh casting
     int AttackTargetID;                       // Dùng để GetEnemy từ EnemyPool để kiểm tra đụng độ
-    size_t Lifespan;                          // Thời gian kể từ khi xuất hiện của Attack
+    int Lifespan;                          // Thời gian kể từ khi xuất hiện của Attack
 public:
     Attack();
     ~Attack() = default;
@@ -22,6 +23,11 @@ public:
     virtual void Update();
     virtual void Draw() const = 0;
 
+    virtual bool CheckCollisionPierceType(BlackListData _BlackList[], const int& _MaxComponent, int& _StartOfList, int& _EndOfList, int& _ListSize, int& _TotalPierce, const int& _EnemyID);
+  
+    virtual void SetAttackMovementSpeed(const float& _AttackMovementSpeed);
+    virtual const float& GetAttackMovementSpeed() { return AttackMovementSpeed; }
+    const Vector2& GetAttackCurrentPosition() { return AttackCurrentPosition; }
     void SetAttackID(const int& _AttackID);
 
     void AttackKill();

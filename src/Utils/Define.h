@@ -14,8 +14,8 @@
 
 #define MAX_WAYPOINT_AMOUNT 20
 
-#define MAX_SPAWN_PER_PHASE 20
-#define MAX_PHASE_PER_WAVE 5
+#define MAX_SPAWN_PER_PHASE 5
+#define MAX_PHASE_PER_WAVE 3
 #define MAX_WAVE 5
 
 #define MAP_WIDTH 50
@@ -27,17 +27,17 @@
 #define CHAMPION_TEXTURE_DRAW_SIZE 320.0f
 
 #define MAX_VISUAL_AMOUNT 100
-#define VISUAL_UPDATE_PACE 3
+#define MAX_VISUAL_SIZE 75
 
 enum class MapType {
     FOREST, FROZEN, DESERT, COUNTING
 };
 
 enum class EnemyType {
-    SLIME, DINO, BANDIT, HORNET,
-    GOLEM, GRUMBLE, TITAN, 
-    REVENANT,
-    BRAWLER,
+    SLIME, DINO, BAT, DRAGON,
+    FROST, GOLEM, GRUMBLE, TITAN, 
+    MAGMA, BANDIT, SCOUT, REVENANT,
+    GHOUL, HEALBOT, HORNET, PEST, BRAWLER,
     COUNTING
 };
 
@@ -46,7 +46,7 @@ enum class TargetType {
 };
 
 enum class AttackType {
-    PROJECTILE, MISSILE, COUNTING
+    PROJECTILE, MISSILE, ORBIT, RICOCHET, AREA, SPLIT, COUNTING
 };
 
 enum class Language {
@@ -77,18 +77,17 @@ enum class ChampionAnimationState {
     IDLE, CAST, COUNTING
 };
 
+enum class VisualType {
+    PLAIN, TOWER_BIND, ENEMY_BIND, COUNTING
+};
+
+
 typedef struct ImageVisualData {
     int TotalFrame;
+    int Timer;
     Texture2D* Display;
     Vector2 Position;
     Vector2 Size;
-    size_t Timer;
-};
-
-typedef struct TextVisualData {
-    Vector2 Position;
-    size_t Timer;
-    char Display[32];
 };
 
 typedef struct BlackListData {

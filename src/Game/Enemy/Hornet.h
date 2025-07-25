@@ -8,11 +8,12 @@ private:
 	static constexpr float BASE_SPEED = 1.75f;
 protected:
 	void UpdateAnimation() override;
-	EnemyAnimationState CurrentAnimationState;
-
 public:
+	static const Enemy* HornetTemplateBuildAndGet(const Vector2& _EnemyCurrentPosition, const Vector2& _EnemyDirection, const int& _HeadingWaypointIndex);
 	Hornet();
 
+	void OnHeal(const float& _Heal) override;
+	void OnDeath() override;
 	void Update() override;
 	void Draw() const override;
 	void DrawHealthBar() const override;

@@ -4,8 +4,8 @@
 
 class Rimuru : public Tower {
 private:
+	int AttackMaxPierce;
 	void (Rimuru::* OnCooldown)();
-
 	void AttackModule();
 public:
 	Rimuru();

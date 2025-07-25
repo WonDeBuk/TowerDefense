@@ -5,7 +5,7 @@
 
 Missile Missile::MissileTemplate;
 
-const Attack* Missile::MissileTemplateBuildAndGet(const Vector2& _AttackStartPosition, const Vector2& _AttackDestinationPosition, const float& _ControlPoint1XPercentOffset, const float& _ControlPoint1YPercentOffset, const float& _ControlPoint2XPercentOffset, const float& _ControlPoint2YPercentOffset, const float& _AttackMovementSpeed, const float& _AttackDamage, const int& _AttackTargetID, const int& _AttackOwnTowerID, const size_t& _Lifespan) {
+const Attack* Missile::MissileTemplateBuildAndGet(const Vector2& _AttackStartPosition, const Vector2& _AttackDestinationPosition, const float& _ControlPoint1XPercentOffset, const float& _ControlPoint1YPercentOffset, const float& _ControlPoint2XPercentOffset, const float& _ControlPoint2YPercentOffset, const float& _AttackMovementSpeed, const float& _AttackDamage, const int& _AttackTargetID, const int& _AttackOwnTowerID, const int& _Lifespan) {
     MissileTemplate.AttackStartPosition = _AttackStartPosition;
     MissileTemplate.AttackCurrentPosition = _AttackStartPosition;
     MissileTemplate.AttackDestinationPosition = _AttackDestinationPosition;

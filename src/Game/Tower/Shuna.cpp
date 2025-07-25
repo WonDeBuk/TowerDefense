@@ -1,6 +1,8 @@
 #include "Shuna.h"
 #include "Game/Attack/Projectile.h"
 #include "Game/GameManager.h"
+#include "Game/VisualManager.h"
+#include "Game/Visual/TowerBindVisual.h"
 #include <raymath.h>
 #include <iostream>
 
@@ -20,6 +22,23 @@ Shuna::Shuna(): Tower() {
 	OnCooldown = &Shuna::AttackModule;
 }
 
+//void Shuna::SetTargetType(const TargetType& _TargetType) {
+//	switch (_TargetType) {
+//	case TargetType::LAST:
+//		GetTargetEnemy = &Shuna::GetLastEnemy;
+//		break;
+//	case TargetType::WEAKEST:
+//		GetTargetEnemy = &Shuna::GetWeakestEnemy;
+//		break;
+//	case TargetType::STRONGEST:
+//		GetTargetEnemy = &Shuna::GetStrongestEnemy;
+//		break;
+//	case TargetType::FIRST:
+//	default:
+//		GetTargetEnemy = &Shuna::GetFirstEnemy;
+//	}
+//}
+
 void Shuna::GetFirstEnemy() {
 	CurrentTargetCount = 0;
 	GameManager& gm = GameManager::GetInstance();
@@ -27,7 +46,7 @@ void Shuna::GetFirstEnemy() {
 	for (int i = 0; i < MAX_ENEMY_AMOUNT; i++) {
 		if (EnemyPoolTracker[i]) {
 			Enemy* Object = gm.GetEnemyByID(i);
-			if (Vector2Distance(TowerPosition, Object->GetEnemyCurrentPosition()) < TowerRange) {
+			if (Vector2Distance(TowerPosition, Object->GetEnemyCurrentPosition()) <= TowerRange) {
 				int ConsideredWaypointIndex = Object->GetHeaddingWaypointIndex();
 				float ConsideredDistance = Vector2Distance(gm.GetWaypointByIndex(ConsideredWaypointIndex), Object->GetEnemyCurrentPosition());
 
@@ -36,13 +55,13 @@ void Shuna::GetFirstEnemy() {
 					Enemy* ThresholdObject = gm.GetEnemyByID(TargetEnemyID[find]);
 					int ThresholdWaypointIndex = ThresholdObject->GetHeaddingWaypointIndex();
 
-					bool IsCloserToBase = (ConsideredWaypointIndex > ThresholdWaypointIndex);
+					bool IsCloser = (ConsideredWaypointIndex > ThresholdWaypointIndex);
 					if (ConsideredWaypointIndex == ThresholdWaypointIndex) {
 						float ThresholdDistance = Vector2Distance(gm.GetWaypointByIndex(ThresholdWaypointIndex), ThresholdObject->GetEnemyCurrentPosition());
-						IsCloserToBase = (ConsideredDistance < ThresholdDistance);
+						IsCloser = (ConsideredDistance < ThresholdDistance);
 					}
 
-					if (IsCloserToBase) {
+					if (IsCloser) {
 						if (find + 1 < MaxTarget) TargetEnemyID[find + 1] = TargetEnemyID[find];
 						find--;
 					}
@@ -64,7 +83,7 @@ void Shuna::GetLastEnemy() {
 	for (int i = 0; i < MAX_ENEMY_AMOUNT; i++) {
 		if (EnemyPoolTracker[i]) {
 			Enemy* Object = gm.GetEnemyByID(i);
-			if (Vector2Distance(TowerPosition, Object->GetEnemyCurrentPosition()) < TowerRange) {
+			if (Vector2Distance(TowerPosition, Object->GetEnemyCurrentPosition()) <= TowerRange) {
 				int ConsideredWaypointIndex = Object->GetHeaddingWaypointIndex();
 				float ConsideredDistance = Vector2Distance(gm.GetWaypointByIndex(ConsideredWaypointIndex), Object->GetEnemyCurrentPosition());
 
@@ -73,13 +92,13 @@ void Shuna::GetLastEnemy() {
 					Enemy* ThresholdObject = gm.GetEnemyByID(TargetEnemyID[find]);
 					int ThresholdWaypointIndex = ThresholdObject->GetHeaddingWaypointIndex();
 
-					bool IsCloserToBase = (ConsideredWaypointIndex < ThresholdWaypointIndex);
+					bool IsFurther = (ConsideredWaypointIndex < ThresholdWaypointIndex);
 					if (ConsideredWaypointIndex == ThresholdWaypointIndex) {
 						float ThresholdDistance = Vector2Distance(gm.GetWaypointByIndex(ThresholdWaypointIndex), ThresholdObject->GetEnemyCurrentPosition());
-						IsCloserToBase = (ConsideredDistance > ThresholdDistance);
+						IsFurther = (ConsideredDistance > ThresholdDistance);
 					}
 
-					if (IsCloserToBase) {
+					if (IsFurther) {
 						if (find + 1 < MaxTarget) TargetEnemyID[find + 1] = TargetEnemyID[find];
 						find--;
 					}
@@ -101,7 +120,7 @@ void Shuna::GetWeakestEnemy() {
 	for (int i = 0; i < MAX_ENEMY_AMOUNT; i++) {
 		if (EnemyPoolTracker[i]) {
 			Enemy* Object = gm.GetEnemyByID(i);
-			if (Vector2Distance(TowerPosition, Object->GetEnemyCurrentPosition()) < TowerRange) {
+			if (Vector2Distance(TowerPosition, Object->GetEnemyCurrentPosition()) <= TowerRange) {
 				int find = CurrentTargetCount - 1;
 				while (find >= 0 && Object->GetEnemyHealth() < gm.GetEnemyByID(TargetEnemyID[find])->GetEnemyHealth()) {
 					if (find + 1 < MaxTarget) TargetEnemyID[find + 1] = TargetEnemyID[find];
@@ -124,7 +143,7 @@ void Shuna::GetStrongestEnemy() {
 	for (int i = 0; i < MAX_ENEMY_AMOUNT; i++) {
 		if (EnemyPoolTracker[i]) {
 			Enemy* Object = gm.GetEnemyByID(i);
-			if (Vector2Distance(TowerPosition, Object->GetEnemyCurrentPosition()) < TowerRange) {
+			if (Vector2Distance(TowerPosition, Object->GetEnemyCurrentPosition()) <= TowerRange) {
 				int find = CurrentTargetCount - 1;
 				while (find >= 0 && Object->GetEnemyHealth() > gm.GetEnemyByID(TargetEnemyID[find])->GetEnemyHealth()) {
 					if (find + 1 < MaxTarget) TargetEnemyID[find + 1] = TargetEnemyID[find];
@@ -143,6 +162,7 @@ void Shuna::GetStrongestEnemy() {
 void Shuna::SetTowerID(const int& _TowerID) {
 	Tower::SetTowerID(_TowerID);
 	AttackPosition = { TowerPosition.x - 40.0f, TowerPosition.y - 96.0f };
+	SetTargetType(TargetType::LAST);
 }
 
 void Shuna::AttackModule() {
@@ -176,13 +196,13 @@ void Shuna::AttackModule() {
 bool Shuna::OnUpgrade() {
 	if (TowerLevel == 3) return false;
 	TowerLevel++;
-
+	Tower::OnUpgrade();
 	switch (TowerLevel) {
 	case 2:
 		TowerRange = 335.0f;
 		TowerAttackDamage = 20.0f;
 		TowerAttackMovementSpeed = 9.25f;
-		MaxTarget = 10;
+		MaxTarget = 3;
 		TotalCost += 000;
 		break;
 	case 3:
@@ -190,7 +210,7 @@ bool Shuna::OnUpgrade() {
 		TowerRange = 800.0f;
 		TowerAttackDamage = 75.0f;
 		TowerAttackMovementSpeed = 9.75f;
-		MaxTarget = 15;
+		MaxTarget = 5;
 		TotalCost += 000;
 		break;
 	}
@@ -198,6 +218,12 @@ bool Shuna::OnUpgrade() {
 }
 
 void Shuna::Update() {
+	if (StunTimer) {
+		if (StunTimer % 70 == 0) VisualManager::GetInstance().AddVisual(VisualType::TOWER_BIND, TowerBindVisual::TowerBindVisualTemplateBuildAndGet("ui/StunEffect.png", 14, { 48.0f, 112.0f }, { 96.0f, 96.0f }, TowerID));
+		StunTimer--;
+		return;
+	}
+
 	if (TowerLifespan - PreviousAttackFrame >= TowerCooldown && !IsWindUp) {
 		(this->*OnCooldown)();
 		if (IsWindUp) {

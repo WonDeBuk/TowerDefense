@@ -11,20 +11,32 @@
 
 #include "./Utils/ResourceManager.h"
 #include "./Utils/MathUtils.hpp"
-#include "VisualManager.h"
+#include "Game/VisualManager.h"
 
 #include "Enemy/Slime.h"
 #include "Enemy/Dino.h"
-#include "Enemy/Bandit.h"
-#include "Enemy/Hornet.h"
+#include "Enemy/Bat.h"
+#include "Enemy/Dragon.h"
+#include "Enemy/Frost.h"
 #include "Enemy/Golem.h"
 #include "Enemy/Grumble.h"
 #include "Enemy/Titan.h"
+#include "Enemy/Magma.h"
+#include "Enemy/Bandit.h"
+#include "Enemy/Scout.h"
 #include "Enemy/Revenant.h"
+#include "Enemy/Ghoul.h"
+#include "Enemy/Healbot.h"
+#include "Enemy/Hornet.h"
+#include "Enemy/Pest.h"
 #include "Enemy/Brawler.h"
 
 #include "Attack/Projectile.h"
 #include "Attack/Missile.h"
+#include "Attack/Orbit.h"
+#include "Attack/Ricochet.h"
+#include "Attack/Area.h"
+#include "Attack/Split.h"
 
 #include "Tower/Frieren.h"
 #include "Tower/Milim.h"
@@ -34,6 +46,9 @@
 #include "Tower/Stark.h"
 
 // Khởi tạo các biến static
+
+//delete later
+int GameManager::PlayerCash = 100000;
 
 // Các property thuộc về Enemy
 char GameManager::EnemyPool[MAX_ENEMY_AMOUNT][MAX_ENEMY_SIZE] = {0};
@@ -212,7 +227,7 @@ Enemy* GameManager::GetEnemyByID(const int& _EnemyID) const {
     return nullptr;
 }
 
-void GameManager::AddEnemy(const EnemyType& _EnemyType, Enemy* _EnemyTemplate) {
+void GameManager::AddEnemy(const EnemyType& _EnemyType, const Enemy* _EnemyTemplate) {
     int EmptySlotID = -1;
     for (int i = 0; i < MAX_ENEMY_AMOUNT; i++) {
         if (EnemyPoolTracker[i] == false) {
@@ -233,11 +248,14 @@ void GameManager::AddEnemy(const EnemyType& _EnemyType, Enemy* _EnemyTemplate) {
         case EnemyType::DINO:
             NewEnemyObject = new (EnemyPool[EmptySlotID]) Dino();
             break;
-        case EnemyType::BANDIT:
-            NewEnemyObject = new (EnemyPool[EmptySlotID]) Bandit();
+        case EnemyType::BAT:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Bat();
             break;
-        case EnemyType::HORNET:
-            NewEnemyObject = new (EnemyPool[EmptySlotID]) Hornet();
+        case EnemyType::DRAGON:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Dragon();
+            break;
+        case EnemyType::FROST:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Frost();
             break;
         case EnemyType::GOLEM:
             NewEnemyObject = new (EnemyPool[EmptySlotID]) Golem();
@@ -248,8 +266,29 @@ void GameManager::AddEnemy(const EnemyType& _EnemyType, Enemy* _EnemyTemplate) {
         case EnemyType::TITAN:
             NewEnemyObject = new (EnemyPool[EmptySlotID]) Titan();
             break;
+        case EnemyType::MAGMA:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Magma();
+            break;
+        case EnemyType::BANDIT:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Bandit();
+            break;
+        case EnemyType::SCOUT:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Scout();
+            break;
         case EnemyType::REVENANT:
             NewEnemyObject = new (EnemyPool[EmptySlotID]) Revenant();
+            break;
+        case EnemyType::GHOUL :
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Ghoul();
+            break;
+        case EnemyType::HEALBOT:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Healbot();
+            break;
+        case EnemyType::HORNET:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Hornet();
+            break;
+        case EnemyType::PEST:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Pest();
             break;
         case EnemyType::BRAWLER:
             NewEnemyObject = new (EnemyPool[EmptySlotID]) Brawler();
@@ -260,31 +299,40 @@ void GameManager::AddEnemy(const EnemyType& _EnemyType, Enemy* _EnemyTemplate) {
     } else {
         switch (_EnemyType) {
         case EnemyType::SLIME:
-            NewEnemyObject = new (EnemyPool[EmptySlotID]) Slime(*reinterpret_cast<Slime*>(_EnemyTemplate));
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Slime(*reinterpret_cast<Slime*>(const_cast<Enemy*>(_EnemyTemplate)));
             break;
         case EnemyType::DINO:
-            NewEnemyObject = new (EnemyPool[EmptySlotID]) Dino(*reinterpret_cast<Dino*>(_EnemyTemplate));
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Dino(*reinterpret_cast<Dino*>(const_cast<Enemy*>(_EnemyTemplate)));
+            break;
+        case EnemyType::BAT:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Bat(*reinterpret_cast<Bat*>(const_cast<Enemy*>(_EnemyTemplate)));
+            break;
+        case EnemyType::DRAGON:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Dragon(*reinterpret_cast<Dragon*>(const_cast<Enemy*>(_EnemyTemplate)));
             break;
         case EnemyType::BANDIT:
-            NewEnemyObject = new (EnemyPool[EmptySlotID]) Bandit(*reinterpret_cast<Bandit*>(_EnemyTemplate));
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Bandit(*reinterpret_cast<Bandit*>(const_cast<Enemy*>(_EnemyTemplate)));
             break;
         case EnemyType::HORNET:
-            NewEnemyObject = new (EnemyPool[EmptySlotID]) Hornet(*reinterpret_cast<Hornet*>(_EnemyTemplate));
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Hornet(*reinterpret_cast<Hornet*>(const_cast<Enemy*>(_EnemyTemplate)));
+            break;
+        case EnemyType::PEST:
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Pest(*reinterpret_cast<Pest*>(const_cast<Enemy*>(_EnemyTemplate)));
             break;
         case EnemyType::GOLEM:
-            NewEnemyObject = new (EnemyPool[EmptySlotID]) Golem(*reinterpret_cast<Golem*>(_EnemyTemplate));
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Golem(*reinterpret_cast<Golem*>(const_cast<Enemy*>(_EnemyTemplate)));
             break;
         case EnemyType::GRUMBLE:
-            NewEnemyObject = new (EnemyPool[EmptySlotID]) Grumble(*reinterpret_cast<Grumble*>(_EnemyTemplate));
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Grumble(*reinterpret_cast<Grumble*>(const_cast<Enemy*>(_EnemyTemplate)));
             break;
         case EnemyType::TITAN:
-            NewEnemyObject = new (EnemyPool[EmptySlotID]) Titan(*reinterpret_cast<Titan*>(_EnemyTemplate));
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Titan(*reinterpret_cast<Titan*>(const_cast<Enemy*>(_EnemyTemplate)));
             break;
         case EnemyType::REVENANT:
-            NewEnemyObject = new (EnemyPool[EmptySlotID]) Revenant(*reinterpret_cast<Revenant*>(_EnemyTemplate));
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Revenant(*reinterpret_cast<Revenant*>(const_cast<Enemy*>(_EnemyTemplate)));
             break;
         case EnemyType::BRAWLER:
-            NewEnemyObject = new (EnemyPool[EmptySlotID]) Brawler(*reinterpret_cast<Brawler*>(_EnemyTemplate));
+            NewEnemyObject = new (EnemyPool[EmptySlotID]) Brawler(*reinterpret_cast<Brawler*>(const_cast<Enemy*>(_EnemyTemplate)));
             break;
         default:
             break;
@@ -322,6 +370,11 @@ const int& GameManager::GetCurrentAttackAmount() {
     return CurrentAttackAmount;
 }
 
+Attack* GameManager::GetAttackByID(const int& _AttackID) const {
+    if (AttackPoolTracker[_AttackID]) return reinterpret_cast<Attack*>(AttackPool[_AttackID]);
+    return nullptr;
+}
+
 void GameManager::AddAttack(const AttackType& _AttackType, const Attack* _AttackTemplate) {
     int EmptySlotID = -1;
     for (int i = 0; i < MAX_ATTACK_AMOUNT; i++) {
@@ -342,6 +395,18 @@ void GameManager::AddAttack(const AttackType& _AttackType, const Attack* _Attack
             break;
         case AttackType::MISSILE:
             NewAttackObject = new (AttackPool[EmptySlotID]) Missile(*reinterpret_cast<Missile*>(const_cast<Attack*>(_AttackTemplate)));
+            break;
+        case AttackType::ORBIT:
+            NewAttackObject = new (AttackPool[EmptySlotID]) Orbit(*reinterpret_cast<Orbit*>(const_cast<Attack*>(_AttackTemplate)));
+            break;
+        case AttackType::RICOCHET:
+            NewAttackObject = new (AttackPool[EmptySlotID]) Ricochet(*reinterpret_cast<Ricochet*>(const_cast<Attack*>(_AttackTemplate)));
+            break;
+        case AttackType::AREA:
+            NewAttackObject = new (AttackPool[EmptySlotID]) Area(*reinterpret_cast<Area*>(const_cast<Attack*>(_AttackTemplate)));
+            break;
+        case AttackType::SPLIT:
+            NewAttackObject = new (AttackPool[EmptySlotID]) Split(*reinterpret_cast<Split*>(const_cast<Attack*>(_AttackTemplate)));
             break;
         default:
             break;
@@ -451,6 +516,7 @@ void GameManager::Draw() const {
     }
 
     VisualManager::GetInstance().Draw();
+
     for (int i = 0; i < MAX_ATTACK_AMOUNT; i++) {
         if (AttackPoolTracker[i]) {
             reinterpret_cast<Attack*>(AttackPool[i])->Draw();
@@ -482,4 +548,10 @@ void GameManager::Update() {
      }
 
     Timer++;
+}
+
+
+void GameManager::ModifyCash(const int& _ModifyValue) {
+    PlayerCash += _ModifyValue;
+    if (PlayerCash < 0) PlayerCash = 0;
 }

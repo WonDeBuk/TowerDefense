@@ -1,59 +1,108 @@
 ﻿#include "Golem.h"
 #include "Utils/ResourceManager.h"
+#include "Game/GameManager.h"
+#include <raymath.h>
+#include <iostream>
 
 Golem::Golem() {
 	EnemyHealth = BASE_HEALTH;
 	EnemySpeed = BASE_SPEED;
 
+	AbilityCooldown = GetRandomValue(400, 720);
+
+	PreviousAbilityFrame = 0;
+	CurrentSprite = 0;
+	IsAbility = false;
+
 	EnemyTexture = const_cast<Texture2D*>(&ResourceManager::GetInstance().LoadTexture("ui/Golem.png"));
-	EnemyTextureSize = { 256.0f, 256.0f };
+	EnemyTextureSize = { 224.0f, 224.0f };
 
 	EnemyFrameStateAmount = 8;
 	Golem::UpdateAnimation();
 
-	EnemyHitbox = { EnemyCurrentPosition.x - 32.0f, EnemyCurrentPosition.y - 32.0f, 64.0f, 64.0f };
-	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x / 2, EnemyCurrentPosition.y - EnemyTextureSize.y * 3 / 5, EnemyTextureSize.x, EnemyTextureSize.y };
+	EnemyHitbox = { EnemyCurrentPosition.x - 40.0f, EnemyCurrentPosition.y - 0.85f * 120.0f, 80.0f, 120.0f };
+	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.73f, EnemyTextureSize.x, EnemyTextureSize.y };
 
+}
+
+void Golem::OnHeal(const float& _Heal) {
+	EnemyHealth += _Heal;
+	if (EnemyHealth > BASE_HEALTH) EnemyHealth = BASE_HEALTH;
+}
+
+void Golem::FindDestination() {
+	GameManager& gm = GameManager::GetInstance();
+	int TimeJump = 192;
+	while (TimeJump > 0 && HeadingWaypointIndex < gm.GetWaypointSize()) {
+		EnemyDirection = Vector2Normalize(Vector2Subtract(gm.GetWaypointByIndex(HeadingWaypointIndex), gm.GetWaypointByIndex(HeadingWaypointIndex - 1)));
+		float DistanceToWaypoint = Vector2Distance(EnemyCurrentPosition, gm.GetWaypointByIndex(HeadingWaypointIndex));
+		int TimeTaken = ceilf(DistanceToWaypoint / BASE_SPEED);
+		if (TimeTaken > TimeJump) {
+			EnemyCurrentPosition.x += EnemyDirection.x * BASE_SPEED * TimeJump;
+			EnemyCurrentPosition.y += EnemyDirection.y * BASE_SPEED * TimeJump;
+			TimeJump = 0;
+		}
+		else {
+			TimeJump -= TimeTaken;
+			EnemyCurrentPosition = gm.GetWaypointByIndex(HeadingWaypointIndex);
+			HeadingWaypointIndex++;
+		}
+	}
+	Enemy::UpdateDirection();
 }
 
 void Golem::UpdateAnimation() {
 	// Cập nhật trạng thái frame
-	if (EnemyLifespan % 7 == 0) {
+	if (EnemyLifespan % 8 == 0) {
 		EnemyFrameState++;
 		EnemyFrameState %= EnemyFrameStateAmount;
-	}
-
-	// Cập nhật trạng thái hoạt ảnh cho hướng đi trái phải
-	if (EnemyDirection.x == 1.0f) {
-		CurrentAnimationState = EnemyAnimationState::FORWARD;
-	}
-	// Cập nhật trạng thái hoạt ảnh cho hướng đi trên dưới
-	else if (EnemyDirection.x == -1.0f) {
-		CurrentAnimationState = EnemyAnimationState::BACKWARD;
 	}
 }
 
 void Golem::Update() {
+	Enemy::UpdatePosition();
 	// Cập nhật lớp cha
-	Enemy::Update();
+	
+	if (!IsAbility && EnemyLifespan - PreviousAbilityFrame >= AbilityCooldown) {
+		IsAbility = true;
+		EnemySpeed = 0.0f;
+		CurrentSprite = 1;
+		EnemyFrameState = -1;
+		EnemyLifespan += (8 - EnemyLifespan % 8);
+		PreviousAbilityFrame = EnemyLifespan;
+	}
+
+	else if (IsAbility) {
+		if (EnemyLifespan - PreviousAbilityFrame == 64) {
+			FindDestination();
+			CurrentSprite = 2;
+		}
+		else if (EnemyLifespan - PreviousAbilityFrame == 128) {
+			IsAbility = false;
+			CurrentSprite = 0;
+			EnemySpeed = BASE_SPEED;
+			PreviousAbilityFrame = EnemyLifespan;
+			AbilityCooldown = GetRandomValue(400, 720);
+		}
+	}
 
 	// Cập nhật trạng thái hoạt ảnh
 	Golem::UpdateAnimation();
 
 	// Cập nhật vị trí Hitbox và Drawbox
-	EnemyHitbox.x = EnemyCurrentPosition.x - EnemyHitbox.width / 2;
-	EnemyHitbox.y = EnemyCurrentPosition.y - EnemyHitbox.height / 2;
-	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x / 2;
-	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 3 / 5;
+	EnemyHitbox.x = EnemyCurrentPosition.x - EnemyHitbox.width * 0.5f;
+	EnemyHitbox.y = EnemyCurrentPosition.y - EnemyHitbox.height * 0.85f;
+	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f;
+	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.73f;
 }
 
 void Golem::Draw() const {
-	DrawTexturePro(*EnemyTexture, { 200.0f * EnemyFrameState, 0.0f, 200.0f * CurrentAnimationState, 200.0f }, EnemyDrawbox, {0.0f, 0.0f}, 0.0f, WHITE);
+	DrawTexturePro(*EnemyTexture, { 200.0f * EnemyFrameState, 200.0f * CurrentSprite, 200.0f * CurrentDirectionType, 200.0f }, EnemyDrawbox, {0.0f, 0.0f}, 0.0f, WHITE);
 	Golem::DrawHealthBar();
 }
 
 void Golem::DrawHealthBar() const {
 	if (EnemyHealth == BASE_HEALTH) return;
-	DrawRectangle(EnemyCurrentPosition.x - 50.0f, EnemyDrawbox.y - 20.0f, 100.0f, 5.0f, BLACK);
-	DrawRectangle(EnemyCurrentPosition.x - 50.0f, EnemyDrawbox.y - 20.0f, 100.0f * EnemyHealth / BASE_HEALTH, 5.0f, RED);
+	DrawRectangle(EnemyCurrentPosition.x - 50.0f, EnemyCurrentPosition.y - EnemyDrawbox.height * 0.45f, 100.0f, 5.0f, BLACK);
+	DrawRectangle(EnemyCurrentPosition.x - 50.0f, EnemyCurrentPosition.y - EnemyDrawbox.height * 0.45f, 100.0f * EnemyHealth / BASE_HEALTH, 5.0f, RED);
 }

@@ -6,9 +6,12 @@
 
 class Tower {
 protected:
+    bool IsWindUp;
+    int StunTimer;
     int TowerCooldown;
     int TowerLevel;
     int TotalCost;
+    int OutputAttackCount;
     float TowerRange;
     float TowerAttackDamage;
     float TowerAttackMovementSpeed;
@@ -22,11 +25,12 @@ protected:
     ChampionAnimationState CurrentAnimationState;
     size_t TowerLifespan;
     size_t PreviousAttackFrame;
-    size_t AttackAnimationFrame;
     void (Tower::*GetTargetEnemy)();
 public:
     Tower();
 
+    virtual void ApplyStun(const int& _StunTime);
+    virtual bool IsStunned() { return StunTimer; }
     virtual const float& GetTowerRange() const { return TowerRange; }
     virtual const int& GetTowerCooldown() const { return TowerCooldown; }
     virtual const int& GetTargetEnemyID() const { return TargetEnemyID; }
@@ -44,7 +48,7 @@ public:
     virtual const Vector2 GetEnemyDefinitePosition(const Vector2& _AttackStartPosition, const int& _TargetEnemyID) const;
 
     virtual void Sell() {}                              //implement later...
-    virtual bool OnUpgrade() = 0;
+    virtual bool OnUpgrade();
     virtual void Update() = 0;
     virtual void UpdateAnimation() = 0;
     virtual void Draw() const;

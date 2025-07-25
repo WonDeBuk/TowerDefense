@@ -6,7 +6,7 @@
 
 Projectile Projectile::ProjectileTemplate;
 
-const Attack* Projectile::ProjectileTemplateBuildAndGet(const Vector2 &_AttackStartPositon, const Vector2 &_AttackDestinationPosition, const float &_AttackMovementSpeed, const float &_AttackDamage, const int &_AttackTargetID, const int &_AttackOwnTowerID, const size_t& _Lifespan, const Color& _AttackColor) {
+const Attack* Projectile::ProjectileTemplateBuildAndGet(const Vector2 &_AttackStartPositon, const Vector2 &_AttackDestinationPosition, const float &_AttackMovementSpeed, const float &_AttackDamage, const int &_AttackTargetID, const int &_AttackOwnTowerID, const int& _Lifespan, const Color& _AttackColor) {
     ProjectileTemplate.AttackStartPosition = _AttackStartPositon;
     ProjectileTemplate.AttackDestinationPosition = _AttackDestinationPosition;
     ProjectileTemplate.AttackCurrentPosition = _AttackStartPositon;
@@ -32,12 +32,29 @@ void Projectile::Update() {
     
     Attack::Update();
 
-    Enemy* TargetEnemy = GameManager::GetInstance().GetEnemyByID(AttackTargetID);
-    if (TargetEnemy != nullptr) {
-        if (CheckCollisionPointRec(AttackCurrentPosition, TargetEnemy->GetHitBox())) {
-            TargetEnemy->OnDamage(AttackDamage);
-            Attack::AttackKill();
-            return;
+    if (GameManager::GetInstance().GetCurrentEnemyAmount() > 0) {
+        if (AttackTargetID >= 0) {
+            Enemy* TargetEnemy = GameManager::GetInstance().GetEnemyByID(AttackTargetID);
+            if (TargetEnemy != nullptr) {
+                if (CheckCollisionPointRec(AttackCurrentPosition, TargetEnemy->GetHitBox())) {
+                    TargetEnemy->OnDamage(AttackDamage);
+                    Attack::AttackKill();
+                    return;
+                }
+            }
+        }
+        else {
+            const bool(&EnemyPoolTracker)[MAX_ENEMY_AMOUNT] = GameManager::GetInstance().GetEnemyPoolTracker();
+            for (int i = 0; i < MAX_ENEMY_AMOUNT; i++) {
+                if (EnemyPoolTracker[i]) {
+                    Enemy* Object = GameManager::GetInstance().GetEnemyByID(i);
+                    if (CheckCollisionPointRec(AttackCurrentPosition, Object->GetHitBox())) {
+                        Object->OnDamage(AttackDamage);
+                        Attack::AttackKill();
+                        return;
+                    }
+                }
+            }
         }
     }
 

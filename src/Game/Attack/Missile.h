@@ -14,7 +14,7 @@ private:
     float ControlPoint2XPercentOffset;
     float ControlPoint2YPercentOffset;
 public:
-    static const Attack* MissileTemplateBuildAndGet(const Vector2& _AttackStartPosition, const Vector2& _AttackDestinationPosition, const float& _ControlPoint1XPercentOffset, const float& _ControlPoint1YPercentOffset, const float& _ControlPoint2XPercentOffset, const float& _ControlPoint2YPercentOffset, const float& _AttackMovementSpeed, const float& _AttackDamage, const int& _AttackTargetID, const int& _AttackOwnTowerID, const size_t& _Lifespan);
+    static const Attack* MissileTemplateBuildAndGet(const Vector2& _AttackStartPosition, const Vector2& _AttackDestinationPosition, const float& _ControlPoint1XPercentOffset, const float& _ControlPoint1YPercentOffset, const float& _ControlPoint2XPercentOffset, const float& _ControlPoint2YPercentOffset, const float& _AttackMovementSpeed, const float& _AttackDamage, const int& _AttackTargetID, const int& _AttackOwnTowerID, const int& _Lifespan);
     void UpdateCubicBezierPosition();
 
     void Update() override;

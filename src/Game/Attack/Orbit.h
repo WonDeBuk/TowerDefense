@@ -1,16 +1,19 @@
 #include "Game/Attack.h"
-#include "Game/Tower.h"
-#include "Utils/Defined.h"
+#include "Utils/Define.h"
 
-class Orbit : public Tower {
+class Orbit : public Attack {
 private:
+	static constexpr int LIST_SIZE = 8;
 	static Orbit OrbitTemplate;
-	float StartAngle;
-	float Radius;
-	int BlackListSize;
-	BlackListData BlackList[5];
+	float PathProgress;
+	float MaxRadius;
+	int StartOfList;
+	int EndOfList;
+	int ListSize;
+	int TotalPierce;
+	BlackListData BlackList[LIST_SIZE];
 public:
-	static const Attack* OrbitTemplateBuildAndGet(const Vector2& _AttackStartPosition, const Vector2& _AttackDestinationPosition, const float& _AttackMovementSpeed, const float& _AttackDamage, const int& _TargetEnemyID, const int& _AttackOwnTowerID, const size_t& _Lifespan);
+	static const Attack* OrbitTemplateBuildAndGet(const Vector2& _AttackStartPosition, const Vector2& _AttackDestinationPosition, const float& _AttackMovementSpeed, const float& _AttackDamage, const int& _AttackEnemyID, const int& _AttackOwnTowerID, const float& _StartingAngle, const float& _MaxRadius, const int& _Lifespan, const int& _TotalPierce);
 	void Update() override;
-	void Draw() override;
+	void Draw() const override;
 };

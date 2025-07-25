@@ -4,9 +4,11 @@
 
 class Fern : public Tower {
 private:
+	float TowerAttackExplosionRadius;
 	void (Fern::* OnCooldown)();
 
-	void AttackModule();
+	void AttackModule_1();
+	void AttackModule_2();
 public:
 	Fern();
 

@@ -11,8 +11,8 @@ Grumble::Grumble() {
 	EnemyFrameStateAmount = 10;
 	Grumble::UpdateAnimation();
 
-	EnemyHitbox = { EnemyCurrentPosition.x - 32.0f, EnemyCurrentPosition.y - 32.0f, 64.0f, 64.0f };
-	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x / 2, EnemyCurrentPosition.y - EnemyTextureSize.y * 3 / 5, EnemyTextureSize.x, EnemyTextureSize.y };
+	EnemyHitbox = { EnemyCurrentPosition.x - 48.0f, EnemyCurrentPosition.y - 0.86f * 120.0f, 96.0f, 120.0f };
+	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.77f, EnemyTextureSize.x, EnemyTextureSize.y };
 
 }
 
@@ -22,38 +22,34 @@ void Grumble::UpdateAnimation() {
 		EnemyFrameState++;
 		EnemyFrameState %= EnemyFrameStateAmount;
 	}
+}
 
-	// Cập nhật trạng thái hoạt ảnh cho hướng đi trái phải
-	if (EnemyDirection.x == 1.0f) {
-		CurrentAnimationState = EnemyAnimationState::FORWARD;
-	}
-	// Cập nhật trạng thái hoạt ảnh cho hướng đi trên dưới
-	else if (EnemyDirection.x == -1.0f) {
-		CurrentAnimationState = EnemyAnimationState::BACKWARD;
-	}
+void Grumble::OnHeal(const float& _Heal) {
+	EnemyHealth += _Heal;
+	if (EnemyHealth > BASE_HEALTH) EnemyHealth = BASE_HEALTH;
 }
 
 void Grumble::Update() {
 	// Cập nhật lớp cha
-	Enemy::Update();
+	Enemy::UpdatePosition();
 
 	// Cập nhật trạng thái hoạt ảnh
 	Grumble::UpdateAnimation();
 
 	// Cập nhật vị trí Hitbox và Drawbox
-	EnemyHitbox.x = EnemyCurrentPosition.x - EnemyHitbox.width / 2;
-	EnemyHitbox.y = EnemyCurrentPosition.y - EnemyHitbox.height / 2;
-	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x / 2;
-	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 2 / 3;
+	EnemyHitbox.x = EnemyCurrentPosition.x - EnemyHitbox.width * 0.5f;
+	EnemyHitbox.y = EnemyCurrentPosition.y - EnemyHitbox.height * 0.86f;
+	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f;
+	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.77f;
 }
 
 void Grumble::Draw() const {
-	DrawTexturePro(*EnemyTexture, { 200.0f * EnemyFrameState, 0.0f, 200.0f * CurrentAnimationState, 200.0f }, EnemyDrawbox, { 0.0f, 0.0f }, 0.0f, WHITE);
+	DrawTexturePro(*EnemyTexture, { 200.0f * EnemyFrameState, 0.0f, 200.0f * CurrentDirectionType, 200.0f }, EnemyDrawbox, { 0.0f, 0.0f }, 0.0f, WHITE);
 	Grumble::DrawHealthBar();
 }
 
 void Grumble::DrawHealthBar() const {
 	if (EnemyHealth == BASE_HEALTH) return;
-	DrawRectangle(EnemyCurrentPosition.x - 50.0f, EnemyDrawbox.y - 20.0f, 100.0f, 5.0f, BLACK);
-	DrawRectangle(EnemyCurrentPosition.x - 50.0f, EnemyDrawbox.y - 20.0f, 100.0f * EnemyHealth / BASE_HEALTH, 5.0f, RED);
+	DrawRectangle(EnemyCurrentPosition.x - 50.0f, EnemyCurrentPosition.y - EnemyDrawbox.height * 0.45f, 100.0f, 5.0f, BLACK);
+	DrawRectangle(EnemyCurrentPosition.x - 50.0f, EnemyCurrentPosition.y - EnemyDrawbox.height * 0.45f, 100.0f * EnemyHealth / BASE_HEALTH, 5.0f, RED);
 }

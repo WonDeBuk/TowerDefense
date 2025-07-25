@@ -1,8 +1,11 @@
 #include "VisualManager.h"
 #include "Utils/ResourceManager.h"
+#include "Game/Visual.h"
+#include "Game/Visual/TowerBindVisual.h"
+#include "Game/Visual/EnemyBindVisual.h"
 
-ImageVisualData VisualManager::ImageVisualContainer[MAX_VISUAL_AMOUNT] = { 0 };
-bool VisualManager::ImageVisualTracker[MAX_VISUAL_AMOUNT] = { false };
+char VisualManager::VisualPool[MAX_VISUAL_AMOUNT][MAX_VISUAL_SIZE];
+bool VisualManager::VisualPoolTracker[MAX_VISUAL_AMOUNT] = { false };
 
 VisualManager::VisualManager() {
 
@@ -13,41 +16,46 @@ VisualManager& VisualManager::GetInstance() {
 	return Instance;
 }
 
-void VisualManager::AddImageVisual(const int& _TotalFrames, const std::string& _TexturePath, const Vector2& _Position, const Vector2& _Size) {
-	Texture2D* ValidTexture = const_cast<Texture2D*>(&ResourceManager::GetInstance().LoadTexture(_TexturePath));
-	if (ValidTexture == nullptr) return;
+void VisualManager::AddVisual(const VisualType& _VisualType, const Visual* _VisualTemplate) {
+	if (_VisualTemplate == nullptr) return;
+	int EmptySlotID = -1;
 	for (int i = 0; i < MAX_VISUAL_AMOUNT; i++) {
-		if (ImageVisualTracker[i] == false) {
-			ImageVisualTracker[i] = true;
-			ImageVisualContainer[i].TotalFrame = _TotalFrames;
-			ImageVisualContainer[i].Display = ValidTexture;
-			ImageVisualContainer[i].Position.x = _Position.x;
-			ImageVisualContainer[i].Position.y = _Position.y;
-			ImageVisualContainer[i].Size.x = _Size.x;
-			ImageVisualContainer[i].Size.y = _Size.y;
-			ImageVisualContainer[i].Timer = 0;
+		if (VisualPoolTracker[i] == false) {
+			EmptySlotID = i;
 			break;
 		}
 	}
+
+	Visual* NewVisualObject = nullptr;
+	if (EmptySlotID == -1) return;
+	switch (_VisualType) {
+	case VisualType::PLAIN:
+		NewVisualObject = new (VisualPool[EmptySlotID]) Visual(*const_cast<Visual*>(_VisualTemplate));
+		break;
+	case VisualType::TOWER_BIND:
+		NewVisualObject = new (VisualPool[EmptySlotID]) TowerBindVisual(*reinterpret_cast<TowerBindVisual*>(const_cast<Visual*>(_VisualTemplate)));
+		break;
+	case VisualType::ENEMY_BIND:
+		NewVisualObject = new (VisualPool[EmptySlotID]) EnemyBindVisual(*reinterpret_cast<EnemyBindVisual*>(const_cast<Visual*>(_VisualTemplate)));
+		break;
+	}
+
+	NewVisualObject->SetVisualID(EmptySlotID);
+	VisualPoolTracker[EmptySlotID] = true;
+}
+
+void VisualManager::DeleteVisual(const int& _VisualID) {
+	if (_VisualID >= 0 && _VisualID < MAX_VISUAL_AMOUNT) VisualPoolTracker[_VisualID] = false;
 }
 
 void VisualManager::Update() {
 	for (int i = 0; i < MAX_VISUAL_AMOUNT; i++) {
-		if (ImageVisualTracker[i]) {
-			ImageVisualContainer[i].Timer++;
-			if (ImageVisualContainer[i].Timer >= ImageVisualContainer[i].TotalFrame * VISUAL_UPDATE_PACE) ImageVisualTracker[i] = false;
-		}
+		if (VisualPoolTracker[i]) reinterpret_cast<Visual*>(VisualPool[i])->Update();
 	}
 }
 
-void VisualManager::Draw() {
+void VisualManager::Draw() const {
 	for (int i = 0; i < MAX_VISUAL_AMOUNT; i++) {
-		if (ImageVisualTracker[i]) {
-			ImageVisualData Current = ImageVisualContainer[i];
-			float CellWidth = Current.Display->width / Current.TotalFrame;
-			DrawTexturePro(*Current.Display,
-			{ CellWidth * (Current.Timer / VISUAL_UPDATE_PACE), 0.0f, CellWidth, 1.0f * Current.Display->height }, {Current.Position.x, Current.Position.y, Current.Size.x, Current.Size.y},
-			{ 0.0f, 0.0f }, 0.0f, WHITE);
-		}
+		if (VisualPoolTracker[i]) reinterpret_cast<Visual*>(VisualPool[i])->Draw();
 	}
 }

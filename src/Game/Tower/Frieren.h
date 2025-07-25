@@ -4,13 +4,12 @@
 
 class Frieren: public Tower {
 private:
+	static constexpr int MIN_COOLDOWN = 10;
 	int TowerDeltaCooldown;
-	int MaxShotAvailable;
-	int ShotRemaining;
 	void (Frieren::*OnCooldown)();
 
 	void AttackModule_1();
-	void AttackModule_3();
+	void AttackModule_2();
 public:
 	Frieren();
 

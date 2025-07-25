@@ -1,5 +1,6 @@
 ﻿#include "Bandit.h"
 #include "Utils/ResourceManager.h"
+#include "Game/GameManager.h"
 
 Bandit::Bandit() {
 	EnemyHealth = BASE_HEALTH;
@@ -11,49 +12,64 @@ Bandit::Bandit() {
 	EnemyFrameStateAmount = 8;
 	Bandit::UpdateAnimation();
 
-	EnemyHitbox = { EnemyCurrentPosition.x - 32.0f, EnemyCurrentPosition.y - 32.0f, 64.0f, 64.0f };
-	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x / 2, EnemyCurrentPosition.y - EnemyTextureSize.y * 3 / 5, EnemyTextureSize.x, EnemyTextureSize.y };
+	CashStolen = 0;
+	AbilityCooldown = 0;
+
+	EnemyHitbox = { EnemyCurrentPosition.x - 32.0f, EnemyCurrentPosition.y - 0.9f * 72.0f, 64.0f, 72.0f };
+	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.8f, EnemyTextureSize.x, EnemyTextureSize.y };
 
 }
 
 void Bandit::UpdateAnimation() {
 	// Cập nhật trạng thái frame
-	if (EnemyLifespan % 7 == 0) {
+	if (EnemyLifespan % 6 == 0) {
 		EnemyFrameState++;
 		EnemyFrameState %= EnemyFrameStateAmount;
 	}
+}
 
-	// Cập nhật trạng thái hoạt ảnh cho hướng đi trái phải
-	if (EnemyDirection.x == 1.0f) {
-		CurrentAnimationState = EnemyAnimationState::FORWARD;
-	}
-	// Cập nhật trạng thái hoạt ảnh cho hướng đi trên dưới
-	else if (EnemyDirection.x == -1.0f) {
-		CurrentAnimationState = EnemyAnimationState::BACKWARD;
-	}
+void Bandit::OnHeal(const float& _Heal) {
+	EnemyHealth += _Heal;
+	if (EnemyHealth > BASE_HEALTH) EnemyHealth = BASE_HEALTH;
 }
 
 void Bandit::Update() {
 	// Cập nhật lớp cha
-	Enemy::Update();
+	Enemy::UpdatePosition();
+
+	if (EnemyLifespan - PreviousAbilityFrame >= AbilityCooldown && CashStolen < MAX_CASH_CAPACITY) {
+		PreviousAbilityFrame = EnemyLifespan;
+		int PotentialSteal = MAX_CASH_CAPACITY - CashStolen;
+		int PortionOfPlayer = 0.35f * GameManager::GetInstance().GetPlayerCash();
+		if (PotentialSteal < PortionOfPlayer) {
+			CashStolen += PotentialSteal;
+			GameManager::GetInstance().ModifyCash(-PotentialSteal);
+		}
+		else {
+			CashStolen += PortionOfPlayer;
+			GameManager::GetInstance().ModifyCash(-PortionOfPlayer);
+		}
+		EnemySpeed = (1.0f - 0.8f * (CashStolen / MAX_CASH_CAPACITY)) * BASE_SPEED;
+		AbilityCooldown = GetRandomValue(300, 600);
+	}
 
 	// Cập nhật trạng thái hoạt ảnh
 	Bandit::UpdateAnimation();
 
 	// Cập nhật vị trí Hitbox và Drawbox
-	EnemyHitbox.x = EnemyCurrentPosition.x - EnemyHitbox.width / 2;
-	EnemyHitbox.y = EnemyCurrentPosition.y - EnemyHitbox.height / 2;
-	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x / 2;
-	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 3 / 5;
+	EnemyHitbox.x = EnemyCurrentPosition.x - EnemyHitbox.width * 0.5f;
+	EnemyHitbox.y = EnemyCurrentPosition.y - EnemyHitbox.height * 0.9f;
+	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f;
+	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.8f;
 }
 
 void Bandit::Draw() const {
-	DrawTexturePro(*EnemyTexture, { 144.0f * EnemyFrameState, 0.0f, 144.0f * CurrentAnimationState, 144.0f }, EnemyDrawbox, { 0.0f, 0.0f }, 0.0f, WHITE);
+	DrawTexturePro(*EnemyTexture, { 144.0f * EnemyFrameState, 0.0f, 144.0f * CurrentDirectionType, 144.0f }, EnemyDrawbox, { 0.0f, 0.0f }, 0.0f, WHITE);
 	Bandit::DrawHealthBar();
 }
 
 void Bandit::DrawHealthBar() const {
 	if (EnemyHealth == BASE_HEALTH) return;
-	DrawRectangle(EnemyCurrentPosition.x - 50.0f, EnemyDrawbox.y - 20.0f, 100.0f, 5.0f, BLACK);
-	DrawRectangle(EnemyCurrentPosition.x - 50.0f, EnemyDrawbox.y - 20.0f, 100.0f * EnemyHealth / BASE_HEALTH, 5.0f, RED);
+	DrawRectangle(EnemyCurrentPosition.x - 50.0f, EnemyCurrentPosition.y - EnemyDrawbox.height * 0.55f, 100.0f, 5.0f, BLACK);
+	DrawRectangle(EnemyCurrentPosition.x - 50.0f, EnemyCurrentPosition.y - EnemyDrawbox.height * 0.55f, 100.0f * EnemyHealth / BASE_HEALTH, 5.0f, RED);
 }

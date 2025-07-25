@@ -8,11 +8,10 @@ private:
 	static constexpr float BASE_SPEED = 0.75f;
 protected:
 	void UpdateAnimation() override;
-	EnemyAnimationState CurrentAnimationState;
-
 public:
 	Grumble();
 
+	void OnHeal(const float& _Heal) override;
 	void Update() override;
 	void Draw() const override;
 	void DrawHealthBar() const override;

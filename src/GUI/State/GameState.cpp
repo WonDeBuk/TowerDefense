@@ -14,6 +14,7 @@
 
 GameState::GameState() {
     SelectedTower = -1;
+
 }
 
 void GameState::Update() {
@@ -51,12 +52,7 @@ void GameState::Update() {
         const bool(&TowerPoolAndPlotTracker)[MAX_TOWER_AMOUNT] = GameManager::GetInstance().GetTowerPlotAndPoolTracker();
         for (int i = 0; i < GameManager::GetInstance().GetTowerPlotSize(); i++) {
             if (CheckCollisionPointCircle(GetMousePosition(), GameManager::GetInstance().GetTowerPlotByID(i), 32)) {
-                if (TowerPoolAndPlotTracker[i]) {
-                    if (GameManager::GetInstance().GetTowerByID(i)->OnUpgrade()) {
-                        Tower* Object = GameManager::GetInstance().GetTowerByID(i);
-                        VisualManager::GetInstance().AddImageVisual(6, "ui/UpgradeSparkle.png", { Object->GetTowerPosition().x - 78.0f, Object->GetTowerPosition().y - 128.0f }, { 156.0f, 156.0f });
-                    }
-                }
+                if (TowerPoolAndPlotTracker[i]) GameManager::GetInstance().GetTowerByID(i)->OnUpgrade();
                 else if (SelectedTower != -1 && !TowerPoolAndPlotTracker[i]) GameManager::GetInstance().AddTower((ChampionType)SelectedTower, i);
                 SelectedTower = -1;
                 break;

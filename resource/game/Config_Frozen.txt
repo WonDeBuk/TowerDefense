@@ -22,7 +22,7 @@ Wave Amount: 5
 
 Phase Amount: 2
 Spawn Amount: 1
-Type: GOLEM Quantity: 4 Delay: 100
+Type: TITAN Quantity: 1 Delay: 100
 Spawn Amount: 1
 Type: GOLEM Quantity: 4 Delay: 50
 

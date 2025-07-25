@@ -4,12 +4,10 @@
 
 class Shuna : public Tower {
 private:
-	bool IsWindUp;
-	int TargetEnemyID[15];
 	int CurrentTargetCount;
 	int MaxTarget;
+	int TargetEnemyID[5];
 	void (Shuna::* OnCooldown)();
-
 	void AttackModule();
 public:
 	Shuna();
@@ -19,6 +17,7 @@ public:
 	void GetWeakestEnemy() override;
 	void GetStrongestEnemy() override;
 
+	//void SetTargetType(const TargetType& _TargetType) override;
 	void SetTowerID(const int& _TowerID) override;
 
 	bool OnUpgrade() override;

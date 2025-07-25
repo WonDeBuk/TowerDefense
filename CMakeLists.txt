@@ -37,14 +37,26 @@ set(HEADERS
     src/Game/Tower.h
     src/Game/Attack/Projectile.h
     src/Game/Attack/Missile.h
+    src/Game/Attack/Orbit.h
+    src/Game/Attack/Ricochet.h
+    src/Game/Attack/Area.h
+    src/Game/Attacl/Split.h
     src/Game/Enemy/Slime.h
     src/Game/Enemy/Dino.h
+    src/Game/Enemy/Bat.h
+    src/Game/Enemy/Dragon.h
+    src/Game/Enemy/Magma.h
     src/Game/Enemy/Bandit.h
-    src/Game/Enemy/Hornet.h
+    src/Game/Enemy/Scout.h
+    src/Game/Enemy/Revenant.h
+    src/Game/Enemy/Frost.h
     src/Game/Enemy/Golem.h
     src/Game/Enemy/Grumble.h
     src/Game/Enemy/Titan.h
-    src/Game/Enemy/Revenant.h
+    src/Game/Enemy/Ghoul.h
+    src/Game/Enemy/Healbot.h
+    src/Game/Enemy/Hornet.h
+    src/Game/Enemy/Pest.h
     src/Game/Enemy/Brawler.h
     src/Game/Tower/Frieren.h
     src/Game/Tower/Milim.h
@@ -52,6 +64,9 @@ set(HEADERS
     src/Game/Tower/Fern.h
     src/Game/Tower/Shuna.h
     src/Game/Tower/Stark.h
+    src/Game/Visual.h
+    src/Game/Visual/TowerBindVisual.h
+    src/Game/Visual/EnemyBindVisual.h
 )
 
 # Add source files
@@ -78,16 +93,28 @@ set(SOURCES
     src/game/Enemy.cpp
     src/Game/Enemy/Slime.cpp
     src/Game/Enemy/Dino.cpp
+    src/Game/Enemy/Bat.cpp
+    src/Game/Enemy/Dragon.cpp
+    src/Game/Enemy/Magma.cpp
     src/Game/Enemy/Bandit.cpp
-    src/Game/Enemy/Hornet.cpp
+    src/Game/Enemy/Scout.cpp
+    src/Game/Enemy/Revenant.cpp
+    src/Game/Enemy/Frost.cpp
     src/Game/Enemy/Golem.cpp
     src/Game/Enemy/Grumble.cpp
     src/Game/Enemy/Titan.cpp
-    src/Game/Enemy/Revenant.cpp
+    src/Game/Enemy/Ghoul.cpp
+    src/Game/Enemy/Hornet.cpp
+    src/Game/Enemy/Pest.cpp
+    src/Game/Enemy/Healbot.cpp
     src/Game/Enemy/Brawler.cpp
     src/Game/Attack.cpp
     src/Game/Attack/Projectile.cpp
     src/Game/Attack/Missile.cpp
+    src/Game/Attack/Orbit.cpp
+    src/Game/Attack/Ricochet.cpp
+    src/Game/Attack/Area.cpp
+    src/Game/Attack/Split.cpp
     src/Game/Tower.cpp
     src/Game/Tower/Frieren.cpp
     src/Game/Tower/Milim.cpp
@@ -95,10 +122,13 @@ set(SOURCES
     src/Game/Tower/Fern.cpp
     src/Game/Tower/Shuna.cpp
     src/Game/Tower/Stark.cpp
+    src/Game/Visual.cpp
+    src/Game/Visual/TowerBindVisual.cpp
+    src/Game/Visual/EnemyBindVisual.cpp
 )
 
 # Create executable
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCES} "src/Game/Attack/Area.cpp")
 
 # Specify the path to Raylib library and include directories
 # You'll need to modify these paths according to your Raylib installation

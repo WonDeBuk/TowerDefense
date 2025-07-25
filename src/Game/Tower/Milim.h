@@ -4,10 +4,8 @@
 
 class Milim : public Tower {
 private:
-	bool IsWindUp;
-	int TotalShot;
+	int CurrentShot;
 	void (Milim::*OnCooldown)();
-
 	void AttackModule();
 public:
 	Milim();
