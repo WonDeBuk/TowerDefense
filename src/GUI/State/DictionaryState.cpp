@@ -5,6 +5,7 @@
 #include "././Utils/Define.h"
 #include "././Utils/Champion.h"
 #include "././Utils/ResourceManager.h"
+#include "GUI/Director.h"
 #include <iostream>
 #include <assert.h>
 
@@ -99,8 +100,8 @@ void DictionaryState::DrawInformationPanel() const
 {
     int SelectedIndex = ChampionList->GetSelectedIndex();
     if (SelectedIndex != -1) {
-        ResourceManager::ChampionDataList[SelectedIndex].ChampionDraw(ChampionAnimationState::IDLE, ChampionIdleDrawPosition, false);
-        ResourceManager::ChampionDataList[SelectedIndex].ChampionDraw(ChampionAnimationState::CAST, ChampionCastDrawPosition, false);
+        ResourceManager::ChampionDataList[SelectedIndex].ChampionDraw(ChampionAnimationState::IDLE, ChampionIdleDrawPosition, false, Director::GetInstance().GetTime());
+        ResourceManager::ChampionDataList[SelectedIndex].ChampionDraw(ChampionAnimationState::CAST, ChampionCastDrawPosition, false, Director::GetInstance().GetTime());
         DrawTextJustified(*ContentFont, (*LoreContent).c_str(), {LoreDimension.x, LoreDimension.y}, LoreDimension.width, LoreContentSize, 1.0f, WHITE);
     }
 }

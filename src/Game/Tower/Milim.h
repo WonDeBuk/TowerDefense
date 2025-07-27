@@ -4,15 +4,15 @@
 
 class Milim : public Tower {
 private:
-	Color UpgradeColor;
+	int CurrentShot;
 	void (Milim::*OnCooldown)();
-
 	void AttackModule();
 public:
 	Milim();
 
-	void OnUpgrade() override;
+	void SetTowerID(const int& _TowerID) override;
+
+	bool OnUpgrade() override;
 	void Update() override;
-	void UpdateAnimation() override;
-	void Draw() const override;
+	void UpdateAnimation() {}
 };

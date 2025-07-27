@@ -11,5 +11,5 @@ public:
     Texture2D* ChampionTextureIdle;
     Texture2D* ChampionTextureCast;
 
-    void ChampionDraw(const ChampionAnimationState& _ChampionAnimationState, const Vector2& _DrawPosition, const bool& _IsOutline) const;
+    void ChampionDraw(const ChampionAnimationState& _ChampionAnimationState, const Vector2& _DrawPosition, const bool& _IsOutline, const size_t& _Timer) const;
 };

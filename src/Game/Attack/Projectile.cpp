@@ -3,44 +3,45 @@
 #include "raymath.h"
 #include "../GameManager.h"
 #include "../../Utils/ResourceManager.h"
+#include <cmath>
+#include <iostream>
 
-Projectile Projectile::ProjectileTemplate;
-
-const Attack* Projectile::ProjectileTemplateBuildAndGet(const Vector2 &_AttackStartPositon, const Vector2 &_AttackDestinationPosition, const float &_AttackMovementSpeed, const float &_AttackDamage, const int &_AttackTargetID, const int &_AttackOwnTowerID, const size_t& _Lifespan, const Color& _AttackColor) {
-    ProjectileTemplate.AttackStartPosition = _AttackStartPositon;
-    ProjectileTemplate.AttackDestinationPosition = _AttackDestinationPosition;
+const Attack* Projectile::ProjectileTemplateBuildAndGet(const TextureData& _AttackTexture, const Vector2 &_AttackStartPositon, const Vector2 &_AttackDestinationPosition, const float &_AttackMovementSpeed, const float &_AttackDamage, const int& _TargetEnemyID, const int& _OwnerID, const int& _Lifespan, const HitType& _HitType, const TextureData& _DeathTexture) {
+    static Projectile ProjectileTemplate;
     ProjectileTemplate.AttackCurrentPosition = _AttackStartPositon;
     ProjectileTemplate.AttackMovementSpeed = _AttackMovementSpeed;
     ProjectileTemplate.AttackDamage = _AttackDamage;
-    ProjectileTemplate.AttackOwnTowerID = _AttackOwnTowerID;
-    ProjectileTemplate.AttackTargetID = _AttackTargetID;
-    ProjectileTemplate.AttackProjectileDirection = Vector2Normalize(Vector2Subtract(_AttackDestinationPosition, _AttackStartPositon));
+    ProjectileTemplate.OwnerID = _OwnerID;
+    ProjectileTemplate.TargetID = _TargetEnemyID;
+    ProjectileTemplate.GeneralUseVector = Vector2Normalize(Vector2Subtract(_AttackDestinationPosition, _AttackStartPositon));
     ProjectileTemplate.Lifespan = _Lifespan;
-    ProjectileTemplate.AttackColor = _AttackColor;
+    ProjectileTemplate.AttackTexture = _AttackTexture;
+    ProjectileTemplate.DeathTexture = _DeathTexture;
+    ProjectileTemplate.FrameSize = 1.0f * _AttackTexture.LinkedTexture->width / _AttackTexture.MaxFrameCount;
+    ProjectileTemplate.SetHitType(_HitType);
     return reinterpret_cast<Attack*>(&ProjectileTemplate);
 }
 
 void Projectile::Draw() const {
-    DrawCircle(AttackCurrentPosition.x, AttackCurrentPosition.y, 4.0f, AttackColor);
+    float ActualSize = FrameSize * AttackTexture.ScaleFactor;
+    float Angle = atan2f(GeneralUseVector.y, GeneralUseVector.x) * 180.0f / PI;
+    DrawTexturePro(*AttackTexture.LinkedTexture, { FrameSize * FrameState, 0.0f, FrameSize, FrameSize }, { AttackCurrentPosition.x, AttackCurrentPosition.y, ActualSize, ActualSize }, { ActualSize / 2, ActualSize / 2 }, Angle, WHITE);
 }
 
 void Projectile::Update() {
-    if (!Lifespan) {
+    Lifespan--;
+
+    if (Lifespan <= 0) {
         AttackKill();
         return;
     }
-    
-    Attack::Update();
 
-    Enemy* TargetEnemy = GameManager::GetInstance().GetEnemyByID(AttackTargetID);
-    if (TargetEnemy != nullptr) {
-        if (CheckCollisionPointRec(AttackCurrentPosition, TargetEnemy->GetHitBox())) {
-            TargetEnemy->OnDamage(AttackDamage);
-            Attack::AttackKill();
-            return;
-        }
+    if ((this->*CheckForValidHit)() == true) {
+        return;
     }
 
-    AttackCurrentPosition.x += AttackProjectileDirection.x * AttackMovementSpeed;
-    AttackCurrentPosition.y += AttackProjectileDirection.y * AttackMovementSpeed;
+    if (Lifespan % 5 == 0) FrameState = (FrameState + 1) % AttackTexture.MaxFrameCount;
+
+    AttackCurrentPosition.x += GeneralUseVector.x * AttackMovementSpeed;
+    AttackCurrentPosition.y += GeneralUseVector.y * AttackMovementSpeed;
 }
