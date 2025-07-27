@@ -1,17 +1,16 @@
-#include "Game/Attack/Multi.h"
-#include "Utils/Define.h"
+#include "Game/Attack.h"
+#include "Game/Tower.h"
+#include "Utils/Defined.h"
 
-class Orbit : public Multi {
+class Orbit : public Tower {
 private:
-	int TargetID;
-	float PathProgress;
-	float CurrentRadius;
-	float MaxRadius;
-	float Angle;
+	static Orbit OrbitTemplate;
+	float StartAngle;
+	float Radius;
+	int BlackListSize;
+	BlackListData BlackList[5];
 public:
-	Orbit();
-
-	static const Attack* OrbitTemplateBuildAndGet(const TextureData& _AttackTexture, const Vector2& _AttackStartPosition, const Vector2& _AttackDestinationPosition, const float& _AttackMovementSpeed, const float& _AttackDamage, const int& _TargetEnemyID, const int& _OwnerID, const float& _StartingAngle, const float& _MaxRadius, const int& _Lifespan, const int& _TotalHit, const HitType& _HitType, const TextureData& _DeathTexture = Attack::NullTexture);
+	static const Attack* OrbitTemplateBuildAndGet(const Vector2& _AttackStartPosition, const Vector2& _AttackDestinationPosition, const float& _AttackMovementSpeed, const float& _AttackDamage, const int& _TargetEnemyID, const int& _AttackOwnTowerID, const size_t& _Lifespan);
 	void Update() override;
-	void Draw() const override;
+	void Draw() override;
 };

@@ -1,20 +1,18 @@
 #pragma once
 
 #include "Game/Tower.h"
-#include <iostream>
 
 class Stark : public Tower {
 private:
-	int AttackMaxHit;
+	Color UpgradeColor;
 	void (Stark::* OnCooldown)();
 
 	void AttackModule();
 public:
 	Stark();
 
-	void SetTowerID(const int& _TowerID) override;
-
-	bool OnUpgrade() override;
+	void OnUpgrade() override;
 	void Update() override;
 	void UpdateAnimation() override;
+	void Draw() const override;
 };

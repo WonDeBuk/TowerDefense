@@ -1,104 +1,69 @@
 #include "Milim.h"
 #include "Game/Attack/Projectile.h"
 #include "Game/GameManager.h"
-#include "Game/VisualManager.h"
-#include "Utils/ResourceManager.h"
-#include "Game/Visual/TowerBindVisual.h"
 #include <raymath.h>
-#include <iostream>
 
 Milim::Milim(): Tower() {
-	CurrentChampion = ChampionType::MILIM;
-	CurrentAnimationState = ChampionAnimationState::IDLE;
-	TowerLifespan = 140;
-	TowerCooldown = 400;
+	TowerCooldown = 175;
+	TowerDeltaCooldown = TowerCooldown / 2;
 	TotalCost = 700;
-	TowerRange = 500.0f;
+	TowerRange = 600.0f;
 	TowerAttackDamage = 100.0f;
-	TowerAttackMovementSpeed = 10.0f;
-	CurrentShot = 0;
-	IsWindUp = false;
-	OnCooldown = &Milim::AttackModule;
-}
+	TowerAttackMovementSpeed = 15.0f;
 
-void Milim::SetTowerID(const int& _TowerID) {
-	Tower::SetTowerID(_TowerID);
-	AttackPosition = { TowerPosition.x, TowerPosition.y - 16.0f };
+	OnCooldown = &Milim::AttackModule;
+
+	UpgradeColor = { 255, 112, 172, 255 };
 }
 
 void Milim::AttackModule() {
-	CurrentShot++;
 	(this->*GetTargetEnemy)();
 	if (TargetEnemyID == -1) {
-		if (CurrentShot >= OutputAttackCount) {
-			IsWindUp = false;
-			CurrentShot = 0;
-		}
-		return;
-	}
-	if (IsWindUp == false) {
-		CurrentAnimationState = ChampionAnimationState::CAST;
-		IsWindUp = true;
 		return;
 	}
 
-	Vector2 EnemyDefinitePosition = GetEnemyDefinitePosition(AttackPosition, TargetEnemyID);
-	int CalcLifespan = ceilf(Vector2Distance(EnemyDefinitePosition, AttackPosition) / TowerAttackMovementSpeed) + 5;
-	GameManager::GetInstance().AddAttack(AttackType::PROJECTILE, Projectile::ProjectileTemplateBuildAndGet({ 2.5f, 8, const_cast<Texture2D*>(&ResourceManager::GetInstance().LoadTexture("ui/StingerAttack.png")) }, AttackPosition, EnemyDefinitePosition, TowerAttackMovementSpeed, TowerAttackDamage, TargetEnemyID, TowerID, CalcLifespan, HitType::TARGETED));
-	if (CurrentShot >= OutputAttackCount) {
-		IsWindUp = false;
-		CurrentShot = 0;
-	}
+	Vector2 EnemyDefinitePosition = GetEnemyDefinitePosition(TowerPosition);
+	size_t CalcLifespan = Vector2Distance(TowerPosition, EnemyDefinitePosition) / TowerAttackMovementSpeed;
+	GameManager::GetInstance().AddAttack(AttackType::PROJECTILE, Projectile::ProjectileTemplateBuildAndGet(TowerPosition, EnemyDefinitePosition, TowerAttackMovementSpeed, TowerAttackDamage, TargetEnemyID, TowerID, CalcLifespan, GREEN));
+	
+	TowerDeltaCooldown = TowerCooldown;
 }
 
-bool Milim::OnUpgrade() {
-	if (TowerLevel == 3) return false;	
+void Milim::OnUpgrade() {
+	if (TowerLevel == 3) return;	
 	TowerLevel++;
-	Tower::OnUpgrade();
+
 	switch (TowerLevel) {
 	case 2:
-		TowerCooldown = 350;
-		TowerRange = 575.0f;
+		TowerCooldown = 160;
 		TowerAttackDamage = 150.0f;
-		TowerAttackMovementSpeed = 12.5f;
-		OutputAttackCount = 2;
+		TowerAttackMovementSpeed = 15.0f;
 		TotalCost += 000;
+		UpgradeColor = { 255, 71, 157, 255 };
 		break;
 	case 3:
-		TowerCooldown = 300;
-		TowerRange = 675.0f;
+		TowerCooldown = 140;
+		TowerRange = 720.0f;
 		TowerAttackDamage = 250.0f;
-		TowerAttackMovementSpeed = 14.0f;
-		OutputAttackCount = 3;
+		TowerAttackMovementSpeed = 20.0f;
 		TotalCost += 000;
+		UpgradeColor = { 227, 14, 103, 255 };
 		break;
 	}
-	return true;
 }
 
 void Milim::Update() {
-	if (StunTimer) {
-		if (StunTimer % 70 == 0) VisualManager::GetInstance().AddVisual(VisualType::TOWER_BIND, TowerBindVisual::TowerBindVisualTemplateBuildAndGet("ui/StunEffect.png", 14, { 48.0f, 112.0f }, { 96.0f, 96.0f }, TowerID));
-		StunTimer--;
-		return;
-	}
-
-	if (!IsWindUp && TowerLifespan - PreviousAttackFrame >= TowerCooldown) {
-		(this->*OnCooldown)();
-		if (IsWindUp) {
-			CurrentShot = 0;
-			PreviousAttackFrame = TowerLifespan;
-		}
-	}
-
-	size_t DeltaFire = TowerLifespan - PreviousAttackFrame;
-	if (IsWindUp && DeltaFire == 49 + CurrentShot * 14 / OutputAttackCount) {
-		(this->*OnCooldown)();
-	}
-
-	if (TowerLifespan - PreviousAttackFrame == 70) {
-		CurrentAnimationState = ChampionAnimationState::IDLE;
-	}
-
 	TowerLifespan++;
+
+	if (TowerDeltaCooldown <= 0) (this->*OnCooldown)();
+	else TowerDeltaCooldown--;
+}
+
+void Milim::UpdateAnimation() {
+
+}
+
+void Milim::Draw() const {
+	DrawCircleLines(TowerPosition.x, TowerPosition.y, TowerRange, WHITE);
+	DrawCircle(TowerPosition.x, TowerPosition.y, 24.0f, UpgradeColor);
 }

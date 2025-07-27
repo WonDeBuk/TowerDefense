@@ -10,7 +10,6 @@ int WaveManager::CurrentWaveIndex = 0;
 int WaveManager::WaveListSize = 0;
 WaveData* WaveManager::CurrentWavePointer = &WaveManager::WaveList[0];
 PhaseData* WaveManager::CurrentPhasePointer = &WaveManager::WaveList[0].PhaseList[0];
-size_t WaveManager::PhaseTimer = 2000000000;
 
 void WaveManager::ResetConfig() {
     for (int i = 0; i < MAX_WAVE; i++) {
@@ -30,7 +29,6 @@ void WaveManager::ResetConfig() {
         WaveList[i].WaveTotalEnemy = 0;
     }
     
-    PhaseTimer = 2000000000;
 }
 
 void WaveManager::ReadConfig(MapType _MapType) {
@@ -90,7 +88,7 @@ void WaveManager::Update() {
     for (int i = 0; i < CurrentPhasePointer->PhaseSpawnListSize; i++) {
         TempSpawnData = &CurrentPhasePointer->SpawnList[i];
         if (TempSpawnData->SpawnHasSpawned < TempSpawnData->SpawnQuantity) {
-            if (TempSpawnData->SpawnDelay == 0 || Timer % TempSpawnData->SpawnDelay == 0) {
+            if (Timer % TempSpawnData->SpawnDelay == 0) {
                 GameManager::AddEnemy(TempSpawnData->SpawnEnemyType);
                 TempSpawnData->SpawnHasSpawned++;
                 CurrentPhasePointer->PhaseHasSpawned++;
@@ -115,7 +113,6 @@ void WaveManager::Update() {
                 CurrentWavePointer->WaveCurrentPhase++;
                 CurrentPhasePointer = &CurrentWavePointer->PhaseList[CurrentWavePointer->WaveCurrentPhase];
             }
-            PhaseTimer = GameManager::GetInstance().GetTime();
         } 
     }
 }

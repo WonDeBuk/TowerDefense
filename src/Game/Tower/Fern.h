@@ -4,20 +4,15 @@
 
 class Fern : public Tower {
 private:
-	int SubAttackTotalHit;
-	float SubAttackDamage;
-	float SubAttackMovementSpeed;
-
+	Color UpgradeColor;
 	void (Fern::* OnCooldown)();
 
-	void AttackModule_1();
-	void AttackModule_2();
+	void AttackModule();
 public:
 	Fern();
 
-	void SetTowerID(const int& _TowerID) override;
-
-	bool OnUpgrade() override;
+	void OnUpgrade() override;
 	void Update() override;
 	void UpdateAnimation() override;
+	void Draw() const override;
 };

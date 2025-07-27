@@ -1,11 +1,14 @@
 #pragma once
 
-#include "Game/Attack/Single.h"
+#include "../Attack.h"
 
-class Projectile: public Single {
+class Projectile: public Attack {
 private:
+	static Projectile ProjectileTemplate;
+	Vector2 AttackProjectileDirection;
+	Color AttackColor;
 public:
-	static const Attack* ProjectileTemplateBuildAndGet(const TextureData& _AttackTexture, const Vector2& _AttackStartPositon, const Vector2& _AttackDestinationPosition, const float& _AttackMovementSpeed, const float& _AttackDamage, const int& _TargetEnemyID, const int& _OwnerID, const int& _Lifespan, const HitType& _HitType, const TextureData& _DeathTexture = Attack::NullTexture);
+	static const Attack* ProjectileTemplateBuildAndGet(const Vector2& _AttackStartPositon, const Vector2& _AttackDestinationPosition, const float& _AttackMovementSpeed, const float& _AttackDamage, const int& _AttackTargetID, const int& _AttackOwnTowerID, const size_t& _Lifespan, const Color& _AttackColor);
 	void Draw() const override;
 	void Update() override;
 };
