@@ -27,6 +27,8 @@ private:
     static int TowerPlotSize;
     static int CurrentTowerAmount;
 
+    static int PlayerCash; //i think this belongs to the game state but we will get to that later on 
+
     // Các property khác
     static MapType CurrentMap;
     static Texture2D* MapTexture;
@@ -55,24 +57,28 @@ public:
     static const bool(&GetEnemyPoolTracker())[MAX_ENEMY_AMOUNT];
     static const int& GetCurrentEnemyAmount();
     Enemy* GetEnemyByID(const int& _EnemyID) const;
-    static void AddEnemy(const EnemyType& _EnemyType, Enemy* _EnemyTemplate = nullptr);
+    static void AddEnemy(const EnemyType& _EnemyType, const Enemy* _EnemyTemplate = nullptr);
     void KillEnemy(const int& _EnemyID);
 
     // Các method liên quan đến việc sử dụng AttackPool
     static const char(&GetAttackPool())[MAX_ENEMY_AMOUNT][MAX_ATTACK_SIZE];
     static const bool(&GetAttackPoolTracker())[MAX_ENEMY_AMOUNT];
     static const int& GetCurrentAttackAmount();
-    void AddAttack(const AttackType& _AttackType, const Attack* _AttackTemplate);
+    Attack* GetAttackByID(const int& _AttackID) const;
+    static void AddAttack(const AttackType& _AttackType, const Attack* _AttackTemplate);
     void KillAttack(const int& _AttackID);
 
     // Các method liên quan đến việc sử dụng TowerPool
     static const char(&GetTowerPool())[MAX_TOWER_AMOUNT][MAX_TOWER_SIZE];
     static const int& GetCurrentTowerAmount();
     Tower* GetTowerByID(const int& _TowerID) const;
-    void AddTower(const TowerType& _TowerType, const int& _SlotID);
+    static void AddTower(const ChampionType& _ChampionType, const int& _SlotID);
     void KillTower(const int& _TowerID);
 
 
     void Draw() const;
     void Update();
+
+    static const int& GetPlayerCash() { return PlayerCash; }
+    static void ModifyCash(const int& _ModifyValue);
 };

@@ -4,18 +4,20 @@
 
 class Frieren: public Tower {
 private:
-	int MaxShotAvailable;
-	int ShotRemaining;
-	Color UpgradeColor; //delete later lmao
+	static constexpr int MIN_COOLDOWN = 10;
+	static constexpr int MAX_TICK = 8;
+	int Tick;
 	void (Frieren::*OnCooldown)();
 
 	void AttackModule_1();
-	void AttackModule_3();
+	void AttackModule_2();
 public:
 	Frieren();
 
-	void OnUpgrade() override;
+	void SetTowerID(const int& _TowerID) override;
+
+	bool OnUpgrade() override;
 	void Update() override;
-	void UpdateAnimation() override;
-	void Draw() const override;
+	void UpdateAnimation() {}
+	//void Draw() const override;
 };

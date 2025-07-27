@@ -14,7 +14,7 @@ const std::string ResourceManager::ParseChampionAnimationStateToString[(int) Cha
 const std::string ResourceManager::ParseLanguageToString[] = {"EN", "VI", "DU", "FR", "IT", "SP", "PT", "RU", "ID"};
 const std::string ResourceManager::ParseTierToString[] = {"Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic"};
 const std::string ResourceManager::ParseMapTypeToString[] = {"Forest", "Frozen", "Desert"};
-const std::map<std::string,EnemyType> ResourceManager::ParseStringToEnemyType = {{"SLIME", EnemyType::SLIME}};
+const std::map<std::string, EnemyType> ResourceManager::ParseStringToEnemyType = { {"SLIME", EnemyType::SLIME}, {"DINO", EnemyType::DINO}, {"BAT", EnemyType::BAT}, { "DRAGON", EnemyType::DRAGON },{"FROST", EnemyType::FROST}, { "GOLEM", EnemyType::GOLEM }, {"GRUMBLE", EnemyType::GRUMBLE}, {"TITAN", EnemyType::TITAN}, {"MAGMA", EnemyType::MAGMA}, {"BANDIT", EnemyType::BANDIT}, {"SCOUT", EnemyType::SCOUT}, {"REVENANT", EnemyType::REVENANT},{"GHOUL", EnemyType::GHOUL}, {"HEALBOT", EnemyType::HEALBOT}, {"HORNET", EnemyType::HORNET}, {"PEST", EnemyType::PEST}, {"BRAWLER", EnemyType::BRAWLER}};
 const std::map<std::string,ChampionTierType> ResourceManager::ParseStringToChampionTierType = {{"Uncommon", ChampionTierType::UNCOMMON}, {"Common", ChampionTierType::COMMON}, {"Rare", ChampionTierType::RARE}, {"Epic", ChampionTierType::EPIC}, {"Legendary", ChampionTierType::LEGENDARY}, {"Mythic", ChampionTierType::MYTHIC}};
 
 ResourceManager::ResourceManager() {
