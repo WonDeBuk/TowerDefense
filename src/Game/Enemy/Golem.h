@@ -4,8 +4,8 @@
 
 class Golem : public Enemy {
 private:
-	static constexpr float BASE_HEALTH = 350.0f;
-	static constexpr float BASE_SPEED = 1.75f;
+	static constexpr float BASE_HEALTH = 1800.0f;
+	static constexpr float BASE_SPEED = 1.35f;
 
 	void FindDestination();
 protected:

@@ -11,7 +11,7 @@ Scout::Scout() {
 	EnemyFrameStateAmount = 8;
 	Scout::UpdateAnimation();
 
-	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.78f, EnemyTextureSize.x, EnemyTextureSize.y };
+	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.45f, EnemyTextureSize.x, EnemyTextureSize.y };
 
 }
 
@@ -37,7 +37,7 @@ void Scout::Update() {
 
 	// Cập nhật vị trí Hitbox và Drawbox
 	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f;
-	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.78f;
+	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.45f;
 }
 
 void Scout::Draw() const {

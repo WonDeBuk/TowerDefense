@@ -7,7 +7,7 @@ Dino::Dino() {
 	EnemySpeed = BASE_SPEED;
 
 	EnemyTexture = const_cast<Texture2D*>(&ResourceManager::GetInstance().LoadTexture("ui/Dino.png"));
-	EnemyTextureSize = { 128.0f, 128.0f };
+	EnemyTextureSize = { 114.0f, 114.0f };
 
 	PreviousAbilityFrame = 0;
 	CurrentSprite = 0;
@@ -17,7 +17,7 @@ Dino::Dino() {
 	EnemyFrameStateAmount = 5;
 	Dino::UpdateAnimation();
 
-	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.85f, EnemyTextureSize.x, EnemyTextureSize.y };
+	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.6f, EnemyTextureSize.x, EnemyTextureSize.y };
 
 }
 
@@ -43,7 +43,7 @@ void Dino::Update() {
 
 	// Cập nhật vị trí Hitbox và Drawbox
 	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f;
-	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.85f;
+	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.6f;
 }
 
 void Dino::Draw() const {

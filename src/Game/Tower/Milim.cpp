@@ -10,12 +10,12 @@
 Milim::Milim(): Tower() {
 	CurrentChampion = ChampionType::MILIM;
 	CurrentAnimationState = ChampionAnimationState::IDLE;
-	TowerLifespan = 140;
-	TowerCooldown = 400;
+	TowerLifespan = 300;
+	TowerCooldown = 375;
 	TotalCost = 700;
-	TowerRange = 500.0f;
-	TowerAttackDamage = 100.0f;
-	TowerAttackMovementSpeed = 10.0f;
+	TowerRange = 525.0f;
+	TowerAttackDamage = 175.0f;
+	TowerAttackMovementSpeed = 12.0f;
 	CurrentShot = 0;
 	IsWindUp = false;
 	OnCooldown = &Milim::AttackModule;
@@ -57,19 +57,18 @@ bool Milim::OnUpgrade() {
 	Tower::OnUpgrade();
 	switch (TowerLevel) {
 	case 2:
-		TowerCooldown = 350;
+		TowerCooldown = 300;
 		TowerRange = 575.0f;
-		TowerAttackDamage = 150.0f;
+		TowerAttackDamage = 200.0f;
 		TowerAttackMovementSpeed = 12.5f;
 		OutputAttackCount = 2;
 		TotalCost += 000;
 		break;
 	case 3:
-		TowerCooldown = 300;
-		TowerRange = 675.0f;
-		TowerAttackDamage = 250.0f;
-		TowerAttackMovementSpeed = 14.0f;
-		OutputAttackCount = 3;
+		TowerCooldown = 350;
+		TowerRange = 600.0f;
+		TowerAttackDamage = 350.0f;
+		TowerAttackMovementSpeed = 13.0f;
 		TotalCost += 000;
 		break;
 	}

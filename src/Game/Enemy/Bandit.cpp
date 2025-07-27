@@ -7,7 +7,7 @@ Bandit::Bandit() {
 	EnemySpeed = BASE_SPEED;
 
 	EnemyTexture = const_cast<Texture2D*>(&ResourceManager::GetInstance().LoadTexture("ui/Bandit.png"));
-	EnemyTextureSize = { 144.0f, 144.0f };
+	EnemyTextureSize = { 128.0f, 128.0f };
 
 	EnemyFrameStateAmount = 8;
 	Bandit::UpdateAnimation();
@@ -15,7 +15,7 @@ Bandit::Bandit() {
 	CashStolen = 0;
 	AbilityCooldown = 0;
 
-	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.8f, EnemyTextureSize.x, EnemyTextureSize.y };
+	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.55f, EnemyTextureSize.x, EnemyTextureSize.y };
 
 }
 
@@ -57,7 +57,7 @@ void Bandit::Update() {
 
 	// Cập nhật vị trí Hitbox và Drawbox
 	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f;
-	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.8f;
+	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.55f;
 }
 
 void Bandit::Draw() const {

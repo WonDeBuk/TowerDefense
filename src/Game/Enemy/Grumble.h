@@ -4,7 +4,7 @@
 
 class Grumble : public Enemy {
 private:
-	static constexpr float BASE_HEALTH = 1275.0f;
+	static constexpr float BASE_HEALTH = 1675.0f;
 	static constexpr float BASE_SPEED = 0.75f;
 protected:
 	void UpdateAnimation() override;

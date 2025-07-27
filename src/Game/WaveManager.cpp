@@ -8,14 +8,16 @@
 WaveData WaveManager::WaveList[MAX_WAVE];
 int WaveManager::CurrentWaveIndex = 0;
 int WaveManager::WaveListSize = 0;
+int WaveManager::PhaseTimer = 0;
 WaveData* WaveManager::CurrentWavePointer = &WaveManager::WaveList[0];
 PhaseData* WaveManager::CurrentPhasePointer = &WaveManager::WaveList[0].PhaseList[0];
-size_t WaveManager::PhaseTimer = 2000000000;
 
 void WaveManager::ResetConfig() {
+    PhaseTimer = 0;
     for (int i = 0; i < MAX_WAVE; i++) {
         for (int j = 0; j < MAX_PHASE_PER_WAVE; j++) {
             for (int k = 0; k < MAX_PHASE_PER_WAVE; k++) {
+                WaveList[i].PhaseList[j].SpawnList[k].SpawnTime = 0;
                 WaveList[i].PhaseList[j].SpawnList[k].SpawnDelay = 0;
                 WaveList[i].PhaseList[j].SpawnList[k].SpawnHasSpawned = 0;
                 WaveList[i].PhaseList[j].SpawnList[k].SpawnQuantity = 0;
@@ -29,8 +31,6 @@ void WaveManager::ResetConfig() {
         WaveList[i].WavePhaseListSize = 0;
         WaveList[i].WaveTotalEnemy = 0;
     }
-    
-    PhaseTimer = 2000000000;
 }
 
 void WaveManager::ReadConfig(MapType _MapType) {
@@ -71,7 +71,7 @@ void WaveManager::ReadConfig(MapType _MapType) {
             for (int k = 0; k < WaveList[i].PhaseList[j].PhaseSpawnListSize; k++) {
 
                 std::getline(ConfigFile, LineReadingBuffer);
-                sscanf(LineReadingBuffer.c_str(), "Type: %[^ ] Quantity: %d Delay: %d", &EnemyTypeBuffer[0], &WaveList[i].PhaseList[j].SpawnList[k].SpawnQuantity, &WaveList[i].PhaseList[j].SpawnList[k].SpawnDelay);
+                sscanf(LineReadingBuffer.c_str(), "Type: %[^ ] Time: %d Quantity: %d Delay: %d", &EnemyTypeBuffer[0], &WaveList[i].PhaseList[j].SpawnList[k].SpawnTime, &WaveList[i].PhaseList[j].SpawnList[k].SpawnQuantity, &WaveList[i].PhaseList[j].SpawnList[k].SpawnDelay);
                 WaveList[i].PhaseList[j].SpawnList[k].SpawnEnemyType = ResourceManager::ParseStringToEnemyType.find(std::string(EnemyTypeBuffer))->second;
                 
                 WaveList[i].PhaseList[j].PhaseTotalEnemy += WaveList[i].PhaseList[j].SpawnList[k].SpawnQuantity;
@@ -84,13 +84,11 @@ void WaveManager::ReadConfig(MapType _MapType) {
 
 
 void WaveManager::Update() {
-    size_t Timer = GameManager::GetTime();
-
     SpawnData* TempSpawnData;
     for (int i = 0; i < CurrentPhasePointer->PhaseSpawnListSize; i++) {
         TempSpawnData = &CurrentPhasePointer->SpawnList[i];
         if (TempSpawnData->SpawnHasSpawned < TempSpawnData->SpawnQuantity) {
-            if (TempSpawnData->SpawnDelay == 0 || Timer % TempSpawnData->SpawnDelay == 0) {
+            if (PhaseTimer >= TempSpawnData->SpawnTime + TempSpawnData->SpawnHasSpawned * TempSpawnData->SpawnDelay) {
                 GameManager::AddEnemy(TempSpawnData->SpawnEnemyType);
                 TempSpawnData->SpawnHasSpawned++;
                 CurrentPhasePointer->PhaseHasSpawned++;
@@ -102,6 +100,7 @@ void WaveManager::Update() {
 
     if (GameManager::GetCurrentEnemyAmount() == 0) {
         if (CurrentPhasePointer->PhaseHasSpawned == CurrentPhasePointer->PhaseTotalEnemy) {
+            PhaseTimer = 0;
             if (CurrentWavePointer->WaveHasSpawned == CurrentWavePointer->WaveTotalEnemy) {
                 if (WaveListSize == CurrentWaveIndex - 1) {
                     printf("xong");
@@ -115,7 +114,7 @@ void WaveManager::Update() {
                 CurrentWavePointer->WaveCurrentPhase++;
                 CurrentPhasePointer = &CurrentWavePointer->PhaseList[CurrentWavePointer->WaveCurrentPhase];
             }
-            PhaseTimer = GameManager::GetInstance().GetTime();
         } 
     }
+    PhaseTimer++;
 }

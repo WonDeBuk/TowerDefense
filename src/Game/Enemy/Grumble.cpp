@@ -11,7 +11,7 @@ Grumble::Grumble() {
 	EnemyFrameStateAmount = 10;
 	Grumble::UpdateAnimation();
 
-	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.77f, EnemyTextureSize.x, EnemyTextureSize.y };
+	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.635f, EnemyTextureSize.x, EnemyTextureSize.y };
 
 }
 
@@ -37,7 +37,7 @@ void Grumble::Update() {
 
 	// Cập nhật vị trí Hitbox và Drawbox
 	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f;
-	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.77f;
+	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.635f;
 }
 
 void Grumble::Draw() const {

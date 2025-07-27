@@ -19,11 +19,11 @@ Bat::Bat() {
 	EnemySpeed = BASE_SPEED;
 
 	EnemyTexture = const_cast<Texture2D*>(&ResourceManager::GetInstance().LoadTexture("ui/Bat.png"));
-	EnemyTextureSize = { 128.0f, 128.0f };
+	EnemyTextureSize = { 114.0f, 114.0f };
 
 	EnemyFrameStateAmount = 8;
 
-	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.95f, EnemyTextureSize.x, EnemyTextureSize.y };
+	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.78f, EnemyTextureSize.x, EnemyTextureSize.y };
 
 	UpdateDirection();
 	UpdateAnimation();
@@ -51,7 +51,7 @@ void Bat::Update() {
 
 	// Cập nhật vị trí Hitbox và Drawbox
 	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f;
-	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.95f;
+	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.78f;
 }
 
 void Bat::Draw() const {

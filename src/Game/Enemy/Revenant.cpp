@@ -20,9 +20,10 @@ Revenant::Revenant() {
 	Revenant::UpdateAnimation();
 	SpawnIndex = 0;
 
-	AbilityCooldown = 400;
+	EnemyLifespan = 200;
+	AbilityCooldown = 900;
 
-	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.375f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.86f, EnemyTextureSize.x, EnemyTextureSize.y };
+	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.375f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.75f, EnemyTextureSize.x, EnemyTextureSize.y };
 
 }
 
@@ -46,7 +47,7 @@ void Revenant::Update() {
 	if (gm.GetEnemyPoolTracker()[EnemyID] == false) return;
 
 	int DeltaTime = EnemyLifespan - PreviousAbilityFrame;
-	if (!IsAbility && EnemyHealth <= 1.0f * BASE_HEALTH && DeltaTime >= AbilityCooldown && HeadingWaypointIndex != gm.GetWaypointSize() - 1) {
+	if (!IsAbility && EnemyHealth <= 0.65f * BASE_HEALTH && DeltaTime >= AbilityCooldown && HeadingWaypointIndex != gm.GetWaypointSize() - 1) {
 		CurrentSprite = 1;
 		IsAbility = true;
 		EnemySpeed = 0;
@@ -66,7 +67,7 @@ void Revenant::Update() {
 		if (DeltaTime == 56 + SpawnIndex * (112 / MAX_SPAWN)) {
 			int Offset = GetRandomValue(SpawnIndex, 2 * MAX_SPAWN - 1) * WaypointUnit;
 			int Chance = GetRandomValue(1, 100);
-			VisualManager::GetInstance().AddVisual(VisualType::PLAIN, Visual::VisualTemplateBuildAndGet("ui/PopEffect.png", 5, { gm.GetWaypointByIndex(WaypointAtSpawnTime - 1).x + WaypointDirection.x * Offset - 64.0f, gm.GetWaypointByIndex(WaypointAtSpawnTime - 1).y + WaypointDirection.y * Offset - 128.0f }, { 128.0f, 128.0f }));
+			VisualManager::GetInstance().AddVisual(VisualType::PLAIN, Visual::VisualTemplateBuildAndGet("ui/PopEffect.png", 5, { gm.GetWaypointByIndex(WaypointAtSpawnTime - 1).x + WaypointDirection.x * Offset - 64.0f, gm.GetWaypointByIndex(WaypointAtSpawnTime - 1).y + WaypointDirection.y * Offset - 96.0f }, { 128.0f, 128.0f }));
 			if (Chance <= 45) gm.AddEnemy(EnemyType::BAT, Bat::BatTemplateBuildAndGet({ gm.GetWaypointByIndex(WaypointAtSpawnTime - 1).x + WaypointDirection.x * Offset, gm.GetWaypointByIndex(WaypointAtSpawnTime - 1).y + WaypointDirection.y * Offset }, WaypointDirection, WaypointAtSpawnTime));
 			else if (Chance <= 90) gm.AddEnemy(EnemyType::PEST, Pest::PestTemplateBuildAndGet({ gm.GetWaypointByIndex(WaypointAtSpawnTime - 1).x + WaypointDirection.x * Offset, gm.GetWaypointByIndex(WaypointAtSpawnTime - 1).y + WaypointDirection.y * Offset }, WaypointDirection, WaypointAtSpawnTime));
 			else gm.AddEnemy(EnemyType::HORNET, Hornet::HornetTemplateBuildAndGet({ gm.GetWaypointByIndex(WaypointAtSpawnTime - 1).x + WaypointDirection.x * Offset, gm.GetWaypointByIndex(WaypointAtSpawnTime - 1).y + WaypointDirection.y * Offset }, WaypointDirection, WaypointAtSpawnTime));
@@ -84,7 +85,7 @@ void Revenant::Update() {
 
 	// Cập nhật vị trí Hitbox và Drawbox
 	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x * 0.375f;
-	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.86f;
+	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.75f;
 }
 
 void Revenant::Draw() const {

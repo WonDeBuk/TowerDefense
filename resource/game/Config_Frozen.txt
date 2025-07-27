@@ -18,34 +18,20 @@ X: 982.0, Y: 180.0
 X: 1274.0, Y: 400.0
 X: 1274.0, Y: 660.0
 Wave Config:
-Wave Amount: 5
+Wave Amount:1
 
-Phase Amount: 2
-Spawn Amount: 1
-Type: GRUMBLE Quantity: 10 Delay: 100
-Spawn Amount: 1
-Type: GOLEM Quantity: 4 Delay: 50
-
-Phase Amount: 2
-Spawn Amount: 1
-Type: SLIME Quantity: 4 Delay: 50
-Spawn Amount: 1
-Type: SLIME Quantity: 4 Delay: 50
-
-Phase Amount: 2
-Spawn Amount: 1
-Type: SLIME Quantity: 4 Delay: 50
-Spawn Amount: 1
-Type: SLIME Quantity: 4 Delay: 50
-
-Phase Amount: 2
-Spawn Amount: 1
-Type: SLIME Quantity: 4 Delay: 50
-Spawn Amount: 1
-Type: SLIME Quantity: 4 Delay: 50
-
-Phase Amount: 2
-Spawn Amount: 1
-Type: SLIME Quantity: 4 Delay: 50
-Spawn Amount: 1
-Type: SLIME Quantity: 4 Delay: 50
+Phase Amount: 3
+Spawn Amount: 2
+Type: GRUMBLE Time: 60 Quantity: 6 Delay: 240
+Type: GOLEM Time: 1380 Quantity: 2 Delay: 180
+Spawn Amount: 5
+Type: FROST Time: 0 Quantity: 10 Delay: 150
+Type: GRUMBLE Time: 350 Quantity: 5 Delay: 200
+Type: GOLEM Time: 75 Quantity: 3 Delay: 75
+Type: GOLEM Time: 1325 Quantity: 3 Delay: 75
+Type: GOLEM Time: 2360 Quantity: 3 Delay: 75
+Spawn Amount: 4
+Type: FROST Time: 60 Quantity: 25 Delay: 175
+Type: GRUMBLE Time: 0 Quantity: 9 Delay: 300
+Type: GOLEM Time: 240 Quantity: 4 Delay: 150
+Type: GOLEM Time: 2900 Quantity: 6 Delay: 210

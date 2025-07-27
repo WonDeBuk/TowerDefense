@@ -5,7 +5,7 @@
 class Frieren: public Tower {
 private:
 	static constexpr int MIN_COOLDOWN = 10;
-	static constexpr int MAX_TICK = 8;
+	static constexpr int MAX_TICK = 3;
 	int Tick;
 	void (Frieren::*OnCooldown)();
 

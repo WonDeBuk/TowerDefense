@@ -15,9 +15,10 @@ Healbot::Healbot() {
 	EnemyFrameStateAmount = 8;
 	Healbot::UpdateAnimation();
 
-	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.9f, EnemyTextureSize.x, EnemyTextureSize.y };
+	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.72f, EnemyTextureSize.x, EnemyTextureSize.y };
 
-	AbilityCooldown = GetRandomValue(500, 750);
+	EnemyLifespan = 900;
+	AbilityCooldown = 1000;
 }
 
 void Healbot::UpdateAnimation() {
@@ -59,7 +60,7 @@ void Healbot::Update() {
 
 	// Cập nhật vị trí Hitbox và Drawbox
 	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f;
-	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.9f;
+	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.72f;
 }
 
 void Healbot::Draw() const {
@@ -76,7 +77,7 @@ void Healbot::DrawHealthBar() const {
 void Healbot::HealTarget() {
 	GameManager& gm = GameManager::GetInstance();
 	if (gm.GetCurrentEnemyAmount() <= 1) {
-		VisualManager::GetInstance().AddVisual(VisualType::ENEMY_BIND, EnemyBindVisual::EnemyBindVisualTemplateBuildAndGet("ui/HealEffect.png", 16, { 78.0f, 156.0f }, { 156.0f, 156.0f }, EnemyID, 3));
+		VisualManager::GetInstance().AddVisual(VisualType::ENEMY_BIND, EnemyBindVisual::EnemyBindVisualTemplateBuildAndGet("ui/HealEffect.png", 16, { 78.0f, 124.0f }, { 156.0f, 156.0f }, EnemyID, 3));
 		OnHeal(BASE_HEAL / 2);
 	}
 	else {
@@ -90,11 +91,11 @@ void Healbot::HealTarget() {
 			}
 		}
 		if (LeastHealth) {
-			VisualManager::GetInstance().AddVisual(VisualType::ENEMY_BIND, EnemyBindVisual::EnemyBindVisualTemplateBuildAndGet("ui/HealEffect.png", 16, { 78.0f, 156.0f }, { 156.0f, 156.0f }, LeastHealth->GetEnemyID(), 3));
+			VisualManager::GetInstance().AddVisual(VisualType::ENEMY_BIND, EnemyBindVisual::EnemyBindVisualTemplateBuildAndGet("ui/HealEffect.png", 16, { 78.0f, 124.0f }, { 156.0f, 156.0f }, LeastHealth->GetEnemyID(), 3));
 			LeastHealth->OnHeal(BASE_HEAL);
 		}
 		else {
-			VisualManager::GetInstance().AddVisual(VisualType::ENEMY_BIND, EnemyBindVisual::EnemyBindVisualTemplateBuildAndGet("ui/HealEffect.png", 16, { 78.0f, 156.0f }, { 156.0f, 156.0f }, EnemyID, 3));
+			VisualManager::GetInstance().AddVisual(VisualType::ENEMY_BIND, EnemyBindVisual::EnemyBindVisualTemplateBuildAndGet("ui/HealEffect.png", 16, { 78.0f, 124.0f }, { 156.0f, 156.0f }, EnemyID, 3));
 			OnHeal(BASE_HEAL / 2);
 		}
 	}

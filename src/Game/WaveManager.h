@@ -10,7 +10,7 @@ private:
     static int WaveListSize;
     static WaveData* CurrentWavePointer;
     static PhaseData* CurrentPhasePointer;
-    static size_t PhaseTimer;
+    static int PhaseTimer;
 public:
     static void ResetConfig();
     static void ReadConfig(MapType _MapType);

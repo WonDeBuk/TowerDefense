@@ -17,8 +17,9 @@ Titan::Titan() {
 	EnemyFrameStateAmount = 10;
 	Titan::UpdateAnimation();
 
+	EnemyLifespan = 250;
 	AbilityCooldown = 600;
-	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.77f, EnemyTextureSize.x, EnemyTextureSize.y };
+	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.635f, EnemyTextureSize.x, EnemyTextureSize.y };
 
 }
 
@@ -56,7 +57,7 @@ void Titan::Update() {
 			PreviousAbilityFrame = EnemyLifespan;
 		}
 		else if ((EnemyLifespan - PreviousAbilityFrame) % 60 == 0) {
-			VisualManager::GetInstance().AddVisual(VisualType::ENEMY_BIND, EnemyBindVisual::EnemyBindVisualTemplateBuildAndGet("ui/Forcefield.png", 17, { 114.0f, 174.0f }, { 228.0f, 228.0f }, EnemyID, 5));
+			VisualManager::GetInstance().AddVisual(VisualType::ENEMY_BIND, EnemyBindVisual::EnemyBindVisualTemplateBuildAndGet("ui/Forcefield.png", 17, { 114.0f, 144.0f }, { 228.0f, 228.0f }, EnemyID, 5));
 		}
 	}
 
@@ -65,12 +66,13 @@ void Titan::Update() {
 
 	// Cập nhật vị trí Hitbox và Drawbox
 	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f;
-	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.77f;
+	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.635f;
 }
 
 void Titan::Draw() const {
 	DrawTexturePro(*EnemyTexture, { 200.0f * EnemyFrameState, 0.0f, 200.0f * CurrentDirectionType, 200.0f }, EnemyDrawbox, { 0.0f, 0.0f }, 0.0f, WHITE);
 	Titan::DrawHealthBar();
+
 }
 
 void Titan::DrawHealthBar() const {

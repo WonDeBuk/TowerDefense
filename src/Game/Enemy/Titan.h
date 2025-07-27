@@ -4,7 +4,7 @@
 
 class Titan : public Enemy {
 private:
-	static constexpr float BASE_HEALTH = 125000.0f;
+	static constexpr float BASE_HEALTH = 25500.0f;
 	static constexpr float BASE_SPEED = 0.95f;
 	static constexpr float BASE_ABILITY_RANGE = 100.0f;
 protected:

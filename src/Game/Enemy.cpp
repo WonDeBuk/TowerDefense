@@ -26,13 +26,14 @@ Enemy::Enemy() {
     CurrentSprite = 0;
     IsAbility = false;
 
-    EnemyHitbox = { EnemyCurrentPosition.x - 36.0f, EnemyCurrentPosition.y - 0.8f * 36.0f, 72.0f, 72.0f };
+    EnemyHitbox = { EnemyCurrentPosition.x - 32.0f, EnemyCurrentPosition.y - 32.0f, 64.0f, 64.0f };
 }
 
 Enemy::~Enemy() {}
 
 void Enemy::SetEnemyID(const int& _ID) {
     EnemyID = _ID;
+    EnemyFrameState = GetRandomValue(0, EnemyFrameStateAmount - 1);
 }
 
 Vector2 Enemy::GetEnemyFuturePosition(const int &_DeltaTime) const {
@@ -97,8 +98,8 @@ void Enemy::UpdatePosition() {
         EnemyCurrentPosition.y += EnemySpeed * EnemyDirection.y;
     }
 
-    EnemyHitbox.x = EnemyCurrentPosition.x - EnemyHitbox.width * 0.5f;
-    EnemyHitbox.y = EnemyCurrentPosition.y - EnemyHitbox.height * 0.8f;
+    EnemyHitbox.x = EnemyCurrentPosition.x - 32.0f;
+    EnemyHitbox.y = EnemyCurrentPosition.y - 32.0f;
 }
 
 void Enemy::UpdateDirection() {

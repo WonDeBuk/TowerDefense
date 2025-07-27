@@ -45,12 +45,12 @@ void Orbit::Update() {
 	}
 
 	//Update movement
-	if (PathProgress < 1.0f) PathProgress += AttackMovementSpeed / CurrentRadius;
+	if (PathProgress < 1.0f) PathProgress += abs(AttackMovementSpeed) / CurrentRadius;
 
 	if (PathProgress >= 1.0f && gm.GetEnemyPoolTracker()[TargetID]) {
 		float Delta = CurrentRadius - Vector2Distance(GeneralUseVector, gm.GetEnemyByID(TargetID)->GetEnemyCurrentPosition());
-		if (Delta > AttackMovementSpeed) CurrentRadius -= AttackMovementSpeed;
-		else if (Delta < -AttackMovementSpeed && CurrentRadius < MaxRadius) CurrentRadius += AttackMovementSpeed;
+		if (Delta > abs(AttackMovementSpeed)) CurrentRadius -= abs(AttackMovementSpeed);
+		else if (Delta < - abs(AttackMovementSpeed) && CurrentRadius < MaxRadius) CurrentRadius += abs(AttackMovementSpeed);
 	}
 
 	if (Lifespan % 5 == 0) FrameState = (FrameState + 1) % AttackTexture.MaxFrameCount;
@@ -62,7 +62,5 @@ void Orbit::Update() {
 
 void Orbit::Draw() const {
 	float ActualSize = FrameSize * AttackTexture.ScaleFactor;
-	if (PathProgress < 0.5f) ActualSize *= 0.5f;
-	else ActualSize *= PathProgress;
 	DrawTexturePro(*AttackTexture.LinkedTexture, { FrameSize * FrameState, 0.0f, FrameSize, FrameSize }, { AttackCurrentPosition.x, AttackCurrentPosition.y, ActualSize, ActualSize }, { ActualSize / 2, ActualSize / 2 }, Angle, WHITE);
 }

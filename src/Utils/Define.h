@@ -92,12 +92,12 @@ typedef struct TextureData {
     float ScaleFactor;
     int MaxFrameCount;
     Texture2D* LinkedTexture;
-};
+} TextureData;
 
 typedef struct BlackListData {
     int EnemyID = -1;
     int TimeAdded;
-};
+} BlackListData;
 
 typedef struct EnemyData {
     std::string StringName;
@@ -108,6 +108,7 @@ typedef struct EnemyData {
 
 typedef struct SpawnData {
     EnemyType SpawnEnemyType;
+    int SpawnTime;
     int SpawnQuantity;
     int SpawnHasSpawned;
     int SpawnDelay;

@@ -12,8 +12,8 @@ Stark::Stark() : Tower() {
 	TowerLifespan = 50;
 	TowerCooldown = 120;
 	TotalCost = 500;
-	TowerRange = 300.0f;
-	TowerAttackDamage = 75.0f;
+	TowerRange = 360.0f;
+	TowerAttackDamage = 90.0f;
 	TowerAttackMovementSpeed = 7.0f;
 	OutputAttackCount = 0;
 	AttackMaxHit = 1;
@@ -23,7 +23,6 @@ Stark::Stark() : Tower() {
 void Stark::SetTowerID(const int& _TowerID) {
 	Tower::SetTowerID(_TowerID);
 	AttackPosition = { TowerPosition.x, TowerPosition.y };
-	SetTargetType(TargetType::STRONGEST);
 }
 
 void Stark::AttackModule() {
@@ -58,18 +57,18 @@ bool Stark::OnUpgrade() {
 	Tower::OnUpgrade();
 	switch (TowerLevel) {
 	case 2:
-		TowerCooldown = 90;
-		TowerRange = 335.0f;
-		TowerAttackDamage = 50.0f;
+		TowerCooldown = 150;
+		TowerRange = 400.0f;
+		TowerAttackDamage = 75.0f;
 		TowerAttackMovementSpeed = 7.5f;
 		OutputAttackCount = 1;
 		TotalCost += 000;
 		break;
 	case 3:
-		TowerCooldown = 85;
-		TowerRange = 500.0f;
-		TowerAttackDamage = 70.0f;
-		TowerAttackMovementSpeed = 7.75f;
+		TowerCooldown = 180;
+		TowerRange = 425.0f;
+		TowerAttackDamage = 100.0f;
+		TowerAttackMovementSpeed = 8.25f;
 		OutputAttackCount = 2;
 		AttackMaxHit = 2;
 		TotalCost += 000;

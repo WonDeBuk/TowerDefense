@@ -15,6 +15,7 @@ Tower::Tower() {
 	TargetEnemyID = -1;
 	IsWindUp = false;
 	OutputAttackCount = 1;
+	SetTargetType(TargetType::FIRST);
 }
 
 void Tower::SetTargetType(const TargetType& _TargetType) {
@@ -37,7 +38,7 @@ void Tower::SetTargetType(const TargetType& _TargetType) {
 void Tower::SetTowerID(const int& _ID) {
 	TowerID = _ID;
 	TowerPosition = GameManager::GetInstance().GetTowerPlotByID(_ID);
-	SetTargetType(TargetType::STRONGEST);
+	SetTargetType(TargetType::FIRST);
 }
 
 void Tower::SetTowerRange(const float& _TowerRange) {

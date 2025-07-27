@@ -5,8 +5,8 @@
 class Revenant : public Enemy {
 private:
 	static constexpr float BASE_HEALTH = 18500.0f;
-	static constexpr float BASE_SPEED = 0.85f;
-	static constexpr int MAX_SPAWN = 7;
+	static constexpr float BASE_SPEED = 0.55f;
+	static constexpr int MAX_SPAWN = 6;
 	int SpawnIndex;
 	int WaypointAtSpawnTime;
 	float WaypointUnit;

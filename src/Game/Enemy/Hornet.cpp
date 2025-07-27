@@ -26,7 +26,7 @@ Hornet::Hornet() {
 	EnemyFrameStateAmount = 8;
 	Hornet::UpdateAnimation();
 
-	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.8f, EnemyTextureSize.x, EnemyTextureSize.y };
+	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.6f, EnemyTextureSize.x, EnemyTextureSize.y };
 
 }
 
@@ -44,7 +44,7 @@ void Hornet::UpdateAnimation() {
 }
 
 void Hornet::OnDeath() {
-	VisualManager::GetInstance().AddVisual(VisualType::PLAIN, Visual::VisualTemplateBuildAndGet("ui/HornetDeath.png", 9, { EnemyCurrentPosition.x - 120.0f, EnemyCurrentPosition.y - 172.0f }, { 240.0f, 240.0f }, 5));
+	VisualManager::GetInstance().AddVisual(VisualType::PLAIN, Visual::VisualTemplateBuildAndGet("ui/HornetDeath.png", 9, { EnemyCurrentPosition.x - 120.0f, EnemyCurrentPosition.y - 164.0f }, { 240.0f, 240.0f }, 5));
 	for (int i = 0; i < 3; i++) {
 		GameManager::GetInstance().AddEnemy(EnemyType::PEST, Pest::PestTemplateBuildAndGet({ EnemyCurrentPosition.x - i * 25.0f * EnemyDirection.x, EnemyCurrentPosition.y - i * 25.0f * EnemyDirection.y }, EnemyDirection, HeadingWaypointIndex));
 	}
@@ -59,12 +59,13 @@ void Hornet::Update() {
 
 	// Cập nhật vị trí Hitbox và Drawbox
 	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f;
-	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.8f;
+	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.6f;
 }
 
 void Hornet::Draw() const {
 	DrawTexturePro(*EnemyTexture, { 256.0f * EnemyFrameState, 0.0f, 256.0f * CurrentDirectionType, 256.0f }, EnemyDrawbox, { 0.0f, 0.0f }, 0.0f, WHITE);
-	Hornet::DrawHealthBar();}
+	Hornet::DrawHealthBar();
+}
 
 void Hornet::DrawHealthBar() const {
 	if (EnemyHealth == BASE_HEALTH) return;

@@ -43,14 +43,13 @@ void Slime::Update() {
 
 	// Cập nhật vị trí Hitbox và Drawbox
 	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f;
-	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.95f;
+	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.5f;
 }
  
 void Slime::Draw() const {
 	DrawTexturePro(*EnemyTexture, {32.0f * EnemyFrameState, 0.0f, 32.0f * CurrentDirectionType, 32.0f}, EnemyDrawbox, {0.0f, 0.0f}, 0.0f, WHITE);
 
 	Slime::DrawHealthBar();
-	DrawHitboxAndPivot();
 }
 
 void Slime::DrawHealthBar() const {

@@ -10,12 +10,12 @@ Dragon::Dragon() {
 	IsAbility = false;
 
 	EnemyTexture = const_cast<Texture2D*>(&ResourceManager::GetInstance().LoadTexture("ui/Dragon.png"));
-	EnemyTextureSize = { 256.0f, 256.0f };
+	EnemyTextureSize = { 228.0f, 228.0f };
 
 	EnemyFrameStateAmount = 6;
 	Dragon::UpdateAnimation();
 
-	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.97f, EnemyTextureSize.x, EnemyTextureSize.y };
+	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.85f, EnemyTextureSize.x, EnemyTextureSize.y };
 
 }
 
@@ -25,7 +25,7 @@ void Dragon::OnHeal(const float& _Heal) {
 }
 
 void Dragon::OnDamage(const float& _Damage) {
-	if (EnemyHealth > 0.9f * BASE_HEALTH && EnemyHealth - _Damage <= 0.9f * BASE_HEALTH) {
+	if (EnemyHealth > 0.9f * BASE_HEALTH && EnemyHealth - _Damage <= 0.35f * BASE_HEALTH) {
 		IsAbility = true;
 		EnemySpeed = 0.0f;
 		CurrentSprite = 1;
@@ -51,7 +51,7 @@ void Dragon::Update() {
 
 	if (IsAbility && EnemyLifespan - PreviousAbilityFrame == 60) {
 		IsAbility = false;
-		EnemySpeed = 2.5f * BASE_SPEED;
+		EnemySpeed = 4.5f * BASE_SPEED;
 		CurrentSprite = 2;
 	}
 
@@ -60,7 +60,7 @@ void Dragon::Update() {
 
 	// Cập nhật vị trí Hitbox và Drawbox
 	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f;
-	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.97f;
+	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.85f;
 }
 
 void Dragon::Draw() const {

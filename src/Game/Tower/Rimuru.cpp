@@ -12,14 +12,14 @@ Rimuru::Rimuru(): Tower() {
 	CurrentChampion = ChampionType::RIMURU;
 	CurrentAnimationState = ChampionAnimationState::IDLE;
 	TowerLifespan = 150;
-	TowerCooldown = 400;
+	TowerCooldown = 240;
 	TotalCost = 1500;
-	TowerRange = 250.0f;
-	TowerAttackDamage = 5.0f;
-	TowerAttackMovementSpeed = 4.0f;
+	TowerRange = 300.0f;
+	TowerAttackDamage = 30.0f;
+	TowerAttackMovementSpeed = 3.25f;
 	IsWindUp = false;
 	OutputAttackCount = 2;
-	AttackMaxHit = 3;
+	AttackMaxHit = 8;
 
 	OnCooldown = &Rimuru::AttackModule;
 }
@@ -44,15 +44,17 @@ void Rimuru::AttackModule() {
 	}
 
 	Vector2 EnemyDefinitePosition = GetEnemyDefinitePosition(AttackPosition, TargetEnemyID);
-	int CalcLifespan = TowerLevel * TowerRange / TowerAttackMovementSpeed;
+	int CalcLifespan = 450 / TowerLevel + TowerRange / abs(TowerAttackMovementSpeed);
 	float CalcAngle = atan2f(EnemyDefinitePosition.y - AttackPosition.y, EnemyDefinitePosition.x - AttackPosition.x);
 
+	if (TowerAttackMovementSpeed < 0) CalcAngle -= 1.0f;
 	CalcAngle += 1.0f;
 
 	for (int i = 0; i < OutputAttackCount; i++) {
 		GameManager::GetInstance().AddAttack(AttackType::ORBIT, Orbit::OrbitTemplateBuildAndGet({3.0f, 8, const_cast<Texture2D*>(&ResourceManager::GetInstance().LoadTexture("ui/GlaveAttack.png"))}, AttackPosition, EnemyDefinitePosition, TowerAttackMovementSpeed, TowerAttackDamage, TargetEnemyID, TowerID, CalcAngle + i * 2 * PI / OutputAttackCount, TowerRange, CalcLifespan, AttackMaxHit, HitType::OVERRIDE));
 	}
 	IsWindUp = false;
+	TowerAttackMovementSpeed *= -1.0f;
 }
 
 bool Rimuru::OnUpgrade() {
@@ -61,20 +63,20 @@ bool Rimuru::OnUpgrade() {
 	Tower::OnUpgrade();
 	switch (TowerLevel) {
 	case 2:
-		TowerCooldown = 370;
-		TowerRange = 280.0f;
-		TowerAttackDamage = 15.0f;
-		TowerAttackMovementSpeed = 4.0f;
+		TowerRange = 325.0f;
+		TowerAttackDamage = 45.0f;
+		TowerAttackMovementSpeed = 3.5f;
+		AttackMaxHit = 12;
 		OutputAttackCount = 3;
 		TotalCost += 000;
 		break;
 	case 3:
-		TowerCooldown = 325;
-		TowerRange = 325.0f;
-		TowerAttackDamage = 30.0f;
-		TowerAttackMovementSpeed = 5.0f;
+		TowerCooldown = 200;
+		TowerRange = 375.0f;
+		TowerAttackDamage = 50.0f;
+		TowerAttackMovementSpeed = 3.85f;
 		OutputAttackCount = 5;
-		AttackMaxHit = 5;
+		AttackMaxHit = 15;
 		TotalCost += 000;
 		break;
 	}

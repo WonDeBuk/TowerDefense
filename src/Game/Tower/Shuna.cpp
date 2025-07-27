@@ -10,11 +10,11 @@
 Shuna::Shuna(): Tower() {
 	CurrentChampion = ChampionType::SHUNA;
 	CurrentAnimationState = ChampionAnimationState::IDLE;
-	TowerLifespan = 25;
-	TowerCooldown = 150;
+	TowerLifespan = 100;
+	TowerCooldown = 250;
 	TotalCost = 500;
-	TowerRange = 300.0f;
-	TowerAttackDamage = 15.0f;
+	TowerRange = 425.0f;
+	TowerAttackDamage = 50.0f;
 	TowerAttackMovementSpeed = 9.0f;
 	CurrentTargetCount = 0;
 	MaxTarget = 2;
@@ -163,7 +163,6 @@ void Shuna::GetStrongestEnemy() {
 void Shuna::SetTowerID(const int& _TowerID) {
 	Tower::SetTowerID(_TowerID);
 	AttackPosition = { TowerPosition.x - 40.0f, TowerPosition.y - 96.0f };
-	SetTargetType(TargetType::STRONGEST);
 }
 
 void Shuna::AttackModule() {
@@ -184,7 +183,6 @@ void Shuna::AttackModule() {
 	for (int i = 0; i < CurrentTargetCount; i++) {
 		Vector2 EnemyDefinitePosition = GetEnemyDefinitePosition(AttackPosition, TargetEnemyID[i]);
 		size_t CalcLifespan = ceilf(Vector2Distance(AttackPosition, EnemyDefinitePosition) / TowerAttackMovementSpeed);
-		std::cout << "Target: " << TargetEnemyID[i] << '\n';
 		GameManager::GetInstance().AddAttack(AttackType::PROJECTILE, Projectile::ProjectileTemplateBuildAndGet({ 2.3f, 8, const_cast<Texture2D*>(&ResourceManager::GetInstance().LoadTexture("ui/SpiralAttack.png")) }, AttackPosition, EnemyDefinitePosition, TowerAttackMovementSpeed, TowerAttackDamage, TargetEnemyID[i], TowerID, CalcLifespan, HitType::TARGETED));
 	}
 
@@ -201,16 +199,17 @@ bool Shuna::OnUpgrade() {
 	Tower::OnUpgrade();
 	switch (TowerLevel) {
 	case 2:
-		TowerRange = 335.0f;
-		TowerAttackDamage = 20.0f;
+		TowerCooldown = 230;
+		TowerRange = 450.0f;
+		TowerAttackDamage = 90.0f;
 		TowerAttackMovementSpeed = 9.25f;
 		MaxTarget = 3;
 		TotalCost += 000;
 		break;
 	case 3:
-		TowerCooldown = 255;
-		TowerRange = 800.0f;
-		TowerAttackDamage = 15.0f;
+		TowerCooldown = 275;
+		TowerRange = 525.0f;
+		TowerAttackDamage = 130.0f;
 		TowerAttackMovementSpeed = 9.75f;
 		MaxTarget = 5;
 		TotalCost += 000;

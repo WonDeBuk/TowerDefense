@@ -20,51 +20,66 @@ X: 1407.5, Y: 399.5
 Wave Config:
 Wave Amount: 5
 
-Phase Amount: 1
-Spawn Amount: 2
-Type: SLIME Quantity: 20 Delay: 50
-Type: HEALBOT Quantity: 1 Delay: 150
-
-Phase Amount: 2
+Phase Amount: 3
 Spawn Amount: 1
-Type: SLIME Quantity: 10 Delay: 200
+Type: SLIME Time: 0 Quantity: 5 Delay: 240
+Spawn Amount: 1
+Type: SLIME Time: 0 Quantity: 3 Delay: 60
+Spawn Amount: 1
+Type: BAT Time: 50 Quantity: 1 Delay: 0
+
+Phase Amount: 3
 Spawn Amount: 2
-Type: BAT Quantity: 1 Delay: 0
-Type: BAT Quantity: 1 Delay: 300
+Type: SLIME Time: 0 Quantity: 3 Delay: 150
+Type: BAT Time: 350 Quantity: 2 Delay: 350
+Spawn Amount: 3
+Type: BAT Time: 60 Quantity: 2 Delay: 90
+Type: SLIME Time: 120 Quantity: 15 Delay: 150
+Type: BAT Time: 450 Quantity: 2 Delay: 90
+Spawn Amount: 4
+Type: BAT Time: 180 Quantity: 2 Delay: 30
+Type: BAT Time: 0 Quantity: 2 Delay: 60
+Type: SLIME Time: 0 Quantity: 15 Delay: 60
+Type: BAT Time: 630 Quantity: 4 Delay: 60
 
 Phase Amount: 3
 Spawn Amount: 3
-Type: SLIME Quantity: 1 Delay: 0
-Type: SLIME Quantity: 4 Delay: 75
-Type: BAT Quantity: 1 Delay: 400
+Type: DINO Time: 30 Quantity: 1 Delay: 0
+Type: SLIME Time: 0 Quantity: 10 Delay: 60
+Type: DINO Time: 560 Quantity: 2 Delay: 60
 Spawn Amount: 3
-Type: SLIME Quantity: 1 Delay: 0
-Type: SLIME Quantity: 9 Delay: 125
-Type: BAT Quantity: 3 Delay: 250
-Spawn Amount: 2
-Type: BAT Quantity: 3 Delay: 50
-Type: DINO Quantity: 1 Delay: 300
+Type: BAT Time: 30 Quantity: 4 Delay: 90
+Type: BAT Time: 570 Quantity: 4 Delay: 90
+Type: BAT Time: 1110 Quantity: 4 Delay: 90
+Spawn Amount: 3
+Type: SLIME Time: 0 Quantity: 16 Delay: 60
+Type: DINO Time: 120 Quantity: 2 Delay: 120
+Type: DINO Time: 1140 Quantity: 3 Delay: 90
 
 Phase Amount: 3
 Spawn Amount: 3
-Type: SLIME Quantity: 1 Delay: 0
-Type: SLIME Quantity: 4 Delay: 50
-Type: BAT Quantity: 10 Delay: 60
+Type: SLIME Time: 0 Quantity: 20 Delay: 150
+Type: BAT Time: 50 Quantity: 10 Delay: 300
+Type: DINO Time: 100 Quantity: 5 Delay: 600
+Spawn Amount: 4
+Type: BAT Time: 0 Quantity: 25 Delay: 120
+Type: DINO Time: 150 Quantity: 3 Delay: 360
+Type: DINO Time: 3440 Quantity: 3 Delay: 300
+Type: DINO Time: 3880 Quantity: 3 Delay: 240
 Spawn Amount: 3
-Type: SLIME Quantity: 1 Delay: 0
-Type: SLIME Quantity: 14 Delay: 50
-Type: DINO Quantity: 3 Delay: 125
-Spawn Amount: 3
-Type: SLIME Quantity: 1 Delay: 0
-Type: SLIME Quantity: 19 Delay: 50
-Type: DINO Quantity: 5 Delay: 150
+Type: SLIME Time: 120 Quantity: 60 Delay: 90
+Type: BAT Time: 50 Quantity: 20 Delay: 150
+Type: DINO Time: 0 Quantity: 10 Delay: 300
 
 Phase Amount: 2
-Spawn Amount: 3
-Type: BAT Quantity: 1 Delay: 0
-Type: BAT Quantity: 14 Delay: 75
-Type: DINO Quantity: 10 Delay: 100
-Spawn Amount: 3
-Type: DRAGON Quantity: 1 Delay: 0
-Type: DINO Quantity: 10 Delay: 200
-Type: SLIME Quantity: 15 Delay: 100
+Spawn Amount: 4
+Type: DINO Time: 0 Quantity: 10 Delay: 120
+Type: DINO Time: 1380 Quantity: 10 Delay: 90
+Type: DINO Time: 2490 Quantity: 10 Delay: 60
+Type: DINO Time: 3330 Quantity: 15 Delay: 30
+Spawn Amount: 4
+Type: SLIME Time: 0 Quantity: 30 Delay: 300
+Type: DRAGON Time: 240 Quantity: 1 Delay: 0
+Type: BAT Time: 60 Quantity: 20 Delay: 120
+Type: DINO Time: 30 Quantity: 20 Delay: 600
+Type: BAT Time: 3900 Quantity: 20 Delay: 60

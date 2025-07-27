@@ -8,19 +8,20 @@ Golem::Golem() {
 	EnemyHealth = BASE_HEALTH;
 	EnemySpeed = BASE_SPEED;
 
-	AbilityCooldown = GetRandomValue(400, 720);
+	EnemyLifespan = GetRandomValue(0, 5) * 120;
+	AbilityCooldown = 750;
 
 	PreviousAbilityFrame = 0;
 	CurrentSprite = 0;
 	IsAbility = false;
 
 	EnemyTexture = const_cast<Texture2D*>(&ResourceManager::GetInstance().LoadTexture("ui/Golem.png"));
-	EnemyTextureSize = { 224.0f, 224.0f };
+	EnemyTextureSize = { 200.0f, 200.0f };
 
 	EnemyFrameStateAmount = 8;
 	Golem::UpdateAnimation();
 
-	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.73f, EnemyTextureSize.x, EnemyTextureSize.y };
+	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.6f, EnemyTextureSize.x, EnemyTextureSize.y };
 
 }
 
@@ -31,7 +32,7 @@ void Golem::OnHeal(const float& _Heal) {
 
 void Golem::FindDestination() {
 	GameManager& gm = GameManager::GetInstance();
-	int TimeJump = 192;
+	int TimeJump = 160;
 	while (TimeJump > 0 && HeadingWaypointIndex < gm.GetWaypointSize()) {
 		EnemyDirection = Vector2Normalize(Vector2Subtract(gm.GetWaypointByIndex(HeadingWaypointIndex), gm.GetWaypointByIndex(HeadingWaypointIndex - 1)));
 		float DistanceToWaypoint = Vector2Distance(EnemyCurrentPosition, gm.GetWaypointByIndex(HeadingWaypointIndex));
@@ -77,11 +78,14 @@ void Golem::Update() {
 			CurrentSprite = 2;
 		}
 		else if (EnemyLifespan - PreviousAbilityFrame == 128) {
+			if (HeadingWaypointIndex == GameManager::GetInstance().GetWaypointSize()) {
+				EnemyKill();
+				return;
+			}
 			IsAbility = false;
 			CurrentSprite = 0;
 			EnemySpeed = BASE_SPEED;
 			PreviousAbilityFrame = EnemyLifespan;
-			AbilityCooldown = GetRandomValue(400, 720);
 		}
 	}
 
@@ -90,7 +94,7 @@ void Golem::Update() {
 
 	// Cập nhật vị trí Hitbox và Drawbox
 	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f;
-	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.73f;
+	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.6f;
 }
 
 void Golem::Draw() const {

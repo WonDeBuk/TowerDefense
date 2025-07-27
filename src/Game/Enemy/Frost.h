@@ -5,8 +5,8 @@
 class Frost : public Enemy {
 	// Phần private này để cho loại Enemy Frost mặc định
 private:
-	static constexpr float BASE_HEALTH = 100.0f;
-	static constexpr float BASE_SPEED = 1.15f;
+	static constexpr float BASE_HEALTH = 650.0f;
+	static constexpr float BASE_SPEED = 0.75f;
 
 	// Dùng cho các loại Frost khác có thể kế thừa
 protected:

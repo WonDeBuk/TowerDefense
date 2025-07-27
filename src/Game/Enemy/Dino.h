@@ -4,7 +4,7 @@
 
 class Dino : public Enemy {
 private:
-	static constexpr float BASE_HEALTH = 1250.0f;
+	static constexpr float BASE_HEALTH = 1450.0f;
 	static constexpr float BASE_SPEED = 0.65f;
 protected:
 	void UpdateAnimation() override;

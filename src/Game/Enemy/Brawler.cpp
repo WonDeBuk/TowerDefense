@@ -10,14 +10,15 @@ Brawler::Brawler() {
 	EnemySpeed = BASE_SPEED;
 
 	EnemyTexture = const_cast<Texture2D*>(&ResourceManager::GetInstance().LoadTexture("ui/Brawler.png"));
-	EnemyTextureSize = { 320.0f, 480.0f };
+	EnemyTextureSize = { 250.0f, 375.0f };
 
 	EnemyFrameStateAmount = 8;
 	Brawler::UpdateAnimation();
 
-	AbilityCooldown = 700;
+	EnemyLifespan = 900;
+	AbilityCooldown = 1200;
 
-	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.91f, EnemyTextureSize.x, EnemyTextureSize.y };
+	EnemyDrawbox = { EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f, EnemyCurrentPosition.y - EnemyTextureSize.y * 0.817f, EnemyTextureSize.x, EnemyTextureSize.y };
 
 	MaxBounceCount = 2;
 }
@@ -38,7 +39,7 @@ void Brawler::OnHeal(const float& _Heal) {
 void Brawler::OnDamage(const float& _Damage) {
 	if (EnemyHealth > 0.4f * BASE_HEALTH && EnemyHealth - _Damage <= 0.4f * BASE_HEALTH) {
 		MaxBounceCount = 4;
-		AbilityCooldown = 300;
+		AbilityCooldown = 600;
 	}
 	Enemy::OnDamage(_Damage);
 		
@@ -69,7 +70,7 @@ void Brawler::Update() {
 			CurrentSprite = 2;	
 			FindLanding();	
 		}
-		else if (DeltaTime == 84) VisualManager::GetInstance().AddVisual(VisualType::PLAIN, Visual::VisualTemplateBuildAndGet("ui/LandingSmoke.png", 12, { EnemyCurrentPosition.x - 225.0f, EnemyCurrentPosition.y - 256.0f }, { 450.0f, 312.0f }, 7));
+		else if (DeltaTime == 84) VisualManager::GetInstance().AddVisual(VisualType::PLAIN, Visual::VisualTemplateBuildAndGet("ui/LandingSmoke.png", 12, { EnemyCurrentPosition.x - 225.0f, EnemyCurrentPosition.y - 215.0f }, { 450.0f, 312.0f }, 7));
 		
 		else if (DeltaTime == 114) {
 			PreviousAbilityFrame = EnemyLifespan;
@@ -87,7 +88,7 @@ void Brawler::Update() {
 
 	// Cập nhật vị trí Hitbox và Drawbox
 	EnemyDrawbox.x = EnemyCurrentPosition.x - EnemyTextureSize.x * 0.5f;
-	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.91f;
+	EnemyDrawbox.y = EnemyCurrentPosition.y - EnemyTextureSize.y * 0.817f;
 }
 
 void Brawler::Draw() const {

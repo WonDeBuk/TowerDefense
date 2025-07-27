@@ -4,7 +4,7 @@
 
 class Dragon : public Enemy {
 private:
-	static constexpr float BASE_HEALTH = 10000.0f;
+	static constexpr float BASE_HEALTH = 35000.0f;
 	static constexpr float BASE_SPEED = 0.5f;
 protected:
 	void UpdateAnimation() override;

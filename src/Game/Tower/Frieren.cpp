@@ -12,11 +12,11 @@
 Frieren::Frieren(): Tower() {
 	CurrentChampion = ChampionType::FRIEREN;
 	CurrentAnimationState = ChampionAnimationState::IDLE;
+	TowerLifespan = 60;
 	TowerCooldown = 90;
-	TowerLifespan = 45;
 	TotalCost = 350;
 	TowerRange = 450.0f;
-	TowerAttackDamage = 50.0f;
+	TowerAttackDamage = 75.0f;
 	TowerAttackMovementSpeed = 7.25f;
 	Tick = 0;
 
@@ -26,7 +26,6 @@ Frieren::Frieren(): Tower() {
 void Frieren::SetTowerID(const int& _TowerID) {
 	Tower::SetTowerID(_TowerID);
 	AttackPosition = { TowerPosition.x + 44.0f, TowerPosition.y - 96.0f };
-	SetTargetType(TargetType::FIRST);
 }
 
 void Frieren::AttackModule_1() {
@@ -72,15 +71,13 @@ bool Frieren::OnUpgrade() {
 	switch (TowerLevel) {
 	case 2:
 		TowerCooldown = 80;
-		TowerRange = 460.0f;
-		TowerAttackDamage = 70.0f;
-		TowerAttackMovementSpeed = 7.75f;
+		TowerAttackDamage = 90.0f;
 		TotalCost += 000;
         break;
 	case 3:
-		TowerCooldown = 60;
-		TowerRange = 1560.0f;
-		TowerAttackDamage = 90.0f;
+		TowerCooldown = 70;
+		TowerRange = 500.0f;
+		TowerAttackDamage = 70.0f;
 		TowerAttackMovementSpeed = 8.0f;
 		OnCooldown = &Frieren::AttackModule_2;
 		TotalCost += 000;

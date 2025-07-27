@@ -4,8 +4,8 @@
 
 class Bat : public Enemy {
 private:
-	static constexpr float BASE_HEALTH = 170.0f;
-	static constexpr float BASE_SPEED = 3.0f;
+	static constexpr float BASE_HEALTH = 525.0f;
+	static constexpr float BASE_SPEED = 3.35f;
 protected:
 	void UpdateAnimation() override;
 public:
