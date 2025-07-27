@@ -25,6 +25,8 @@ public:
     Attack();
     ~Attack();
 
+    virtual void OnDeath();
+
     virtual void Update();
     virtual void Draw() const = 0;
   

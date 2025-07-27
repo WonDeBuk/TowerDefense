@@ -24,6 +24,7 @@ bool Single::CheckForTargetedHit() {
 	Enemy* Object = GameManager::GetInstance().GetEnemyByID(TargetID);
 	if (CheckCollisionPointRec(AttackCurrentPosition, Object->GetHitBox())) {
 		Object->OnDamage(AttackDamage);
+		OnDeath();
 		Attack::AttackKill();
 		return true;
 	}
@@ -39,6 +40,7 @@ bool Single::CheckForAimlessHit() {
 			Enemy* Object = GameManager::GetInstance().GetEnemyByID(i);
 			if (CheckCollisionPointRec(AttackCurrentPosition, Object->GetHitBox())) {
 				Object->OnDamage(AttackDamage);
+				OnDeath();
 				Attack::AttackKill();
 				return true;
 			}

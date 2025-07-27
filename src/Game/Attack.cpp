@@ -13,6 +13,12 @@ Attack::Attack() {
 
 void Attack::Update() {}
 
+void Attack::OnDeath() {
+    if (DeathTexture.LinkedTexture != nullptr) {
+        VisualManager::GetInstance().AddVisual(VisualType::PLAIN, Visual::VisualTemplateBuildAndGet(DeathTexture, AttackCurrentPosition));
+    }
+}
+
 void Attack::SetAttackID(const int &_AttackID) {
     AttackID = _AttackID;
 }

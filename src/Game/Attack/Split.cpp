@@ -36,7 +36,6 @@ void Split::Update() {
 	}
 
 	if ((this->*CheckForValidHit)() == true) {
-		OnCollide();
 		return;
 	}
 
@@ -52,7 +51,8 @@ void Split::Draw() const {
 	DrawTexturePro(*AttackTexture.LinkedTexture, { FrameSize * FrameState, 0.0f, FrameSize, FrameSize }, { AttackCurrentPosition.x, AttackCurrentPosition.y, ActualSize, ActualSize }, { ActualSize / 2, ActualSize / 2 }, Angle, WHITE);
 }
 
-void Split::OnCollide() {
+void Split::OnDeath() {
+	Attack::OnDeath();
 
 	if (SplitNumber <= 0) return;
 	float TempAngle = atan2f(GeneralUseVector.y, GeneralUseVector.x);

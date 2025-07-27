@@ -20,6 +20,7 @@ void Multi::SetHitType(const HitType& _HitType) {
 
 bool Multi::CheckForOverrideHit() {
 	if (TotalHit <= 0) {
+		OnDeath();
 		Attack::AttackKill();
 		return true;
 	}
@@ -67,6 +68,7 @@ bool Multi::CheckForOverrideHit() {
 
 					//if TotalHit reaches 0, the attack expires, thus returning true
 					if (TotalHit == 0) {
+						OnDeath();
 						Attack::AttackKill();
 						return true;
 					}
@@ -82,6 +84,7 @@ bool Multi::CheckForOverrideHit() {
 
 bool Multi::CheckForPreserveHit() {
 	if (TotalHit <= 0) {
+		OnDeath();
 		Attack::AttackKill();
 		return true;
 	}
@@ -118,6 +121,7 @@ bool Multi::CheckForPreserveHit() {
 				ListSize++;
 
 				if (TotalHit == 0) {
+					OnDeath();
 					Attack::AttackKill();
 					return true;
 				}

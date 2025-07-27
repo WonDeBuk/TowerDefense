@@ -32,7 +32,6 @@ const Attack* Ricochet::RicochetTemplateBuildAndGet(const TextureData& _AttackTe
     return test;
 }
 
-
 void Ricochet::Draw() const {
     float ActualSize = FrameSize * AttackTexture.ScaleFactor;
     float Angle = atan2f(GeneralUseVector.y, GeneralUseVector.x) * 180.0f / PI;
